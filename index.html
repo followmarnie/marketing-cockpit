@@ -418,8 +418,17 @@
             <option value="draft">draft</option><option value="live">live</option><option value="archived">archived</option>
           </select></div>
       </div>
-      <label data-i18n="fn.purpose">Zweck / Ziel des Funnels</label>
-      <input id="fnPurpose">
+      <div class="row3">
+        <div><label data-i18n="fn.traffic">Traffic-Weg</label>
+          <select id="fnTraffic">
+            <option value="" data-i18n="fn.traffic.unset">— offen —</option>
+            <option value="paid" data-i18n="fn.traffic.paid">Bezahlt (Ads)</option>
+            <option value="organic" data-i18n="fn.traffic.organic">Organisch</option>
+            <option value="both" data-i18n="fn.traffic.both">Beides (Ads + organisch)</option>
+          </select></div>
+        <div style="grid-column:2/4"><label data-i18n="fn.purpose">Zweck / Ziel des Funnels</label>
+          <input id="fnPurpose"></div>
+      </div>
       <label data-i18n="fn.desc">Beschreibung <span class="hint">(opt.)</span></label>
       <textarea id="fnDesc" rows="2"></textarea>
       <label style="margin-top:16px" data-i18n="fn.steps">Schritte (der Weg)</label>
@@ -523,6 +532,7 @@ const T={
   'fn.note':'<b>Funnels = den Weg skizzieren.</b> Jeder Funnel ist eine Kette von Schritten (Anzeige → LP → Formular → E-Mail → Danke). Schritte können auf einen <b>Conversion-Messpunkt</b> (Modul 3) zeigen; der UTM-Chip zählt Registry-Links auf die Schritt-URL. Das Reporting (Zahlen je Schritt) liefert Looker Studio.',
   'fn.detail':'Funnel','fn.name':'Name','fn.product':'Gruppe/Produkt','fn.status':'Status','fn.slughint':'(fix nach Anlage)','fn.desc':'Beschreibung',
   'fn.purpose':'Zweck / Ziel des Funnels','fn.tracking':'Tracking (Praba)',
+  'fn.traffic':'Traffic-Weg','fn.traffic.unset':'— offen —','fn.traffic.paid':'Bezahlt (Ads)','fn.traffic.organic':'Organisch','fn.traffic.both':'Beides (Ads + organisch)',
   'fn.steps':'Schritte (der Weg)','fn.addstep':'+ Schritt','fn.delete':'Funnel löschen','fn.save':'Funnel speichern',
   'fn.new':'+ Neuer Funnel','fn.saved':'Funnel gespeichert','fn.deleted':'Funnel gelöscht',
   'fn.confirmdel':'Funnel „{name}" wirklich löschen?','fn.needname':'Bitte Namen eingeben','fn.nosteps':'Noch keine Schritte — „+ Schritt" klicken.',
@@ -568,6 +578,7 @@ const T={
   'fn.note':'<b>Funnels = sketch the path.</b> Each funnel is a chain of steps (ad → LP → form → email → thank-you). Steps can point at a <b>conversion measuring point</b> (module 3); the UTM chip counts registry links targeting the step URL. Reporting (numbers per step) lives in Looker Studio.',
   'fn.detail':'Funnel','fn.name':'Name','fn.product':'Group/Product','fn.status':'Status','fn.slughint':'(fixed after creation)','fn.desc':'Description',
   'fn.purpose':'Purpose / goal of the funnel','fn.tracking':'Tracking (Praba)',
+  'fn.traffic':'Traffic path','fn.traffic.unset':'— open —','fn.traffic.paid':'Paid (ads)','fn.traffic.organic':'Organic','fn.traffic.both':'Both (ads + organic)',
   'fn.steps':'Steps (the path)','fn.addstep':'+ Step','fn.delete':'Delete funnel','fn.save':'Save funnel',
   'fn.new':'+ New funnel','fn.saved':'Funnel saved','fn.deleted':'Funnel deleted',
   'fn.confirmdel':'Really delete funnel “{name}”?','fn.needname':'Please enter a name','fn.nosteps':'No steps yet — click “+ Step”.',
@@ -906,7 +917,10 @@ function renderFunnels(){
   let html='';
   order.forEach(g=>{if(!groups[g])return;
     html+=`<div style="width:100%;font-size:11px;color:#8e94c0;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 0">${esc(glabel(g))}</div>`;
-    html+=groups[g].map(f=>`<button class="fchip${state.editF&&state.editF.id===f.id?' on':''}" onclick="selectFunnel(${f.id})">${esc(f.name)} <span class="n">${(f.steps||[]).length}</span></button>`).join('');
+    html+=groups[g].map(f=>{
+      const tb=f.traffic==='paid'?'Ads':f.traffic==='organic'?'Org':f.traffic==='both'?'Ads+Org':'';
+      return `<button class="fchip${state.editF&&state.editF.id===f.id?' on':''}" onclick="selectFunnel(${f.id})">${esc(f.name)} <span class="n">${(f.steps||[]).length}</span>${tb?` <span class="n">${tb}</span>`:''}</button>`;
+    }).join('');
   });
   html+=`<div style="width:100%;margin-top:10px"><button class="fchip${state.editF&&state.editF.id==null?' on':''}" onclick="newFunnel()">${t('fn.new')}</button></div>`;
   $('fchips').innerHTML=html;
@@ -919,7 +933,7 @@ function selectFunnel(id){
   renderFunnels();
 }
 function newFunnel(){
-  state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:'',steps:[]};
+  state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:'',traffic:'',steps:[]};
   renderFunnels();
 }
 function renderFunnelDetail(){
@@ -928,7 +942,7 @@ function renderFunnelDetail(){
   if(!f){card.style.display='none';return}
   card.style.display='';
   $('fnName').value=f.name||'';$('fnStatus').value=f.status||'draft';$('fnProduct').value=f.product||'';
-  $('fnPurpose').value=f.purpose||'';$('fnDesc').value=f.description||'';
+  $('fnPurpose').value=f.purpose||'';$('fnDesc').value=f.description||'';$('fnTraffic').value=f.traffic||'';
   $('fnStatusPill').textContent=(f.id==null?(LANG==='de'?'neu':'new'):('#'+f.id))+(f.slug?' · '+f.slug:'');
   const convOpts=k=>`<option value="">${t('fn.step.none')}</option>`+state.convs.map(c=>`<option value="${esc(c.key)}"${c.key===k?' selected':''}>${esc(c.key)}</option>`).join('');
   const utmCount=url=>{if(!url)return 0;const n=normUrl(url);return state.rows.filter(r=>normUrl(r.target_url)===n).length};
@@ -972,7 +986,7 @@ function delStep(i){if(!state.editF)return;syncFunnelInputs();state.editF.steps.
 function moveStep(i,d){if(!state.editF)return;syncFunnelInputs();const s=state.editF.steps;const j=i+d;if(j<0||j>=s.length)return;[s[i],s[j]]=[s[j],s[i]];renderFunnelDetail()}
 function syncFunnelInputs(){
   const f=state.editF;if(!f)return;
-  f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;f.product=$('fnProduct').value;f.purpose=$('fnPurpose').value;
+  f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;f.product=$('fnProduct').value;f.purpose=$('fnPurpose').value;f.traffic=$('fnTraffic').value;
   $('fnSteps').querySelectorAll('.step').forEach(box=>{
     const i=parseInt(box.dataset.idx,10);
     box.querySelectorAll('[data-f]').forEach(el=>{f.steps[i][el.dataset.f]=el.value});
@@ -982,7 +996,7 @@ async function saveFunnel(){
   syncFunnelInputs();
   const f=state.editF;if(!f)return;
   if(!f.name.trim()){toast(t('fn.needname'),true);return}
-  const body={name:f.name.trim(),purpose:f.purpose||null,description:f.description||'',status:f.status||'draft',product:f.product||null,steps:f.steps,created_by:whoami()||null};
+  const body={name:f.name.trim(),purpose:f.purpose||null,description:f.description||'',status:f.status||'draft',product:f.product||null,traffic:f.traffic||null,steps:f.steps,created_by:whoami()||null};
   try{
     if(f.id==null){
       body.slug=kebab(f.name)||('funnel-'+(state.funnels.length+1));
