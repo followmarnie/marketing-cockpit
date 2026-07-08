@@ -123,6 +123,11 @@
   @media(max-width:700px){.step .sgrid{grid-template-columns:1fr}}
   .step input,.step select{padding:7px 9px;font-size:13px}
   .connector{display:flex;justify-content:center;color:#5b6090;font-size:18px;line-height:1;padding:4px 0}
+  .cvfan{margin-top:10px;background:rgba(23,248,224,.05);border:1px solid rgba(23,248,224,.18);border-radius:10px;padding:8px 12px}
+  .cvfan-h{font-size:11px;color:#7df3e6;margin-bottom:5px}
+  .cvfan-row{display:flex;align-items:center;gap:8px;font-size:12px;padding:2px 0}
+  .cvfan-row>span:first-child{width:82px;flex:none;color:#8e94c0;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+  .cvfan-row .mono{flex:1;font-family:"SF Mono",Menlo,Consolas,monospace;color:#cfd4f0;min-width:0;word-break:break-all}
   .ttype{display:inline-block;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
   .ttype.ad{background:rgba(102,102,255,.2);color:#aab0ff}
   .ttype.lp{background:rgba(150,57,243,.22);color:#cfa6ff}
@@ -376,6 +381,7 @@
       <div class="toolbar">
         <input id="fYear" data-i18n-ph="r.fYear">
         <input id="fCampaign" data-i18n-ph="r.fCampaign">
+        <select id="fChannel"></select>
         <select id="fSource"></select>
         <select id="fFunnel"></select>
         <span style="flex:1"></span>
@@ -406,13 +412,15 @@
       <h2><span data-i18n="fn.detail">Funnel</span> <span class="pill" id="fnStatusPill"></span></h2>
       <div class="row3">
         <div><label data-i18n="fn.name">Name</label><input id="fnName"></div>
+        <div><label data-i18n="fn.product">Gruppe/Produkt</label><select id="fnProduct"></select></div>
         <div><label data-i18n="fn.status">Status</label>
           <select id="fnStatus">
             <option value="draft">draft</option><option value="live">live</option><option value="archived">archived</option>
           </select></div>
-        <div><label>Slug <span class="hint" data-i18n="fn.slughint">(fix nach Anlage)</span></label><input id="fnSlug" disabled></div>
       </div>
-      <label data-i18n="fn.desc">Beschreibung</label>
+      <label data-i18n="fn.purpose">Zweck / Ziel des Funnels</label>
+      <input id="fnPurpose">
+      <label data-i18n="fn.desc">Beschreibung <span class="hint">(opt.)</span></label>
       <textarea id="fnDesc" rows="2"></textarea>
       <label style="margin-top:16px" data-i18n="fn.steps">Schritte (der Weg)</label>
       <div id="fnSteps"></div>
@@ -508,16 +516,17 @@ const T={
   'warn.internal':'<b>Interner Link?</b> Interne Verlinkungen (Menü, Footer, Cross-Sell) <b>nie</b> mit UTM taggen — sonst überschreibt der interne Klick die echte Kampagnen-Quelle in GA4.',
   'o.params':'Nur URL-Parameter','o.url':'Volle UTM-URL','o.copyParams':'Parameter kopieren','o.copyUrl':'Volle URL kopieren','o.save':'+ In Datenbank speichern',
   'o.idhint':'Die <code>utm_id</code> wird beim Speichern von der Datenbank vergeben (atomar). Override unten in der Registry.',
-  'r.fYear':'Jahr filtern','r.fCampaign':'Kampagne filtern','r.srcAll':'Source: alle','r.funAll':'Funnel: alle',
+  'r.fYear':'Jahr filtern','r.fCampaign':'Kampagne filtern','r.chAll':'Channel: alle','r.srcAll':'Source: alle','r.funAll':'Funnel: alle',
   'r.override':'utm_id-Override','r.reload':'↻ Neu laden','r.type':'Typ','r.fullurl':'Volle URL',
   'row.campaign':'Campaign Name','row.adset':'AdSet (kein UTM)','row.automation':'Automation','row.adid':'Ad-Identifier','row.emailid':'Email-Identifier','row.idpending':'wird beim Speichern vergeben',
   'tbl.empty':'Noch keine Zeilen — links bauen und „In Datenbank speichern".',
   'fn.note':'<b>Funnels = den Weg skizzieren.</b> Jeder Funnel ist eine Kette von Schritten (Anzeige → LP → Formular → E-Mail → Danke). Schritte können auf einen <b>Conversion-Messpunkt</b> (Modul 3) zeigen; der UTM-Chip zählt Registry-Links auf die Schritt-URL. Das Reporting (Zahlen je Schritt) liefert Looker Studio.',
-  'fn.detail':'Funnel','fn.name':'Name','fn.status':'Status','fn.slughint':'(fix nach Anlage)','fn.desc':'Beschreibung',
+  'fn.detail':'Funnel','fn.name':'Name','fn.product':'Gruppe/Produkt','fn.status':'Status','fn.slughint':'(fix nach Anlage)','fn.desc':'Beschreibung',
+  'fn.purpose':'Zweck / Ziel des Funnels','fn.tracking':'Tracking (Praba)',
   'fn.steps':'Schritte (der Weg)','fn.addstep':'+ Schritt','fn.delete':'Funnel löschen','fn.save':'Funnel speichern',
   'fn.new':'+ Neuer Funnel','fn.saved':'Funnel gespeichert','fn.deleted':'Funnel gelöscht',
   'fn.confirmdel':'Funnel „{name}" wirklich löschen?','fn.needname':'Bitte Namen eingeben','fn.nosteps':'Noch keine Schritte — „+ Schritt" klicken.',
-  'fn.step.title':'Titel','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.note':'Notiz (opt.)','fn.step.none':'— keine —',
+  'fn.step.title':'Titel','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.actag':'AC-Tag (opt.)','fn.step.note':'Notiz (opt.)','fn.step.none':'— keine —',
   'cv.note':'<b>Conversions = der Messpunkt-Katalog</b> (GA4 · Google Ads · Meta) — die Abstimm-Fläche mit dem Tracking: Was wird wo gemessen, und ist es verdrahtet? Quelle initial: Praba-Sheet Stand 2026-07. Werte sind Optimierungswerte in AED.',
   'cv.title':'Conversions · Event-Katalog','cv.name':'Name','cv.notes':'Notizen','cv.new':'Neue Conversion','cv.edit':'Conversion bearbeiten',
   'cv.keyhint':'(Slug, fix nach Anlage)','cv.value':'Wert (AED)','cv.purpose':'Zweck','cv.path':'Pfad (LP → … → Danke)','cv.status':'Status',
@@ -552,16 +561,17 @@ const T={
   'warn.internal':'<b>Internal link?</b> Never tag internal links (menu, footer, cross-sell) with UTM — the internal click would overwrite the real campaign source in GA4.',
   'o.params':'URL parameters only','o.url':'Full UTM URL','o.copyParams':'Copy parameters','o.copyUrl':'Copy full URL','o.save':'+ Save to database',
   'o.idhint':'The <code>utm_id</code> is assigned by the database on save (atomic). Override below in the registry.',
-  'r.fYear':'Filter year','r.fCampaign':'Filter campaign','r.srcAll':'Source: all','r.funAll':'Funnel: all',
+  'r.fYear':'Filter year','r.fCampaign':'Filter campaign','r.chAll':'Channel: all','r.srcAll':'Source: all','r.funAll':'Funnel: all',
   'r.override':'utm_id override','r.reload':'↻ Reload','r.type':'Type','r.fullurl':'Full URL',
   'row.campaign':'Campaign name','row.adset':'Ad set (no UTM)','row.automation':'Automation','row.adid':'Ad identifier','row.emailid':'Email identifier','row.idpending':'assigned on save',
   'tbl.empty':'No rows yet — build on the left and “Save to database”.',
   'fn.note':'<b>Funnels = sketch the path.</b> Each funnel is a chain of steps (ad → LP → form → email → thank-you). Steps can point at a <b>conversion measuring point</b> (module 3); the UTM chip counts registry links targeting the step URL. Reporting (numbers per step) lives in Looker Studio.',
-  'fn.detail':'Funnel','fn.name':'Name','fn.status':'Status','fn.slughint':'(fixed after creation)','fn.desc':'Description',
+  'fn.detail':'Funnel','fn.name':'Name','fn.product':'Group/Product','fn.status':'Status','fn.slughint':'(fixed after creation)','fn.desc':'Description',
+  'fn.purpose':'Purpose / goal of the funnel','fn.tracking':'Tracking (Praba)',
   'fn.steps':'Steps (the path)','fn.addstep':'+ Step','fn.delete':'Delete funnel','fn.save':'Save funnel',
   'fn.new':'+ New funnel','fn.saved':'Funnel saved','fn.deleted':'Funnel deleted',
   'fn.confirmdel':'Really delete funnel “{name}”?','fn.needname':'Please enter a name','fn.nosteps':'No steps yet — click “+ Step”.',
-  'fn.step.title':'Title','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.note':'Note (opt.)','fn.step.none':'— none —',
+  'fn.step.title':'Title','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.actag':'AC tag (opt.)','fn.step.note':'Note (opt.)','fn.step.none':'— none —',
   'cv.note':'<b>Conversions = the measuring-point catalog</b> (GA4 · Google Ads · Meta) — the alignment surface with tracking: what is measured where, and is it wired? Initial source: Praba sheet as of 2026-07. Values are optimization values in AED.',
   'cv.title':'Conversions · Event catalog','cv.name':'Name','cv.notes':'Notes','cv.new':'New conversion','cv.edit':'Edit conversion',
   'cv.keyhint':'(slug, fixed after creation)','cv.value':'Value (AED)','cv.purpose':'Purpose','cv.path':'Path (LP → … → thank-you)','cv.status':'Status',
@@ -626,6 +636,8 @@ const MEDIUM = {
 const KNOWN_SOURCES=new Set([...OPT.srcPaid.map(x=>x[0]),...OPT.srcOrg.map(x=>x[0]),...OPT.srcEmail.map(x=>x[0])]);
 const KNOWN_MEDIUMS=new Set([...Object.values(MEDIUM)]);
 const STEP_TYPES=['ad','lp','form','email','page','call','purchase'];
+const FUNNEL_GROUPS=[['','— (keine)'],['DAY','DAY · Daytrading'],['SWG','SWG · Swingtrading'],['LOI','LOI'],['FI','FI'],
+  ['ACA','ACA · Academy'],['PSY','PSY · Psychologie'],['SWA','SWA · Software'],['LOT','LOT'],['BRAND','Brand'],['COMMON','Common · Conversions']];
 
 /* ─────────────── Helpers ─────────────── */
 const $=id=>document.getElementById(id);
@@ -637,6 +649,7 @@ const fmtId=n=>'tradeneon'+String(parseInt(n,10)).padStart(5,'0');
 const normUrl=u=>(u||'').trim().replace(/\/+$/,'').replace(/^https?:\/\//,'');
 function fill(id,opts){const s=$(id);if(!s)return;s.innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}
 Object.keys(OPT).forEach(k=>fill(k,OPT[k]));
+fill('fnProduct',FUNNEL_GROUPS);
 
 let mode='paid';
 const state={rows:[],funnels:[],convs:[],editF:null,editCvId:null};
@@ -789,14 +802,16 @@ function render(){
 function refreshFilters(){
   const srcs=[...new Set(state.rows.map(r=>r.utm_source).filter(Boolean))].sort();
   const funs=[...new Set(state.rows.map(r=>r.funnel_type).filter(Boolean))].sort();
-  const fs=$('fSource').value, ff=$('fFunnel').value;
+  const chs=[...new Set(state.rows.map(r=>r.channel).filter(Boolean))].sort();
+  const fs=$('fSource').value, ff=$('fFunnel').value, fch=$('fChannel').value;
+  $('fChannel').innerHTML=`<option value="">${t('r.chAll')}</option>`+chs.map(s=>`<option${s===fch?' selected':''}>${esc(s)}</option>`).join('');
   $('fSource').innerHTML=`<option value="">${t('r.srcAll')}</option>`+srcs.map(s=>`<option${s===fs?' selected':''}>${esc(s)}</option>`).join('');
   $('fFunnel').innerHTML=`<option value="">${t('r.funAll')}</option>`+funs.map(s=>`<option${s===ff?' selected':''}>${esc(s)}</option>`).join('');
 }
 function renderTable(){
-  const fy=$('fYear').value.trim(), fc=$('fCampaign').value.trim().toLowerCase(), fs=$('fSource').value, ff=$('fFunnel').value;
+  const fy=$('fYear').value.trim(), fc=$('fCampaign').value.trim().toLowerCase(), fs=$('fSource').value, ff=$('fFunnel').value, fch=$('fChannel').value;
   const flt=state.rows.filter(r=>(!fy||(r.period||'').includes(fy))&&(!fc||(r.campaign_name||'').toLowerCase().includes(fc))
-    &&(!fs||r.utm_source===fs)&&(!ff||r.funnel_type===ff));
+    &&(!fs||r.utm_source===fs)&&(!ff||r.funnel_type===ff)&&(!fch||r.channel===fch));
   $('tbl').querySelector('tbody').innerHTML=flt.map(r=>`<tr data-id="${esc(r.utm_id)}">
     <td class="mono counter">${esc(r.utm_id)}</td>
     <td><span class="tag ${esc(r.platform_type)}">${esc(r.platform_type)}</span></td>
@@ -884,9 +899,17 @@ function parseCsvLine(line){const out=[];let cur='',q=false;
 
 /* ─────────────── Modul 2 · Funnels ─────────────── */
 function renderFunnels(){
-  const chips=state.funnels.map(f=>`<button class="fchip${state.editF&&state.editF.id===f.id?' on':''}" onclick="selectFunnel(${f.id})">
-    ${esc(f.name)} <span class="n">${(f.steps||[]).length}</span></button>`).join('');
-  $('fchips').innerHTML=chips+`<button class="fchip${state.editF&&state.editF.id==null?' on':''}" onclick="newFunnel()">${t('fn.new')}</button>`;
+  const groups={};
+  state.funnels.forEach(f=>{const g=f.product||'—';(groups[g]=groups[g]||[]).push(f)});
+  const order=FUNNEL_GROUPS.map(x=>x[0]).filter(Boolean).concat('—');
+  const glabel=k=>{const m=FUNNEL_GROUPS.find(x=>x[0]===k);return m?m[1]:(k==='—'?(LANG==='de'?'ohne Gruppe':'ungrouped'):k)};
+  let html='';
+  order.forEach(g=>{if(!groups[g])return;
+    html+=`<div style="width:100%;font-size:11px;color:#8e94c0;text-transform:uppercase;letter-spacing:.05em;margin:8px 0 0">${esc(glabel(g))}</div>`;
+    html+=groups[g].map(f=>`<button class="fchip${state.editF&&state.editF.id===f.id?' on':''}" onclick="selectFunnel(${f.id})">${esc(f.name)} <span class="n">${(f.steps||[]).length}</span></button>`).join('');
+  });
+  html+=`<div style="width:100%;margin-top:10px"><button class="fchip${state.editF&&state.editF.id==null?' on':''}" onclick="newFunnel()">${t('fn.new')}</button></div>`;
+  $('fchips').innerHTML=html;
   renderFunnelDetail();
 }
 function selectFunnel(id){
@@ -896,7 +919,7 @@ function selectFunnel(id){
   renderFunnels();
 }
 function newFunnel(){
-  state.editF={id:null,slug:'',name:'',description:'',status:'draft',steps:[]};
+  state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:'',steps:[]};
   renderFunnels();
 }
 function renderFunnelDetail(){
@@ -904,9 +927,9 @@ function renderFunnelDetail(){
   const card=$('fnDetail');
   if(!f){card.style.display='none';return}
   card.style.display='';
-  $('fnName').value=f.name||'';$('fnStatus').value=f.status||'draft';
-  $('fnSlug').value=f.slug||'(auto)';$('fnDesc').value=f.description||'';
-  $('fnStatusPill').textContent=f.id==null?(LANG==='de'?'neu':'new'):('#'+f.id);
+  $('fnName').value=f.name||'';$('fnStatus').value=f.status||'draft';$('fnProduct').value=f.product||'';
+  $('fnPurpose').value=f.purpose||'';$('fnDesc').value=f.description||'';
+  $('fnStatusPill').textContent=(f.id==null?(LANG==='de'?'neu':'new'):('#'+f.id))+(f.slug?' · '+f.slug:'');
   const convOpts=k=>`<option value="">${t('fn.step.none')}</option>`+state.convs.map(c=>`<option value="${esc(c.key)}"${c.key===k?' selected':''}>${esc(c.key)}</option>`).join('');
   const utmCount=url=>{if(!url)return 0;const n=normUrl(url);return state.rows.filter(r=>normUrl(r.target_url)===n).length};
   $('fnSteps').innerHTML=(f.steps||[]).map((s,i)=>{
@@ -930,17 +953,26 @@ function renderFunnelDetail(){
         <input data-f="title" placeholder="${t('fn.step.title')}" value="${esc(s.title)}">
         <input data-f="url" placeholder="${t('fn.step.url')}" value="${esc(s.url)}">
         <select data-f="conversion_key">${convOpts(s.conversion_key)}</select>
-        <input data-f="note" placeholder="${t('fn.step.note')}" value="${esc(s.note)}">
+        <input data-f="ac_tag" placeholder="${t('fn.step.actag')}" value="${esc(s.ac_tag)}">
+        <input data-f="note" placeholder="${t('fn.step.note')}" value="${esc(s.note)}" style="grid-column:1/-1">
       </div>
+      ${cv?`<div class="cvfan">
+        <div class="cvfan-h">→ ${t('fn.tracking')}: <b>${esc(cv.name)}</b></div>
+        <div class="cvfan-row"><span>GA4</span><span class="mono">${esc(cv.ga4_event)||'—'}</span>${stChip(cv.ga4_status)}</div>
+        <div class="cvfan-row"><span>Google Ads</span><span class="mono">${esc(cv.ads_label)||'—'}${cv.ads_value?' · '+esc(cv.ads_value):''}</span>${stChip(cv.ads_status)}</div>
+        <div class="cvfan-row"><span>Meta</span><span class="mono">${esc(cv.meta_event)||'—'}</span>${stChip(cv.meta_status)}</div>
+      </div>`:''}
     </div>${i<f.steps.length-1?'<div class="connector">↓</div>':''}`;
   }).join('')||`<p class="hint" style="margin:8px 0">${t('fn.nosteps')}</p>`;
 }
-function addStep(){if(!state.editF)return;state.editF.steps.push({type:'page',title:'',url:'',conversion_key:'',note:''});renderFunnelDetail()}
-function delStep(i){state.editF.steps.splice(i,1);renderFunnelDetail()}
-function moveStep(i,d){const s=state.editF.steps;const j=i+d;if(j<0||j>=s.length)return;[s[i],s[j]]=[s[j],s[i]];renderFunnelDetail()}
+// Vor jeder Struktur-Änderung erst die aktuell getippten Feld-Werte in den State sichern,
+// damit Hinzufügen/Löschen/Verschieben eines Schritts die anderen Schritte NICHT verwirft.
+function addStep(){if(!state.editF)return;syncFunnelInputs();state.editF.steps.push({type:'page',title:'',url:'',conversion_key:'',ac_tag:'',note:''});renderFunnelDetail()}
+function delStep(i){if(!state.editF)return;syncFunnelInputs();state.editF.steps.splice(i,1);renderFunnelDetail()}
+function moveStep(i,d){if(!state.editF)return;syncFunnelInputs();const s=state.editF.steps;const j=i+d;if(j<0||j>=s.length)return;[s[i],s[j]]=[s[j],s[i]];renderFunnelDetail()}
 function syncFunnelInputs(){
   const f=state.editF;if(!f)return;
-  f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;
+  f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;f.product=$('fnProduct').value;f.purpose=$('fnPurpose').value;
   $('fnSteps').querySelectorAll('.step').forEach(box=>{
     const i=parseInt(box.dataset.idx,10);
     box.querySelectorAll('[data-f]').forEach(el=>{f.steps[i][el.dataset.f]=el.value});
@@ -950,7 +982,7 @@ async function saveFunnel(){
   syncFunnelInputs();
   const f=state.editF;if(!f)return;
   if(!f.name.trim()){toast(t('fn.needname'),true);return}
-  const body={name:f.name.trim(),description:f.description||'',status:f.status||'draft',steps:f.steps,created_by:whoami()||null};
+  const body={name:f.name.trim(),purpose:f.purpose||null,description:f.description||'',status:f.status||'draft',product:f.product||null,steps:f.steps,created_by:whoami()||null};
   try{
     if(f.id==null){
       body.slug=kebab(f.name)||('funnel-'+(state.funnels.length+1));
@@ -1064,7 +1096,7 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>switchView(b.
 document.querySelectorAll('#ptype button').forEach(b=>b.onclick=()=>setMode(b.dataset.t));
 document.querySelectorAll('#view-utm .card input,#view-utm .card select').forEach(el=>el.addEventListener('input',render));
 $('ctrOverride').addEventListener('input',render);
-['fYear','fCampaign','fSource','fFunnel'].forEach(id=>$(id).addEventListener('input',renderTable));
+['fYear','fCampaign','fSource','fFunnel','fChannel'].forEach(id=>$(id).addEventListener('input',renderTable));
 $('who').value=localStorage.getItem('tn_cockpit_who')||'';
 $('who').addEventListener('input',()=>localStorage.setItem('tn_cockpit_who',$('who').value));
 $('saveBtn').onclick=save;
