@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TradeNeon Marketing Cockpit · UTM & Naming</title>
+<title>TradeNeon Marketing Cockpit</title>
 <style>
   :root{
     --tn-bg:#07071a; --tn-ink:#f3f6ff; --tn-strong:#ffffff;
@@ -17,16 +17,14 @@
     --tn-glow:0 10px 40px -12px rgba(102,102,255,.5);
   }
   *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--tn-bg); color:var(--tn-ink);
+  body{margin:0;background:var(--tn-bg);color:var(--tn-ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    font-weight:300; line-height:1.6; padding:32px 20px 80px;
-  }
+    font-weight:300;line-height:1.6;padding:32px 20px 80px}
   .wrap{max-width:1080px;margin:0 auto}
   h1{font-weight:700;font-size:clamp(22px,3vw,30px);margin:0 0 4px;
      background:var(--tn-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .sub{color:#aab0d6;font-size:14px;margin:0}
-  .topbar{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+  .topbar{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
   .topbar .right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
   .topbar .who input{width:150px;background:var(--tn-surf-2);border:1px solid var(--tn-border);color:var(--tn-strong);
     border-radius:var(--tn-r-s);padding:7px 10px;font-size:13px;font-family:inherit;font-weight:300}
@@ -39,6 +37,11 @@
   .langsw button.on{background:var(--tn-grad);color:#fff}
   .userchip{font-size:12px;color:#9aa0cc;display:flex;align-items:center;gap:6px}
   .linkbtn{background:none;border:none;color:var(--tn-teal);cursor:pointer;font-size:12px;font-family:inherit;text-decoration:underline;padding:0}
+  .tabs{display:flex;gap:6px;margin:0 0 20px;background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:var(--tn-r-m);padding:5px;flex-wrap:wrap}
+  .tabs button{flex:1;min-width:140px;background:transparent;border:none;color:#b9bee6;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all .2s var(--tn-ease)}
+  .tabs button.on{background:var(--tn-grad);color:#fff;box-shadow:var(--tn-glow)}
+  .view{display:none}
+  .view.on{display:block}
   .note{background:var(--tn-surf-1);border:1px solid var(--tn-border);border-left:3px solid var(--tn-teal);
         border-radius:var(--tn-r-s);padding:10px 14px;font-size:13px;color:#cfd4f0;margin-bottom:24px}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
@@ -47,12 +50,11 @@
   .card h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#9aa0cc;margin:0 0 16px;font-weight:600}
   label{display:block;font-size:12px;color:#b9bee6;margin:12px 0 4px;font-weight:400}
   .hint{color:#7e84ad;font-size:11px}
-  input,select{
-    width:100%;background:var(--tn-surf-2);border:1px solid var(--tn-border);color:var(--tn-strong);
+  input,select,textarea{width:100%;background:var(--tn-surf-2);border:1px solid var(--tn-border);color:var(--tn-strong);
     border-radius:var(--tn-r-s);padding:9px 11px;font-size:14px;font-family:inherit;font-weight:300;
-    transition:border-color .2s var(--tn-ease)
-  }
-  input:focus,select:focus{outline:none;border-color:var(--tn-primary)}
+    transition:border-color .2s var(--tn-ease)}
+  textarea{resize:vertical;min-height:56px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--tn-primary)}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
   .seg{display:flex;gap:6px;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:var(--tn-r-s);padding:4px}
@@ -75,6 +77,7 @@
   .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
   .btn.ghost{background:var(--tn-surf-3);color:var(--tn-ink)}
   .btn.sm{padding:6px 10px;font-size:12px;font-weight:400}
+  .btn.danger{background:linear-gradient(135deg,#ff3c8d,#9639f3)}
   .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
   .pill{display:inline-block;background:var(--tn-surf-3);border:1px solid var(--tn-border);border-radius:999px;
         padding:2px 9px;font-size:11px;color:#b9bee6;margin-left:6px}
@@ -90,6 +93,10 @@
   .tag.paid{background:rgba(102,102,255,.18);color:#aab0ff}
   .tag.email{background:rgba(23,248,224,.15);color:#7df3e6}
   .tag.organic{background:rgba(237,251,140,.15);color:#d9e08c}
+  .st{display:inline-block;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700}
+  .st.done{background:rgba(74,222,128,.15);color:#7fe6a4}
+  .st.open{background:rgba(255,132,106,.15);color:#ffb39f}
+  .st.none{background:var(--tn-surf-3);color:#8e94c0}
   .counter{font-family:"SF Mono",Menlo,Consolas,monospace;color:var(--tn-teal)}
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
   .toolbar input,.toolbar select{width:auto;min-width:120px}
@@ -99,15 +106,32 @@
   .act.ok{color:var(--tn-success)}
   .full{grid-column:1/-1}
   td.editing{background:rgba(23,248,224,.06);outline:1px solid rgba(23,248,224,.3)}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--tn-grad);
-         color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;
-         transition:opacity .3s var(--tn-ease);box-shadow:var(--tn-glow);max-width:80vw;text-align:center;z-index:60}
-  .toast.show{opacity:1}
-  .toast.err{background:linear-gradient(135deg,#ff3c8d,#9639f3)}
-  .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
-        border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px;margin-right:6px}
-  @keyframes sp{to{transform:rotate(360deg)}}
-  /* Overlay (Login + How-to) */
+  /* Funnel-Flow */
+  .fchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fchip{background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:999px;padding:6px 14px;
+         font-size:13px;color:#cfd4f0;cursor:pointer;font-family:inherit;transition:all .2s var(--tn-ease)}
+  .fchip.on{background:var(--tn-grad);color:#fff;border-color:transparent;box-shadow:var(--tn-glow)}
+  .fchip .n{opacity:.7;font-size:11px;margin-left:5px}
+  .step{background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:var(--tn-r-m);padding:14px;position:relative}
+  .step .shead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .step .shead select{width:auto;min-width:120px;padding:5px 9px;font-size:12px}
+  .step .schips{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .step .sctrl{display:flex;gap:4px}
+  .step .sctrl button{background:var(--tn-surf-3);border:1px solid var(--tn-border);color:#b9bee6;border-radius:7px;
+    cursor:pointer;font-size:12px;padding:3px 8px;font-family:inherit;width:auto}
+  .step .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:700px){.step .sgrid{grid-template-columns:1fr}}
+  .step input,.step select{padding:7px 9px;font-size:13px}
+  .connector{display:flex;justify-content:center;color:#5b6090;font-size:18px;line-height:1;padding:4px 0}
+  .ttype{display:inline-block;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .ttype.ad{background:rgba(102,102,255,.2);color:#aab0ff}
+  .ttype.lp{background:rgba(150,57,243,.22);color:#cfa6ff}
+  .ttype.form{background:rgba(23,248,224,.15);color:#7df3e6}
+  .ttype.email{background:rgba(237,251,140,.15);color:#d9e08c}
+  .ttype.page{background:var(--tn-surf-3);color:#aab0d6}
+  .ttype.call{background:rgba(255,132,106,.18);color:#ffb39f}
+  .ttype.purchase{background:rgba(255,60,141,.18);color:#ff9bbf}
+  /* Overlay */
   .overlay{position:fixed;inset:0;background:rgba(3,3,14,.82);backdrop-filter:blur(6px);z-index:50;
            display:flex;align-items:center;justify-content:center;padding:20px}
   .overlay.hidden{display:none}
@@ -123,6 +147,14 @@
   .howto ol,.howto ul{padding-left:20px;margin:6px 0}
   .howto li{margin:4px 0}
   .modal .close{float:right;background:var(--tn-surf-3);border:1px solid var(--tn-border);color:#b9bee6;border-radius:8px;cursor:pointer;font-size:16px;width:30px;height:30px;line-height:1;font-family:inherit}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--tn-grad);
+         color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;
+         transition:opacity .3s var(--tn-ease);box-shadow:var(--tn-glow);max-width:80vw;text-align:center;z-index:60}
+  .toast.show{opacity:1}
+  .toast.err{background:linear-gradient(135deg,#ff3c8d,#9639f3)}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+        border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -142,7 +174,7 @@
     </div>
     <div class="btns"><button class="btn" id="loginBtn" style="width:100%;justify-content:center" data-i18n="login.btn">Anmelden</button></div>
     <div class="err" id="loginErr"></div>
-    <div style="margin-top:14px;text-align:right"><div class="langsw" style="display:inline-flex" id="langSwitchLogin">
+    <div style="margin-top:14px;text-align:right"><div class="langsw" style="display:inline-flex">
       <button data-l="de" class="on">DE</button><button data-l="en">EN</button></div></div>
   </div>
 </div>
@@ -151,56 +183,72 @@
 <div class="overlay hidden" id="howtoOverlay">
   <div class="modal wide howto">
     <button class="close" onclick="toggleHowto(false)">×</button>
-    <!-- DE -->
     <div id="howtoDE">
       <h2>So funktioniert das Cockpit</h2>
-      <p class="lead">Aus Kampagnen-Eckdaten macht das Tool alle Naming-Ebenen und die fertige, SOP-konforme UTM-URL — und legt jede Zeile in der gemeinsamen Datenbank ab.</p>
-      <h3>In 3 Schritten</h3>
+      <p class="lead">Drei Module, eine Kette: Du skizzierst den Weg (Funnels) → jeder Schritt bekommt seinen Namen + UTM (UTM &amp; Naming) → die Messpunkte stehen im Katalog (Conversions). Die Klicks fließen mit den UTMs automatisch in GA4; das Reporting zeigt Looker Studio.</p>
+      <h3>Modul 1 · UTM &amp; Naming — in 3 Schritten</h3>
       <ol>
-        <li><b>Plattform-Typ wählen</b> — <i>Werbe</i> (Meta/Google/…), <i>E-Mail</i> (Active Campaign) oder <i>Organisch</i> (Social/Blog/…). Danach passen sich die Felder an.</li>
-        <li><b>Felder ausfüllen</b> — nur SOP-erlaubte Werte (Dropdowns). Rechts entstehen live: Campaign-Name, AdSet/Automation, Ad-/Email-Identifier und alle <code>utm_*</code>-Parameter.</li>
-        <li><b>„In Datenbank speichern"</b> — die <code>utm_id</code> (z.&nbsp;B. <code>tradeneon00050</code>) wird von der Datenbank <b>automatisch und kollisionsfrei</b> vergeben. Danach steht die volle URL in der Registry und wird in Deine Zwischenablage kopiert.</li>
+        <li><b>Plattform-Typ wählen</b> — <i>Werbe</i> (Meta/Google/…), <i>E-Mail</i> (Active Campaign) oder <i>Organisch</i>. Die Felder passen sich an.</li>
+        <li><b>Felder ausfüllen</b> — nur SOP-erlaubte Werte (Dropdowns). Rechts entstehen live: Campaign-Name, AdSet/Automation, Identifier und alle <code>utm_*</code>-Parameter (bei Google-Search auch <code>utm_term</code>).</li>
+        <li><b>„In Datenbank speichern"</b> — die <code>utm_id</code> (z.&nbsp;B. <code>tradeneon00050</code>) vergibt die Datenbank <b>automatisch und kollisionsfrei</b>. Die volle URL landet in der Registry und in Deiner Zwischenablage.</li>
       </ol>
-      <h3>Kopieren &amp; einsetzen</h3>
-      <p><b>„Nur URL-Parameter"</b> = der <code>?utm_…</code>-Anhang. <b>„Volle UTM-URL"</b> = Landingpage + Parameter, fertig zum Einfügen ins Werbe- oder Mail-Tool. Der Anker (<code>#…</code>) wird angehängt, ist aber kein Tracking-Parameter.</p>
       <h3>Registry pflegen</h3>
       <ul>
-        <li><b>✎ Stift</b> — Zeile direkt in der Tabelle bearbeiten (Felder werden editierbar, ✓ speichert).</li>
-        <li><b>⧉</b> — volle URL der Zeile kopieren. <b>✕</b> — Zeile löschen (mit Rückfrage).</li>
-        <li><b>Filter</b> nach Jahr, Kampagne, Source, Funnel. <b>CSV ⬇/⬆</b> als Backup/Import.</li>
-        <li><b>utm_id-Override</b> — nur wenn Du bewusst eine bestimmte Nummer vergeben willst; sonst leer lassen.</li>
+        <li><b>✎</b> Zeile inline bearbeiten (✓ speichert) · <b>⧉</b> URL kopieren · <b>✕</b> löschen (mit Rückfrage).</li>
+        <li><b>Filter</b> Jahr/Kampagne/Source/Funnel · <b>CSV ⬇/⬆</b> als Backup/Import · <b>utm_id-Override</b> nur für bewusste Ausnahmen.</li>
+      </ul>
+      <h3>Modul 2 · Funnels — den Weg skizzieren</h3>
+      <ul>
+        <li>Ein Funnel = eine Kette von Schritten (Anzeige → LP → Formular → E-Mail → Danke-Seite …).</li>
+        <li>Pro Schritt: Typ, Titel, URL, optional der <b>Conversion-Messpunkt</b> (verlinkt Modul 3) und eine Notiz.</li>
+        <li>Der <b>UTM-Chip</b> am Schritt zählt, wie viele Registry-Links auf die Schritt-URL zeigen — so siehst Du, was schon getaggt ist.</li>
+        <li>Schritte mit ↑↓ ordnen, ✕ entfernen, „+ Schritt" ergänzen — dann <b>Speichern</b>.</li>
+      </ul>
+      <h3>Modul 3 · Conversions — der Messpunkt-Katalog</h3>
+      <ul>
+        <li>Je Conversion: GA4-Event, Google-Ads-Label + Wert, Meta-Event — mit Status (<span class="st done">✓</span> verdrahtet, <span class="st open">offen</span>).</li>
+        <li>Das ist die Abstimm-Fläche mit dem Tracking (Praba): Was messen wir wo, und ist es live?</li>
+        <li>Neue Conversion unten anlegen; Details per ✎ bearbeiten.</li>
       </ul>
       <h3>Wichtige Regeln</h3>
       <ul>
-        <li><b>Interne Links nie taggen</b> (Menü, Footer, Cross-Sell) — sonst überschreibt der interne Klick die echte Quelle in GA4.</li>
-        <li>Taucht eine <b>neue Source/Medium</b> auf, erst in die <code>SOP_Platform_Naming.md</code> aufnehmen — das Tool warnt.</li>
-        <li>Die Naming-Regeln kommen aus der SOP (Single Source of Truth); das Tool bildet sie nur ab.</li>
+        <li><b>Interne Links nie taggen</b> (Menü, Footer) — sonst überschreibt der interne Klick die echte Quelle in GA4.</li>
+        <li>Neue <b>Source/Medium</b>-Werte erst in <code>SOP_Platform_Naming.md</code> aufnehmen — das Tool warnt.</li>
+        <li>Regelquelle bleibt die SOP; das Tool bildet sie nur ab.</li>
       </ul>
     </div>
-    <!-- EN -->
     <div id="howtoEN" style="display:none">
       <h2>How the Cockpit works</h2>
-      <p class="lead">From a few campaign inputs the tool derives every naming level and the finished, SOP-compliant UTM URL — and stores each row in the shared database.</p>
-      <h3>In 3 steps</h3>
+      <p class="lead">Three modules, one chain: sketch the path (Funnels) → every step gets its name + UTM (UTM &amp; Naming) → the measuring points live in the catalog (Conversions). Clicks flow into GA4 automatically via the UTMs; reporting happens in Looker Studio.</p>
+      <h3>Module 1 · UTM &amp; Naming — 3 steps</h3>
       <ol>
-        <li><b>Pick the platform type</b> — <i>Advertising</i> (Meta/Google/…), <i>Email</i> (Active Campaign) or <i>Organic</i> (social/blog/…). The fields adapt accordingly.</li>
-        <li><b>Fill the fields</b> — only SOP-allowed values (dropdowns). On the right you get live: campaign name, ad set/automation, ad/email identifier and all <code>utm_*</code> parameters.</li>
-        <li><b>“Save to database”</b> — the <code>utm_id</code> (e.g. <code>tradeneon00050</code>) is assigned by the database <b>automatically and collision-free</b>. The full URL then appears in the registry and is copied to your clipboard.</li>
+        <li><b>Pick the platform type</b> — <i>Advertising</i>, <i>Email</i> (Active Campaign) or <i>Organic</i>. Fields adapt.</li>
+        <li><b>Fill the fields</b> — SOP-allowed values only (dropdowns). Live output: campaign name, ad set/automation, identifier and all <code>utm_*</code> parameters (incl. <code>utm_term</code> for Google Search).</li>
+        <li><b>“Save to database”</b> — the <code>utm_id</code> (e.g. <code>tradeneon00050</code>) is assigned <b>automatically and collision-free</b>. The full URL lands in the registry and your clipboard.</li>
       </ol>
-      <h3>Copy &amp; use</h3>
-      <p><b>“URL parameters only”</b> = the <code>?utm_…</code> string. <b>“Full UTM URL”</b> = landing page + parameters, ready to paste into your ad or mail tool. The anchor (<code>#…</code>) is appended but is not a tracking parameter.</p>
       <h3>Manage the registry</h3>
       <ul>
-        <li><b>✎ pencil</b> — edit a row inline (cells become editable, ✓ saves).</li>
-        <li><b>⧉</b> — copy the row’s full URL. <b>✕</b> — delete the row (with confirmation).</li>
-        <li><b>Filters</b> by year, campaign, source, funnel. <b>CSV ⬇/⬆</b> for backup/import.</li>
-        <li><b>utm_id override</b> — only if you deliberately want a specific number; otherwise leave empty.</li>
+        <li><b>✎</b> edit a row inline (✓ saves) · <b>⧉</b> copy URL · <b>✕</b> delete (with confirmation).</li>
+        <li><b>Filters</b> year/campaign/source/funnel · <b>CSV ⬇/⬆</b> backup/import · <b>utm_id override</b> for deliberate exceptions only.</li>
+      </ul>
+      <h3>Module 2 · Funnels — sketch the path</h3>
+      <ul>
+        <li>A funnel = a chain of steps (ad → LP → form → email → thank-you page …).</li>
+        <li>Per step: type, title, URL, optionally the <b>conversion measuring point</b> (links module 3) and a note.</li>
+        <li>The <b>UTM chip</b> on a step counts how many registry links point at that URL — so you see what's tagged.</li>
+        <li>Reorder with ↑↓, remove with ✕, add via “+ Step” — then <b>Save</b>.</li>
+      </ul>
+      <h3>Module 3 · Conversions — the measuring-point catalog</h3>
+      <ul>
+        <li>Per conversion: GA4 event, Google Ads label + value, Meta event — with status (<span class="st done">✓</span> wired, <span class="st open">open</span>).</li>
+        <li>This is the alignment surface with tracking (Praba): what do we measure where, and is it live?</li>
+        <li>Add new conversions below; edit details via ✎.</li>
       </ul>
       <h3>Key rules</h3>
       <ul>
-        <li><b>Never tag internal links</b> (menu, footer, cross-sell) — the internal click would overwrite the real source in GA4.</li>
-        <li>If a <b>new source/medium</b> shows up, add it to <code>SOP_Platform_Naming.md</code> first — the tool warns you.</li>
-        <li>Naming rules come from the SOP (single source of truth); the tool only reflects them.</li>
+        <li><b>Never tag internal links</b> (menu, footer) — the internal click would overwrite the real source in GA4.</li>
+        <li>Add new <b>source/medium</b> values to <code>SOP_Platform_Naming.md</code> first — the tool warns you.</li>
+        <li>The SOP stays the rule source; the tool only reflects it.</li>
       </ul>
     </div>
     <div class="btns" style="justify-content:flex-end"><button class="btn sm" onclick="toggleHowto(false)" data-i18n="howto.close">Schließen</button></div>
@@ -211,30 +259,35 @@
   <div class="topbar">
     <div>
       <h1>TradeNeon Marketing Cockpit</h1>
-      <p class="sub"><span data-i18n="app.sub">Modul „UTM &amp; Naming"</span> <span class="pill">v1 · Supabase</span></p>
+      <p class="sub"><span data-i18n="app.sub">UTM · Funnels · Conversions</span> <span class="pill">v2 · Supabase</span></p>
     </div>
     <div class="right">
-      <div class="langsw" id="langSwitch"><button data-l="de" class="on">DE</button><button data-l="en">EN</button></div>
+      <div class="langsw"><button data-l="de" class="on">DE</button><button data-l="en">EN</button></div>
       <button class="linkbtn" onclick="toggleHowto(true)" data-i18n="app.howto">So funktioniert's</button>
       <span class="dot" id="connDot"></span><span class="conn" id="connLabel"></span>
       <span class="who"><input id="who" data-i18n-ph="app.who"></span>
       <span class="userchip"><span id="userEmail"></span> · <button class="linkbtn" id="logoutBtn" data-i18n="app.logout">Abmelden</button></span>
     </div>
   </div>
-  <div class="note" data-i18n="app.note"></div>
 
+  <div class="tabs" id="tabs">
+    <button data-v="utm" class="on" data-i18n="tab.utm">UTM &amp; Naming</button>
+    <button data-v="funnels" data-i18n="tab.funnels">Funnels</button>
+    <button data-v="conversions" data-i18n="tab.conversions">Conversions</button>
+  </div>
+
+  <!-- ═══════════ VIEW · UTM & NAMING ═══════════ -->
+  <div class="view on" id="view-utm">
+  <div class="note" data-i18n="app.note"></div>
   <div class="grid">
-    <!-- ───────── EINGABE ───────── -->
     <div class="card">
       <h2 data-i18n="s1.title">1 · Eingabe</h2>
-
       <label data-i18n="f.ptype">Plattform-Typ</label>
       <div class="seg" id="ptype">
         <button data-t="paid" class="on" data-i18n="seg.paid">Werbe (Paid)</button>
         <button data-t="email" data-i18n="seg.email">E-Mail (AC)</button>
         <button data-t="organic" data-i18n="seg.organic">Organisch</button>
       </div>
-
       <div class="row3">
         <div><label data-i18n="f.channel">Channel</label><select id="channel"></select></div>
         <div><label data-i18n="f.tag">Funktions-Tag</label><select id="tag"></select></div>
@@ -245,7 +298,6 @@
         <div><label data-i18n="f.datum">Datum <span class="hint">(YYYY-MM)</span></label><input id="datum" value="2026-06"></div>
         <div class="paid-only"><label data-i18n="f.variant">Variant <span class="hint">(opt.)</span></label><select id="variant"></select></div>
       </div>
-
       <div class="paid-only">
         <label data-i18n="f.adset">AdSet — Audience &amp; Targeting</label>
         <div class="row3">
@@ -254,7 +306,6 @@
           <select id="geo"></select>
         </div>
       </div>
-
       <div class="paid-only">
         <label data-i18n="f.ad">Ad — Asset</label>
         <div class="row3">
@@ -268,12 +319,12 @@
           <div></div>
         </div>
       </div>
-
       <div class="paid-only">
-        <label data-i18n="f.srcPaid">utm_source <span class="hint">(Werbe-Plattform)</span></label>
-        <select id="srcPaid"></select>
+        <div class="row2">
+          <div><label data-i18n="f.srcPaid">utm_source <span class="hint">(Werbe-Plattform)</span></label><select id="srcPaid"></select></div>
+          <div><label data-i18n="f.term">utm_term <span class="hint">(Keyword, opt. — Google Search)</span></label><input id="term" data-i18n-ph="f.termph"></div>
+        </div>
       </div>
-
       <div class="email-only">
         <label data-i18n="f.automation">Automation — Sequenz &amp; Audience</label>
         <div class="row2"><select id="seq"></select><select id="audslug"></select></div>
@@ -286,15 +337,15 @@
           <div><label style="margin-top:2px" data-i18n="f.audsuf">Audience-Suffix</label><select id="audsuf"></select></div>
           <div><label style="margin-top:2px" data-i18n="f.multilink">Multi-Link-Slug <span class="hint">(opt.)</span></label><input id="multilink" data-i18n-ph="f.multilinkph"></div>
         </div>
+        <label data-i18n="f.srcEmail">utm_source <span class="hint">(E-Mail-Typ, SOP-Liste)</span></label>
+        <select id="srcEmail"></select>
       </div>
-
       <div class="organic-only">
         <label data-i18n="f.srcOrg">utm_source <span class="hint">(organischer Touchpoint)</span></label>
         <select id="srcOrg"></select>
         <label data-i18n="f.orgcontent">Content-Slug</label>
         <input id="orgcontent" data-i18n-ph="f.orgcontentph">
       </div>
-
       <label data-i18n="f.url">Ziel-URL <span class="hint">(Landingpage)</span></label>
       <input id="url" value="https://tradeneon-academy.com/webinare/trading-mit-ki-lp/">
       <label data-i18n="f.anchor">Anker <span class="hint">(opt. · #… · kein Tracking-Param)</span></label>
@@ -303,18 +354,15 @@
       <input id="notes" data-i18n-ph="f.notesph">
     </div>
 
-    <!-- ───────── OUTPUT ───────── -->
     <div class="card">
       <h2><span data-i18n="s2.title">2 · Output</span> <span class="hint" id="modeLabel"></span></h2>
       <div id="out"></div>
       <div class="warn" id="warnSource"></div>
       <div class="warn" id="warnInternal" data-i18n="warn.internal"></div>
-
       <label style="margin-top:16px" data-i18n="o.params">Nur URL-Parameter</label>
       <div class="url out" id="paramsOut"></div>
       <label style="margin-top:10px" data-i18n="o.url">Volle UTM-URL</label>
       <div class="url out" id="urlOut"></div>
-
       <div class="btns">
         <button class="btn sm" onclick="copyText($('paramsOut').textContent)" data-i18n="o.copyParams">Parameter kopieren</button>
         <button class="btn sm" onclick="copyText($('urlOut').textContent)" data-i18n="o.copyUrl">Volle URL kopieren</button>
@@ -323,7 +371,6 @@
       <p class="hint" style="margin-top:8px" data-i18n="o.idhint"></p>
     </div>
 
-    <!-- ───────── REGISTRY ───────── -->
     <div class="card full">
       <h2><span data-i18n="s3.title">3 · Registry</span> <span class="pill" id="rowCount">…</span></h2>
       <div class="toolbar">
@@ -334,7 +381,7 @@
         <span style="flex:1"></span>
         <label style="margin:0 6px 0 0;color:#b9bee6" data-i18n="r.override">utm_id-Override</label>
         <input id="ctrOverride" type="number" style="width:120px" placeholder="60">
-        <button class="btn sm ghost" onclick="loadRows()" data-i18n="r.reload">↻ Neu laden</button>
+        <button class="btn sm ghost" onclick="loadAll()" data-i18n="r.reload">↻ Neu laden</button>
         <button class="btn sm ghost" onclick="exportCSV()">CSV ⬇</button>
         <label class="btn sm ghost" style="margin:0">CSV ⬆<input type="file" id="imp" accept=".csv" hidden></label>
       </div>
@@ -349,6 +396,84 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- ═══════════ VIEW · FUNNELS ═══════════ -->
+  <div class="view" id="view-funnels">
+    <div class="note" data-i18n="fn.note"></div>
+    <div class="fchips" id="fchips"></div>
+    <div class="card" id="fnDetail" style="display:none">
+      <h2><span data-i18n="fn.detail">Funnel</span> <span class="pill" id="fnStatusPill"></span></h2>
+      <div class="row3">
+        <div><label data-i18n="fn.name">Name</label><input id="fnName"></div>
+        <div><label data-i18n="fn.status">Status</label>
+          <select id="fnStatus">
+            <option value="draft">draft</option><option value="live">live</option><option value="archived">archived</option>
+          </select></div>
+        <div><label>Slug <span class="hint" data-i18n="fn.slughint">(fix nach Anlage)</span></label><input id="fnSlug" disabled></div>
+      </div>
+      <label data-i18n="fn.desc">Beschreibung</label>
+      <textarea id="fnDesc" rows="2"></textarea>
+      <label style="margin-top:16px" data-i18n="fn.steps">Schritte (der Weg)</label>
+      <div id="fnSteps"></div>
+      <div class="btns">
+        <button class="btn sm ghost" onclick="addStep()" data-i18n="fn.addstep">+ Schritt</button>
+        <span style="flex:1"></span>
+        <button class="btn sm danger" id="fnDelete" data-i18n="fn.delete">Funnel löschen</button>
+        <button class="btn sm" id="fnSave" data-i18n="fn.save">Funnel speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ VIEW · CONVERSIONS ═══════════ -->
+  <div class="view" id="view-conversions">
+    <div class="note" data-i18n="cv.note"></div>
+    <div class="card">
+      <h2><span data-i18n="cv.title">Conversions · Event-Katalog</span> <span class="pill" id="cvCount">…</span></h2>
+      <div style="overflow-x:auto">
+        <table id="cvTbl">
+          <thead><tr>
+            <th>Key</th><th data-i18n="cv.name">Name</th><th>GA4</th><th>Google Ads</th><th>Meta</th>
+            <th data-i18n="cv.notes">Notizen</th><th style="width:70px"></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="margin-top:20px" id="cvEditCard">
+      <h2 id="cvEditTitle" data-i18n="cv.new">Neue Conversion</h2>
+      <div class="row3">
+        <div><label>Key <span class="hint" data-i18n="cv.keyhint">(Slug, fix nach Anlage)</span></label><input id="cvKey"></div>
+        <div><label data-i18n="cv.name">Name</label><input id="cvName"></div>
+        <div><label data-i18n="cv.value">Wert (AED)</label><input id="cvValue" placeholder="60 / dynamic"></div>
+      </div>
+      <label data-i18n="cv.purpose">Zweck</label>
+      <input id="cvPurpose">
+      <label data-i18n="cv.path">Pfad (LP → … → Danke)</label>
+      <input id="cvPath">
+      <div class="row3">
+        <div><label>GA4-Event</label><input id="cvGa4"></div>
+        <div><label data-i18n="cv.status">GA4-Status</label><select id="cvGa4St"><option value="done">done</option><option value="open">open</option><option value="-">—</option></select></div>
+        <div></div>
+      </div>
+      <div class="row3">
+        <div><label>Ads Conversion-ID</label><input id="cvAdsId" placeholder="16719590969"></div>
+        <div><label>Ads Label</label><input id="cvAdsLabel"></div>
+        <div><label data-i18n="cv.status">Ads-Status</label><select id="cvAdsSt"><option value="done">done</option><option value="open">open</option><option value="-">—</option></select></div>
+      </div>
+      <div class="row3">
+        <div><label>Meta-Event</label><input id="cvMeta"></div>
+        <div><label data-i18n="cv.status">Meta-Status</label><select id="cvMetaSt"><option value="done">done</option><option value="open">open</option><option value="-">—</option></select></div>
+        <div></div>
+      </div>
+      <label data-i18n="cv.notes">Notizen</label>
+      <textarea id="cvNotes" rows="2"></textarea>
+      <div class="btns">
+        <button class="btn sm ghost" id="cvCancel" style="display:none" data-i18n="cv.cancel">Abbrechen</button>
+        <button class="btn sm" id="cvSave" data-i18n="cv.save">Speichern</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -356,7 +481,6 @@
 /* ═══════════════ Supabase-Config ═══════════════ */
 const SB_URL='https://tnrzhdjmmxpfmimdysdc.supabase.co';
 const SB_KEY='sb_publishable_U2Is6eXQrFnek43jCv5Z2g_oVqkg19E'; // publishable — browser-safe; Zugriff über Login (RLS: authenticated)
-const SB_TBL='utm_registry';
 const LS_SESS='tn_cockpit_session';
 
 /* ═══════════════ i18n ═══════════════ */
@@ -364,16 +488,20 @@ let LANG=localStorage.getItem('tn_cockpit_lang')||'de';
 const T={
  de:{
   'login.lead':'Marketing Cockpit — bitte anmelden.','login.email':'E-Mail','login.password':'Passwort','login.btn':'Anmelden',
-  'app.sub':'Modul „UTM &amp; Naming"','app.howto':"So funktioniert's",'app.logout':'Abmelden','app.who':'Dein Name (created_by)',
+  'app.sub':'UTM · Funnels · Conversions','app.howto':"So funktioniert's",'app.logout':'Abmelden','app.who':'Dein Name (created_by)',
   'app.note':'Eingabe → alle Naming-Ebenen + fertige UTM-URL, SOP-konform. Gespeichert wird in der <b>Marketing-Cockpit-Datenbank</b>; der <code>utm_id</code>-Zähler ist kollisionsfrei. CSV bleibt als Backup. Regelquelle: <code>SOP_Platform_Naming.md</code>.',
   'howto.close':'Schließen',
+  'tab.utm':'UTM &amp; Naming','tab.funnels':'Funnels','tab.conversions':'Conversions',
   's1.title':'1 · Eingabe','s2.title':'2 · Output','s3.title':'3 · Registry',
   'f.ptype':'Plattform-Typ','seg.paid':'Werbe (Paid)','seg.email':'E-Mail (AC)','seg.organic':'Organisch',
   'f.channel':'Channel','f.tag':'Funktions-Tag','f.funnel':'Funnel',
   'f.thema':'Thema <span class="hint">(Slug)</span>','f.datum':'Datum <span class="hint">(YYYY-MM)</span>','f.variant':'Variant <span class="hint">(opt.)</span>',
-  'f.adset':'AdSet — Audience &amp; Targeting','f.targeting':'Targeting-Slug','f.ad':'Ad — Asset','f.srcPaid':'utm_source <span class="hint">(Werbe-Plattform)</span>',
+  'f.adset':'AdSet — Audience &amp; Targeting','f.targeting':'Targeting-Slug','f.ad':'Ad — Asset',
+  'f.srcPaid':'utm_source <span class="hint">(Werbe-Plattform)</span>',
+  'f.term':'utm_term <span class="hint">(Keyword, opt. — Google Search)</span>','f.termph':'z.B. daytrading-ausbildung',
   'f.automation':'Automation — Sequenz &amp; Audience','f.lang':'Sprache','f.inhalt':'Inhalt-Slug','f.audsuf':'Audience-Suffix',
   'f.multilink':'Multi-Link-Slug <span class="hint">(opt.)</span>','f.multilinkph':'z.B. geschenk',
+  'f.srcEmail':'utm_source <span class="hint">(E-Mail-Typ, SOP-Liste)</span>',
   'f.srcOrg':'utm_source <span class="hint">(organischer Touchpoint)</span>','f.orgcontent':'Content-Slug','f.orgcontentph':'z.B. reel_hook1',
   'f.url':'Ziel-URL <span class="hint">(Landingpage)</span>','f.anchor':'Anker <span class="hint">(opt. · #… · kein Tracking-Param)</span>','f.anchorph':'z.B. anmeldung',
   'f.notes':'Notiz <span class="hint">(opt.)</span>','f.notesph':'frei — z.B. Kampagnen-Kontext',
@@ -384,25 +512,40 @@ const T={
   'r.override':'utm_id-Override','r.reload':'↻ Neu laden','r.type':'Typ','r.fullurl':'Volle URL',
   'row.campaign':'Campaign Name','row.adset':'AdSet (kein UTM)','row.automation':'Automation','row.adid':'Ad-Identifier','row.emailid':'Email-Identifier','row.idpending':'wird beim Speichern vergeben',
   'tbl.empty':'Noch keine Zeilen — links bauen und „In Datenbank speichern".',
+  'fn.note':'<b>Funnels = den Weg skizzieren.</b> Jeder Funnel ist eine Kette von Schritten (Anzeige → LP → Formular → E-Mail → Danke). Schritte können auf einen <b>Conversion-Messpunkt</b> (Modul 3) zeigen; der UTM-Chip zählt Registry-Links auf die Schritt-URL. Das Reporting (Zahlen je Schritt) liefert Looker Studio.',
+  'fn.detail':'Funnel','fn.name':'Name','fn.status':'Status','fn.slughint':'(fix nach Anlage)','fn.desc':'Beschreibung',
+  'fn.steps':'Schritte (der Weg)','fn.addstep':'+ Schritt','fn.delete':'Funnel löschen','fn.save':'Funnel speichern',
+  'fn.new':'+ Neuer Funnel','fn.saved':'Funnel gespeichert','fn.deleted':'Funnel gelöscht',
+  'fn.confirmdel':'Funnel „{name}" wirklich löschen?','fn.needname':'Bitte Namen eingeben','fn.nosteps':'Noch keine Schritte — „+ Schritt" klicken.',
+  'fn.step.title':'Titel','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.note':'Notiz (opt.)','fn.step.none':'— keine —',
+  'cv.note':'<b>Conversions = der Messpunkt-Katalog</b> (GA4 · Google Ads · Meta) — die Abstimm-Fläche mit dem Tracking: Was wird wo gemessen, und ist es verdrahtet? Quelle initial: Praba-Sheet Stand 2026-07. Werte sind Optimierungswerte in AED.',
+  'cv.title':'Conversions · Event-Katalog','cv.name':'Name','cv.notes':'Notizen','cv.new':'Neue Conversion','cv.edit':'Conversion bearbeiten',
+  'cv.keyhint':'(Slug, fix nach Anlage)','cv.value':'Wert (AED)','cv.purpose':'Zweck','cv.path':'Pfad (LP → … → Danke)','cv.status':'Status',
+  'cv.cancel':'Abbrechen','cv.save':'Speichern','cv.saved':'Conversion gespeichert','cv.deleted':'Conversion gelöscht',
+  'cv.needkey':'Key + Name nötig','cv.confirmdel':'Conversion „{key}" wirklich löschen?','cv.empty':'Noch keine Conversions.',
   'conn.load':'lade…','conn.ok':'DB verbunden','conn.err':'DB-Fehler',
   'ct.saved':'Gespeichert','ct.deleted':'Gelöscht','ct.updated':'Aktualisiert','ct.copied':'Kopiert','ct.copyfail':'Kopieren fehlgeschlagen',
   'ct.urlcopied':'— URL kopiert','ct.needSource':'Bitte utm_source wählen','ct.dup':'utm_id schon vergeben — Override ändern',
   'ct.loadfail':'Laden fehlgeschlagen','ct.savefail':'Speichern fehlgeschlagen','ct.delfail':'Löschen fehlgeschlagen','ct.updfail':'Update fehlgeschlagen',
   'ct.importfail':'Import fehlgeschlagen','ct.imported':'Zeile(n) importiert','ct.nonew':'Nichts Neues zu importieren','ct.noexport':'Keine Zeilen zum Export','ct.csvok':'CSV exportiert','ct.sessexp':'Sitzung abgelaufen — bitte neu anmelden',
-  'cf.del':'Zeile {id} wirklich löschen? Das lässt sich nicht rückgängig machen.','saving':'speichere…'
+  'cf.del':'Zeile {id} wirklich löschen? Das lässt sich nicht rückgängig machen.','saving':'speichere…','copy':'kopieren'
  },
  en:{
   'login.lead':'Marketing Cockpit — please log in.','login.email':'Email','login.password':'Password','login.btn':'Log in',
-  'app.sub':'Module “UTM &amp; Naming”','app.howto':'How it works','app.logout':'Log out','app.who':'Your name (created_by)',
+  'app.sub':'UTM · Funnels · Conversions','app.howto':'How it works','app.logout':'Log out','app.who':'Your name (created_by)',
   'app.note':'Input → all naming levels + finished UTM URL, SOP-compliant. Saved to the <b>Marketing Cockpit database</b>; the <code>utm_id</code> counter is collision-free. CSV stays as backup. Rule source: <code>SOP_Platform_Naming.md</code>.',
   'howto.close':'Close',
+  'tab.utm':'UTM &amp; Naming','tab.funnels':'Funnels','tab.conversions':'Conversions',
   's1.title':'1 · Input','s2.title':'2 · Output','s3.title':'3 · Registry',
   'f.ptype':'Platform type','seg.paid':'Advertising (Paid)','seg.email':'Email (AC)','seg.organic':'Organic',
   'f.channel':'Channel','f.tag':'Function tag','f.funnel':'Funnel',
   'f.thema':'Topic <span class="hint">(slug)</span>','f.datum':'Date <span class="hint">(YYYY-MM)</span>','f.variant':'Variant <span class="hint">(opt.)</span>',
-  'f.adset':'Ad set — audience &amp; targeting','f.targeting':'Targeting slug','f.ad':'Ad — asset','f.srcPaid':'utm_source <span class="hint">(ad platform)</span>',
+  'f.adset':'Ad set — audience &amp; targeting','f.targeting':'Targeting slug','f.ad':'Ad — asset',
+  'f.srcPaid':'utm_source <span class="hint">(ad platform)</span>',
+  'f.term':'utm_term <span class="hint">(keyword, opt. — Google Search)</span>','f.termph':'e.g. day-trading-course',
   'f.automation':'Automation — sequence &amp; audience','f.lang':'Language','f.inhalt':'Content slug','f.audsuf':'Audience suffix',
   'f.multilink':'Multi-link slug <span class="hint">(opt.)</span>','f.multilinkph':'e.g. gift',
+  'f.srcEmail':'utm_source <span class="hint">(email type, SOP list)</span>',
   'f.srcOrg':'utm_source <span class="hint">(organic touchpoint)</span>','f.orgcontent':'Content slug','f.orgcontentph':'e.g. reel_hook1',
   'f.url':'Target URL <span class="hint">(landing page)</span>','f.anchor':'Anchor <span class="hint">(opt. · #… · not a tracking param)</span>','f.anchorph':'e.g. signup',
   'f.notes':'Note <span class="hint">(opt.)</span>','f.notesph':'free — e.g. campaign context',
@@ -413,12 +556,23 @@ const T={
   'r.override':'utm_id override','r.reload':'↻ Reload','r.type':'Type','r.fullurl':'Full URL',
   'row.campaign':'Campaign name','row.adset':'Ad set (no UTM)','row.automation':'Automation','row.adid':'Ad identifier','row.emailid':'Email identifier','row.idpending':'assigned on save',
   'tbl.empty':'No rows yet — build on the left and “Save to database”.',
+  'fn.note':'<b>Funnels = sketch the path.</b> Each funnel is a chain of steps (ad → LP → form → email → thank-you). Steps can point at a <b>conversion measuring point</b> (module 3); the UTM chip counts registry links targeting the step URL. Reporting (numbers per step) lives in Looker Studio.',
+  'fn.detail':'Funnel','fn.name':'Name','fn.status':'Status','fn.slughint':'(fixed after creation)','fn.desc':'Description',
+  'fn.steps':'Steps (the path)','fn.addstep':'+ Step','fn.delete':'Delete funnel','fn.save':'Save funnel',
+  'fn.new':'+ New funnel','fn.saved':'Funnel saved','fn.deleted':'Funnel deleted',
+  'fn.confirmdel':'Really delete funnel “{name}”?','fn.needname':'Please enter a name','fn.nosteps':'No steps yet — click “+ Step”.',
+  'fn.step.title':'Title','fn.step.url':'URL (opt.)','fn.step.conv':'Conversion (opt.)','fn.step.note':'Note (opt.)','fn.step.none':'— none —',
+  'cv.note':'<b>Conversions = the measuring-point catalog</b> (GA4 · Google Ads · Meta) — the alignment surface with tracking: what is measured where, and is it wired? Initial source: Praba sheet as of 2026-07. Values are optimization values in AED.',
+  'cv.title':'Conversions · Event catalog','cv.name':'Name','cv.notes':'Notes','cv.new':'New conversion','cv.edit':'Edit conversion',
+  'cv.keyhint':'(slug, fixed after creation)','cv.value':'Value (AED)','cv.purpose':'Purpose','cv.path':'Path (LP → … → thank-you)','cv.status':'Status',
+  'cv.cancel':'Cancel','cv.save':'Save','cv.saved':'Conversion saved','cv.deleted':'Conversion deleted',
+  'cv.needkey':'Key + name required','cv.confirmdel':'Really delete conversion “{key}”?','cv.empty':'No conversions yet.',
   'conn.load':'connecting…','conn.ok':'DB connected','conn.err':'DB error',
   'ct.saved':'Saved','ct.deleted':'Deleted','ct.updated':'Updated','ct.copied':'Copied','ct.copyfail':'Copy failed',
   'ct.urlcopied':'— URL copied','ct.needSource':'Please pick a utm_source','ct.dup':'utm_id already taken — change override',
   'ct.loadfail':'Load failed','ct.savefail':'Save failed','ct.delfail':'Delete failed','ct.updfail':'Update failed',
   'ct.importfail':'Import failed','ct.imported':'row(s) imported','ct.nonew':'Nothing new to import','ct.noexport':'No rows to export','ct.csvok':'CSV exported','ct.sessexp':'Session expired — please log in again',
-  'cf.del':'Really delete row {id}? This cannot be undone.','saving':'saving…'
+  'cf.del':'Really delete row {id}? This cannot be undone.','saving':'saving…','copy':'copy'
  }
 };
 function t(k,vars){let s=(T[LANG]&&T[LANG][k]!=null)?T[LANG][k]:(T.de[k]!=null?T.de[k]:k);if(vars)for(const key in vars)s=s.split('{'+key+'}').join(vars[key]);return s}
@@ -431,7 +585,7 @@ function applyLang(){
   $('howtoDE').style.display=LANG==='de'?'':'none';
   $('howtoEN').style.display=LANG==='en'?'':'none';
   setConn(connState);
-  if(authed){render();refreshFilters();renderTable();}
+  if(authed){render();refreshFilters();renderTable();renderFunnels();renderConversions();}
 }
 function setLang(l){LANG=l;localStorage.setItem('tn_cockpit_lang',l);applyLang();}
 
@@ -448,6 +602,9 @@ const OPT = {
   lang:[['DE','DE'],['EN','EN']],
   srcPaid:[['meta_ads','meta_ads'],['facebook_ads','facebook_ads'],['instagram_ads','instagram_ads'],['google','google'],
            ['youtube_ads','youtube_ads'],['bing_ads','bing_ads'],['tiktok_ads','tiktok_ads'],['linkedin_ads','linkedin_ads']],
+  srcEmail:[['email_campaign','email_campaign'],['webinar_campaign','webinar_campaign'],['newsletter','newsletter'],
+            ['welcome_email','welcome_email'],['confirmation_email','confirmation_email'],['sales_campaign','sales_campaign'],
+            ['onboarding_email','onboarding_email'],['nurture_email','nurture_email'],['crm_flow','crm_flow']],
   srcOrg:[['facebook','facebook'],['instagram','instagram'],['youtube','youtube'],['tiktok','tiktok'],['linkedin','linkedin'],
           ['pinterest','pinterest'],['reddit','reddit'],['x','x'],['blog','blog'],['podcast','podcast'],['homepage','homepage'],
           ['qr_code','qr_code'],['event','event'],['affiliate_partner','affiliate_partner']],
@@ -462,23 +619,27 @@ const MEDIUM = {
   meta_ads:'paid_social',facebook_ads:'paid_social',instagram_ads:'paid_social',tiktok_ads:'paid_social',linkedin_ads:'paid_social',
   google:'cpc',bing_ads:'cpc',youtube_ads:'video',facebook:'social',instagram:'social',linkedin:'social',tiktok:'social',
   pinterest:'social',reddit:'social',x:'social',youtube:'social',qr_code:'offline',event:'offline',affiliate_partner:'referral',
-  partner_name:'referral',blog:'referral',podcast:'audio',homepage:'internal'
+  partner_name:'referral',blog:'referral',podcast:'audio',homepage:'internal',
+  email_campaign:'email',webinar_campaign:'email',newsletter:'email',welcome_email:'email',confirmation_email:'email',
+  sales_campaign:'email',onboarding_email:'email',nurture_email:'email',crm_flow:'email'
 };
-const KNOWN_SOURCES=new Set([...OPT.srcPaid.map(x=>x[0]),...OPT.srcOrg.map(x=>x[0]),'email_campaign']);
-const KNOWN_MEDIUMS=new Set([...Object.values(MEDIUM),'email']);
+const KNOWN_SOURCES=new Set([...OPT.srcPaid.map(x=>x[0]),...OPT.srcOrg.map(x=>x[0]),...OPT.srcEmail.map(x=>x[0])]);
+const KNOWN_MEDIUMS=new Set([...Object.values(MEDIUM)]);
+const STEP_TYPES=['ad','lp','form','email','page','call','purchase'];
 
 /* ─────────────── Helpers ─────────────── */
 const $=id=>document.getElementById(id);
 const kebab=s=>(s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 const snake=s=>(s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
 const join_=(...a)=>a.filter(x=>x!==''&&x!=null).join('_');
-const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fmtId=n=>'tradeneon'+String(parseInt(n,10)).padStart(5,'0');
+const normUrl=u=>(u||'').trim().replace(/\/+$/,'').replace(/^https?:\/\//,'');
 function fill(id,opts){const s=$(id);if(!s)return;s.innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}
 Object.keys(OPT).forEach(k=>fill(k,OPT[k]));
 
 let mode='paid';
-const state={rows:[]};
+const state={rows:[],funnels:[],convs:[],editF:null,editCvId:null};
 function whoami(){return ($('who').value||'').trim()}
 
 /* ═══════════════ Auth (Supabase) ═══════════════ */
@@ -512,7 +673,7 @@ function onAuthed(){
   $('loginOverlay').classList.add('hidden');
   $('app').style.filter='';$('app').style.opacity='';$('app').style.pointerEvents='';
   $('userEmail').textContent=session&&session.email?session.email:'';
-  loadRows();render();
+  loadAll();render();
 }
 function showLogin(){
   authed=false;
@@ -530,8 +691,21 @@ async function sb(path,opts={},_retried){
   if(!r.ok){let m;try{const j=await r.json();m=j.message||j.hint||JSON.stringify(j)}catch(e){m=await r.text()}throw new Error(`${r.status} · ${m}`)}
   return r.status===204?null:r.json();
 }
+async function loadAll(){
+  try{
+    setConn('load');
+    const [rows,funnels,convs]=await Promise.all([
+      sb('utm_registry?select=*&order=created_at.desc'),
+      sb('funnels?select=*&order=id.asc').catch(()=>[]),
+      sb('conversions?select=*&order=id.asc').catch(()=>[])
+    ]);
+    state.rows=rows||[];state.funnels=funnels||[];state.convs=convs||[];
+    setConn('ok');
+    refreshFilters();renderTable();renderFunnels();renderConversions();
+  }catch(e){setConn('err');toast(t('ct.loadfail')+': '+e.message,true)}
+}
 
-/* ─────────────── Ableitung (Kern) — Output-Keys = DB-Spalten ─────────────── */
+/* ─────────────── Modul 1 · Ableitung ─────────────── */
 function derive(){
   const channel=$('channel').value, tag=$('tag').value, funnel=$('funnel').value,
         thema=$('thema').value.trim(), datum=$('datum').value.trim();
@@ -539,7 +713,7 @@ function derive(){
   const utm_campaign=kebab([channel,funnel,thema,datum].join('-'));
   let o={platform_type:mode,channel,function_tag:tag,funnel_type:funnel,topic_slug:thema,period:datum,variant:'',
          campaign_name:campaignBase,utm_campaign,adset_or_automation:'',asset_identifier:'',
-         utm_source:'',utm_medium:'',utm_content:'',audience_suffix:'',
+         utm_source:'',utm_medium:'',utm_content:'',utm_term:'',audience_suffix:'',
          target_url:$('url').value.trim(),anchor:$('anchor').value.trim().replace(/^#/,''),notes:$('notes').value.trim()};
   if(mode==='paid'){
     const variant=$('variant').value; o.variant=variant;
@@ -549,12 +723,13 @@ function derive(){
     const hcta='H'+$('hook').value+'_CTA'+$('cta').value;
     o.asset_identifier=join_('ADS',datum,channel,tag,code,thema,$('lang').value,'H'+$('hook').value,'CTA'+$('cta').value);
     o.utm_source=$('srcPaid').value; o.utm_medium=MEDIUM[o.utm_source]||''; o.utm_content=snake(code+'_'+hcta);
+    o.utm_term=snake($('term').value.trim());
   }else if(mode==='email'){
     o.adset_or_automation=join_(campaignBase,$('seq').value,$('audslug').value);
     const inhalt=$('inhalt').value.trim(), enr=$('enr').value, suf=$('audsuf').value;
     o.audience_suffix=suf?snake(suf):'';
     o.asset_identifier=join_('EMAIL',datum,channel,tag,funnel,thema,$('langE').value,'E'+enr,inhalt)+(suf?'_'+suf:'');
-    o.utm_source='email_campaign'; o.utm_medium='email';
+    o.utm_source=$('srcEmail').value; o.utm_medium='email';
     let c='email'+enr+'_'+snake(inhalt); const ml=$('multilink').value.trim();
     if(ml)c+='_'+snake(ml); if(suf)c+='_'+snake(suf); o.utm_content=c;
   }else{
@@ -569,6 +744,7 @@ function buildParams(o,id){
   if(o.utm_medium)p.push('utm_medium='+o.utm_medium);
   if(o.utm_campaign)p.push('utm_campaign='+o.utm_campaign);
   if(o.utm_content)p.push('utm_content='+o.utm_content);
+  if(o.utm_term)p.push('utm_term='+o.utm_term);
   p.push('utm_id='+(id||'(auto)'));
   return '?'+p.join('&');
 }
@@ -586,11 +762,9 @@ function validate(o){
   else w.classList.remove('show');
   $('warnInternal').classList.toggle('show',/tradeneon(-academy)?\.com/.test(o.target_url||''));
 }
-
-/* ─────────────── Render Preview ─────────────── */
 function orow(k,v,copyable){
   const val=`<span class="v ${v?'':'empty'}">${esc(v)||'—'}</span>`;
-  const btn=copyable&&v?`<button class="minicopy" onclick="copyText(${JSON.stringify(String(v))})">${t('ct.copied').replace(/.*/,LANG==='de'?'kopieren':'copy')}</button>`:'';
+  const btn=copyable&&v?`<button class="minicopy" onclick="copyText(${JSON.stringify(String(v))})">${t('copy')}</button>`:'';
   return `<div class="outrow"><div class="kv"><span class="k">${k}</span>${val}</div>${btn}</div>`;
 }
 function render(){
@@ -602,19 +776,16 @@ function render(){
   if(mode!=='organic')h+=orow(mode==='email'?t('row.automation'):t('row.adset'),o.adset_or_automation,true);
   if(mode!=='organic')h+=orow(mode==='email'?t('row.emailid'):t('row.adid'),o.asset_identifier,true);
   h+=orow('utm_source',o.utm_source)+orow('utm_medium',o.utm_medium)+orow('utm_campaign',o.utm_campaign)
-    +orow('utm_content',o.utm_content)+orow('utm_id',previewId||t('row.idpending'));
+    +orow('utm_content',o.utm_content);
+  if(o.utm_term)h+=orow('utm_term',o.utm_term);
+  h+=orow('utm_id',previewId||t('row.idpending'));
   $('out').innerHTML=h;
   $('paramsOut').textContent=buildParams(o,previewId);
   $('urlOut').textContent=buildUrl(o,previewId);
   validate(o);
 }
 
-/* ─────────────── Registry (Supabase) ─────────────── */
-async function loadRows(){
-  try{setConn('load');const rows=await sb(`${SB_TBL}?select=*&order=created_at.desc`);
-    state.rows=rows||[];setConn('ok');refreshFilters();renderTable();
-  }catch(e){setConn('err');toast(t('ct.loadfail')+': '+e.message,true)}
-}
+/* ─────────────── Modul 1 · Registry ─────────────── */
 function refreshFilters(){
   const srcs=[...new Set(state.rows.map(r=>r.utm_source).filter(Boolean))].sort();
   const funs=[...new Set(state.rows.map(r=>r.funnel_type).filter(Boolean))].sort();
@@ -649,12 +820,12 @@ async function save(){
   btn.disabled=true; const prev=btn.innerHTML; btn.innerHTML='<span class="spin"></span>'+t('saving');
   try{
     const payload={...o}; if(ov)payload.utm_id=fmtId(ov);
-    const ins=await sb(`${SB_TBL}`,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
+    const ins=await sb('utm_registry',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
     const id=ins[0].utm_id;
     const full_url=buildUrl(o,id);
-    await sb(`${SB_TBL}?utm_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify({full_url})});
+    await sb(`utm_registry?utm_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify({full_url})});
     if(ov)$('ctrOverride').value='';
-    await loadRows();
+    await loadAll();
     await copyText(full_url,true);
     toast(t('ct.saved')+': '+id+' '+t('ct.urlcopied'));
   }catch(e){
@@ -664,10 +835,9 @@ async function save(){
 }
 async function delRow(id){
   if(!confirm(t('cf.del',{id})))return;
-  try{await sb(`${SB_TBL}?utm_id=eq.${encodeURIComponent(id)}`,{method:'DELETE'});await loadRows();toast(t('ct.deleted')+': '+id)}
+  try{await sb(`utm_registry?utm_id=eq.${encodeURIComponent(id)}`,{method:'DELETE'});await loadAll();toast(t('ct.deleted')+': '+id)}
   catch(e){toast(t('ct.delfail')+': '+e.message,true)}
 }
-/* Inline-Edit */
 const EDITABLE=['campaign_name','asset_identifier','utm_source','utm_content','full_url'];
 let editing=null;
 function startEdit(id){
@@ -683,12 +853,11 @@ function cancelEdit(){editing=null;renderTable()}
 async function commitEdit(id){
   const tr=$('tbl').querySelector(`tr[data-id="${CSS.escape(id)}"]`);if(!tr){editing=null;return}
   const patch={};tr.querySelectorAll('td[data-col]').forEach(td=>{if(EDITABLE.includes(td.dataset.col)){let v=td.textContent.trim();patch[td.dataset.col]=v==='—'?'':v}});
-  try{await sb(`${SB_TBL}?utm_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify(patch)});editing=null;await loadRows();toast(t('ct.updated')+': '+id)}
+  try{await sb(`utm_registry?utm_id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:JSON.stringify(patch)});editing=null;await loadAll();toast(t('ct.updated')+': '+id)}
   catch(e){toast(t('ct.updfail')+': '+e.message,true)}
 }
-/* CSV */
 const COLS=['utm_id','platform_type','channel','function_tag','funnel_type','topic_slug','period','variant','campaign_name',
-  'adset_or_automation','asset_identifier','utm_source','utm_medium','utm_campaign','utm_content','audience_suffix',
+  'adset_or_automation','asset_identifier','utm_source','utm_medium','utm_campaign','utm_content','utm_term','audience_suffix',
   'target_url','anchor','full_url','notes','created_by','created_at'];
 function exportCSV(){
   if(!state.rows.length){toast(t('ct.noexport'),true);return}
@@ -704,7 +873,7 @@ async function importCSV(file){
     head.forEach((h,j)=>{if(COLS.includes(h)&&h!=='created_at')o[h]=cells[j]||null});
     if(!o.utm_id||existing.has(o.utm_id))continue; batch.push(o);}
   if(!batch.length){toast(t('ct.nonew'));return}
-  try{await sb(`${SB_TBL}`,{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(batch)});await loadRows();toast(batch.length+' '+t('ct.imported'))}
+  try{await sb('utm_registry',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(batch)});await loadAll();toast(batch.length+' '+t('ct.imported'))}
   catch(e){toast(t('ct.importfail')+': '+e.message,true)}
 }
 function parseCsvLine(line){const out=[];let cur='',q=false;
@@ -712,6 +881,157 @@ function parseCsvLine(line){const out=[];let cur='',q=false;
     if(q){if(c==='"'){if(line[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
     else{if(c==='"')q=true;else if(c===','){out.push(cur);cur=''}else cur+=c}}
   out.push(cur);return out;}
+
+/* ─────────────── Modul 2 · Funnels ─────────────── */
+function renderFunnels(){
+  const chips=state.funnels.map(f=>`<button class="fchip${state.editF&&state.editF.id===f.id?' on':''}" onclick="selectFunnel(${f.id})">
+    ${esc(f.name)} <span class="n">${(f.steps||[]).length}</span></button>`).join('');
+  $('fchips').innerHTML=chips+`<button class="fchip${state.editF&&state.editF.id==null?' on':''}" onclick="newFunnel()">${t('fn.new')}</button>`;
+  renderFunnelDetail();
+}
+function selectFunnel(id){
+  const f=state.funnels.find(x=>x.id===id);if(!f)return;
+  state.editF=JSON.parse(JSON.stringify(f));
+  if(!Array.isArray(state.editF.steps))state.editF.steps=[];
+  renderFunnels();
+}
+function newFunnel(){
+  state.editF={id:null,slug:'',name:'',description:'',status:'draft',steps:[]};
+  renderFunnels();
+}
+function renderFunnelDetail(){
+  const f=state.editF;
+  const card=$('fnDetail');
+  if(!f){card.style.display='none';return}
+  card.style.display='';
+  $('fnName').value=f.name||'';$('fnStatus').value=f.status||'draft';
+  $('fnSlug').value=f.slug||'(auto)';$('fnDesc').value=f.description||'';
+  $('fnStatusPill').textContent=f.id==null?(LANG==='de'?'neu':'new'):('#'+f.id);
+  const convOpts=k=>`<option value="">${t('fn.step.none')}</option>`+state.convs.map(c=>`<option value="${esc(c.key)}"${c.key===k?' selected':''}>${esc(c.key)}</option>`).join('');
+  const utmCount=url=>{if(!url)return 0;const n=normUrl(url);return state.rows.filter(r=>normUrl(r.target_url)===n).length};
+  $('fnSteps').innerHTML=(f.steps||[]).map((s,i)=>{
+    const cv=state.convs.find(c=>c.key===s.conversion_key);
+    const stDot=cv?`<span class="st ${cv.ga4_status==='done'?'done':cv.ga4_status==='open'?'open':'none'}" title="GA4 ${esc(cv.ga4_status)}">${cv.ga4_status==='done'?'✓ GA4':'GA4 '+esc(cv.ga4_status)}</span>`:'';
+    const uc=utmCount(s.url);
+    const ucChip=s.url?`<span class="pill" title="Registry-Links auf diese URL">${uc} UTM</span>`:'';
+    return `<div class="step" data-idx="${i}">
+      <div class="shead">
+        <span class="ttype ${esc(s.type||'page')}">${esc(s.type||'page')}</span>
+        <select data-f="type">${STEP_TYPES.map(x=>`<option${x===(s.type||'page')?' selected':''}>${x}</option>`).join('')}</select>
+        <div class="schips">${stDot}${ucChip}
+          <div class="sctrl">
+            <button onclick="moveStep(${i},-1)" title="up">↑</button>
+            <button onclick="moveStep(${i},1)" title="down">↓</button>
+            <button onclick="delStep(${i})" title="remove" style="color:var(--tn-pink)">✕</button>
+          </div>
+        </div>
+      </div>
+      <div class="sgrid">
+        <input data-f="title" placeholder="${t('fn.step.title')}" value="${esc(s.title)}">
+        <input data-f="url" placeholder="${t('fn.step.url')}" value="${esc(s.url)}">
+        <select data-f="conversion_key">${convOpts(s.conversion_key)}</select>
+        <input data-f="note" placeholder="${t('fn.step.note')}" value="${esc(s.note)}">
+      </div>
+    </div>${i<f.steps.length-1?'<div class="connector">↓</div>':''}`;
+  }).join('')||`<p class="hint" style="margin:8px 0">${t('fn.nosteps')}</p>`;
+}
+function addStep(){if(!state.editF)return;state.editF.steps.push({type:'page',title:'',url:'',conversion_key:'',note:''});renderFunnelDetail()}
+function delStep(i){state.editF.steps.splice(i,1);renderFunnelDetail()}
+function moveStep(i,d){const s=state.editF.steps;const j=i+d;if(j<0||j>=s.length)return;[s[i],s[j]]=[s[j],s[i]];renderFunnelDetail()}
+function syncFunnelInputs(){
+  const f=state.editF;if(!f)return;
+  f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;
+  $('fnSteps').querySelectorAll('.step').forEach(box=>{
+    const i=parseInt(box.dataset.idx,10);
+    box.querySelectorAll('[data-f]').forEach(el=>{f.steps[i][el.dataset.f]=el.value});
+  });
+}
+async function saveFunnel(){
+  syncFunnelInputs();
+  const f=state.editF;if(!f)return;
+  if(!f.name.trim()){toast(t('fn.needname'),true);return}
+  const body={name:f.name.trim(),description:f.description||'',status:f.status||'draft',steps:f.steps,created_by:whoami()||null};
+  try{
+    if(f.id==null){
+      body.slug=kebab(f.name)||('funnel-'+(state.funnels.length+1));
+      const ins=await sb('funnels',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});
+      state.editF.id=ins[0].id;state.editF.slug=ins[0].slug;
+    }else{
+      await sb(`funnels?id=eq.${f.id}`,{method:'PATCH',body:JSON.stringify(body)});
+    }
+    await loadAll();
+    const saved=state.funnels.find(x=>x.id===state.editF.id);
+    if(saved){state.editF=JSON.parse(JSON.stringify(saved));renderFunnels()}
+    toast(t('fn.saved'));
+  }catch(e){toast(t('ct.savefail')+': '+e.message,true)}
+}
+async function deleteFunnel(){
+  const f=state.editF;if(!f)return;
+  if(f.id==null){state.editF=null;renderFunnels();return}
+  if(!confirm(t('fn.confirmdel',{name:f.name})))return;
+  try{await sb(`funnels?id=eq.${f.id}`,{method:'DELETE'});state.editF=null;await loadAll();toast(t('fn.deleted'))}
+  catch(e){toast(t('ct.delfail')+': '+e.message,true)}
+}
+
+/* ─────────────── Modul 3 · Conversions ─────────────── */
+function stChip(s){return `<span class="st ${s==='done'?'done':s==='open'?'open':'none'}">${s==='done'?'✓':s==='open'?(LANG==='de'?'offen':'open'):'—'}</span>`}
+function renderConversions(){
+  $('cvTbl').querySelector('tbody').innerHTML=state.convs.map(c=>`<tr>
+    <td class="mono">${esc(c.key)}</td>
+    <td>${esc(c.name)}<div class="hint">${esc(c.path||'')}</div></td>
+    <td><span class="mono">${esc(c.ga4_event)||'—'}</span> ${stChip(c.ga4_status)}</td>
+    <td><span class="mono">${esc(c.ads_label)||'—'}</span>${c.ads_value?' · '+esc(c.ads_value):''} ${stChip(c.ads_status)}</td>
+    <td><span class="mono">${esc(c.meta_event)||'—'}</span> ${stChip(c.meta_status)}</td>
+    <td style="max-width:220px">${esc(c.notes)||''}</td>
+    <td>
+      <span class="act edit" onclick="editConv(${c.id})">✎</span>
+      <span class="act del" onclick="delConv(${c.id})">✕</span>
+    </td></tr>`).join('')||`<tr><td colspan="7" style="color:#5b6090;padding:20px">${t('cv.empty')}</td></tr>`;
+  $('cvCount').textContent=state.convs.length;
+}
+function editConv(id){
+  const c=state.convs.find(x=>x.id===id);if(!c)return;
+  state.editCvId=id;
+  $('cvEditTitle').textContent=t('cv.edit')+' · '+c.key;
+  $('cvKey').value=c.key;$('cvKey').disabled=true;
+  $('cvName').value=c.name||'';$('cvValue').value=c.ads_value||'';
+  $('cvPurpose').value=c.purpose||'';$('cvPath').value=c.path||'';
+  $('cvGa4').value=c.ga4_event||'';$('cvGa4St').value=c.ga4_status||'open';
+  $('cvAdsId').value=c.ads_conversion_id||'';$('cvAdsLabel').value=c.ads_label||'';$('cvAdsSt').value=c.ads_status||'open';
+  $('cvMeta').value=c.meta_event||'';$('cvMetaSt').value=c.meta_status||'open';
+  $('cvNotes').value=c.notes||'';
+  $('cvCancel').style.display='';
+  $('cvEditCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function resetConvForm(){
+  state.editCvId=null;
+  $('cvEditTitle').textContent=t('cv.new');
+  $('cvKey').value='';$('cvKey').disabled=false;
+  ['cvName','cvValue','cvPurpose','cvPath','cvGa4','cvAdsId','cvAdsLabel','cvMeta','cvNotes'].forEach(id=>$(id).value='');
+  $('cvGa4St').value='open';$('cvAdsSt').value='open';$('cvMetaSt').value='open';
+  $('cvCancel').style.display='none';
+}
+async function saveConv(){
+  const key=snake($('cvKey').value.trim()), name=$('cvName').value.trim();
+  if((!key&&state.editCvId==null)||!name){toast(t('cv.needkey'),true);return}
+  const body={name,purpose:$('cvPurpose').value.trim(),path:$('cvPath').value.trim(),
+    ga4_event:$('cvGa4').value.trim(),ga4_status:$('cvGa4St').value,
+    ads_conversion_id:$('cvAdsId').value.trim(),ads_label:$('cvAdsLabel').value.trim(),
+    ads_value:$('cvValue').value.trim(),ads_status:$('cvAdsSt').value,
+    meta_event:$('cvMeta').value.trim(),meta_status:$('cvMetaSt').value,
+    notes:$('cvNotes').value.trim(),created_by:whoami()||null};
+  try{
+    if(state.editCvId==null){body.key=key;await sb('conversions',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(body)})}
+    else await sb(`conversions?id=eq.${state.editCvId}`,{method:'PATCH',body:JSON.stringify(body)});
+    resetConvForm();await loadAll();toast(t('cv.saved'));
+  }catch(e){toast(t('ct.savefail')+': '+e.message,true)}
+}
+async function delConv(id){
+  const c=state.convs.find(x=>x.id===id);if(!c)return;
+  if(!confirm(t('cv.confirmdel',{key:c.key})))return;
+  try{await sb(`conversions?id=eq.${id}`,{method:'DELETE'});if(state.editCvId===id)resetConvForm();await loadAll();toast(t('cv.deleted'))}
+  catch(e){toast(t('ct.delfail')+': '+e.message,true)}
+}
 
 /* ─────────────── Utils ─────────────── */
 async function copyText(txt,silent){
@@ -733,17 +1053,26 @@ function setMode(t2){mode=t2;
   document.querySelectorAll('.email-only').forEach(e=>e.style.display=t2==='email'?'':'none');
   document.querySelectorAll('.organic-only').forEach(e=>e.style.display=t2==='organic'?'':'none');
   render();}
+function switchView(v){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='view-'+v));
+}
 
 /* ─────────────── Init ─────────────── */
 document.querySelectorAll('.langsw').forEach(sw=>sw.querySelectorAll('button').forEach(b=>b.onclick=()=>setLang(b.dataset.l)));
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>switchView(b.dataset.v));
 document.querySelectorAll('#ptype button').forEach(b=>b.onclick=()=>setMode(b.dataset.t));
-document.querySelectorAll('.card input,.card select').forEach(el=>el.addEventListener('input',render));
+document.querySelectorAll('#view-utm .card input,#view-utm .card select').forEach(el=>el.addEventListener('input',render));
 $('ctrOverride').addEventListener('input',render);
 ['fYear','fCampaign','fSource','fFunnel'].forEach(id=>$(id).addEventListener('input',renderTable));
 $('who').value=localStorage.getItem('tn_cockpit_who')||'';
 $('who').addEventListener('input',()=>localStorage.setItem('tn_cockpit_who',$('who').value));
 $('saveBtn').onclick=save;
 $('imp').onchange=e=>{if(e.target.files[0])importCSV(e.target.files[0]);e.target.value=''};
+$('fnSave').onclick=saveFunnel;
+$('fnDelete').onclick=deleteFunnel;
+$('cvSave').onclick=saveConv;
+$('cvCancel').onclick=resetConvForm;
 $('logoutBtn').onclick=()=>{clearSession();showLogin()};
 $('loginBtn').onclick=doLogin;
 $('pwToggle').onclick=()=>{const i=$('loginPw');i.type=i.type==='password'?'text':'password';$('pwToggle').textContent=i.type==='password'?'👁':'🙈'};
