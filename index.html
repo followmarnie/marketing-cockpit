@@ -278,6 +278,42 @@
   .goal-panel{margin-top:10px;background:rgba(23,248,224,.05);border:1px solid rgba(23,248,224,.22);border-radius:12px;padding:12px}
   .derivefrom{margin:10px 0 2px;padding:10px 12px;background:rgba(102,102,255,.06);border:1px solid rgba(102,102,255,.18);border-radius:12px}
   .derivefrom label{margin-top:0}
+  .dctx{margin-top:10px;padding:10px 12px;background:rgba(23,248,224,.05);border:1px solid rgba(23,248,224,.2);border-radius:11px}
+  .dctx-h{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tn-teal);font-weight:700;margin-bottom:7px}
+  .dctx-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px;color:#e6eaff}
+  .dctx-sibs{margin-top:8px;font-size:12px;color:#9aa1cc;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .dctx-slab{color:#8e94c0;margin-right:4px}
+  .ad-pill{border:1px solid rgba(102,102,255,.28);background:rgba(102,102,255,.1);border-radius:999px;padding:3px 8px;font-size:11px;color:#cfd3ff;cursor:help}
+  /* Campaign Structure Map · Baum */
+  .sm-badge{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;border:1px solid var(--tn-border);color:#aeb5df;background:rgba(255,255,255,.05);flex:none;text-transform:uppercase;letter-spacing:.03em}
+  .sm-badge.camp{color:#7df3e6;border-color:rgba(23,248,224,.3);background:rgba(23,248,224,.07)}
+  .sm-badge.adset{color:#bfc5ff;border-color:rgba(102,102,255,.32);background:rgba(102,102,255,.1)}
+  .sm-badge.email{color:#d9e08c;border-color:rgba(237,251,140,.28);background:rgba(237,251,140,.08)}
+  .sm-badge.paid{color:#bfc5ff;border-color:rgba(102,102,255,.3);background:rgba(102,102,255,.08)}
+  .sm-camp{border:1px solid var(--tn-border);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--tn-surf-1)}
+  .sm-c-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+  .sm-c-head:hover{background:var(--tn-surf-2)}
+  .sm-c-head b{font-size:15px;color:#fff}
+  .sm-caret{color:#8e94c0;font-size:11px;width:12px;flex:none;transition:transform .15s}
+  .sm-camp.collapsed .sm-c-body,.sm-set.collapsed .sm-s-body{display:none}
+  .sm-camp.collapsed .sm-c-head>.sm-caret,.sm-set.collapsed .sm-s-head>.sm-caret{transform:rotate(-90deg)}
+  .sm-count{color:#8e94c0;font-size:11px}
+  .sm-full{margin-left:auto;color:#5b6090;font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:340px}
+  .sm-c-body{padding:4px 10px 12px 30px}
+  .sm-set{border-left:2px solid rgba(102,102,255,.25);margin:6px 0 6px 6px}
+  .sm-s-head{display:flex;align-items:center;gap:9px;padding:8px 12px;cursor:pointer;border-radius:8px}
+  .sm-s-head:hover{background:var(--tn-surf-2)}
+  .sm-s-head b{font-size:13px;color:#e6eaff}
+  .sm-s-body{padding:2px 0 6px 26px;display:flex;flex-direction:column;gap:5px}
+  .sm-ad{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:10px;cursor:pointer;transition:.12s}
+  .sm-ad:hover{border-color:rgba(150,57,243,.5);background:rgba(150,57,243,.08)}
+  .sm-ad b{font-size:13px;color:#fff}
+  .sm-ad .sm-utm{color:#8b91bd;font-size:11px}
+  .sm-ad .sm-open{margin-left:auto;color:#cfa6ff;font-size:11px;opacity:0;transition:.12s;flex:none}
+  .sm-ad:hover .sm-open{opacity:1}
+  .sm-soon{text-align:center;padding:48px 24px;border:1px dashed var(--tn-border);border-radius:16px;background:var(--tn-surf-1)}
+  .sm-soon b{font-size:15px;color:#cfd4f0}
+  .sm-soon p{color:#8e94c0;max-width:520px;margin:8px auto 0;font-size:13px;line-height:1.5}
   .fn-id{display:inline-block;font-size:10px;font-weight:800;color:#cfa6ff;background:rgba(150,57,243,.16);border:1px solid rgba(150,57,243,.3);border-radius:6px;padding:1px 5px;vertical-align:middle;letter-spacing:.02em}
   .fn-id.new{color:#7df3e6;background:rgba(23,248,224,.12);border-color:rgba(23,248,224,.3)}
   table.reg .rfunnel{white-space:nowrap;min-width:250px}
@@ -360,6 +396,58 @@
   .dstat{background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:999px;padding:6px 14px;font-size:12px;color:#aab0d6}
   .dstat b{color:#fff;font-family:"SF Mono",Menlo,Consolas,monospace;margin-right:3px}
   @media(max-width:900px){.app-shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:grid;grid-template-columns:repeat(2,1fr)}.dashgrid{grid-template-columns:1fr}}
+  /* ═══ Campaign Overview (Swimlanes) ═══ */
+  .ov-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .ov-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .ov-tab{background:var(--tn-surf-2);border:1px solid var(--tn-border);color:#b9bee6;border-radius:999px;padding:7px 13px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit}
+  .ov-tab.on{background:var(--tn-grad);color:#fff;border-color:transparent;box-shadow:var(--tn-glow)}
+  .ov-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .ov-lg{display:inline-flex;align-items:center;gap:6px;background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:999px;padding:5px 10px;font-size:11.5px;color:#aab0d6}
+  .ov-lg .d{width:8px;height:8px;border-radius:50%}
+  .ov-shell{position:relative;overflow-x:auto;border-radius:var(--tn-r-l);border:1px solid var(--tn-border);background:var(--tn-surf-1)}
+  .ov-inner{min-width:1360px;padding:18px}
+  .ov-board{margin-bottom:26px}
+  .ov-board:last-child{margin-bottom:4px}
+  .ov-bhead{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:0 2px}
+  .ov-bhead b{font-size:15px;color:#fff;font-weight:800}
+  .ov-bhead .mono{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:11px;color:#8e94c0}
+  .ov-lanehd{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:10px}
+  .ov-lt{border:1px solid var(--tn-border);background:var(--tn-surf-1);border-radius:var(--tn-r-m);padding:10px 12px}
+  .ov-lt b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#dfe3ff;font-weight:700}
+  .ov-lt span{display:block;color:#8490c6;font-size:10.5px;margin-top:2px}
+  .ov-lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start}
+  .ov-lane{min-height:120px;border:1px dashed rgba(255,255,255,.09);border-radius:var(--tn-r-m);padding:11px;background:rgba(255,255,255,.015);display:flex;flex-direction:column;gap:10px}
+  .ov-node{border:1px solid var(--tn-border);border-radius:var(--tn-r-m);padding:11px;background:rgba(9,12,35,.72)}
+  .ov-node .ntype{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#8590c6;font-weight:800}
+  .ov-node .nlabel{font-size:14px;font-weight:800;color:#fff;margin:3px 0 3px;line-height:1.2}
+  .ov-node .nfull{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:10.5px;color:#8f99cf;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ov-node .nmeta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+  .ov-bdg{display:inline-flex;border:1px solid var(--tn-border);border-radius:999px;padding:3px 7px;font-size:10px;color:#aab0d6;background:rgba(255,255,255,.04)}
+  .ov-bdg.ok{border-color:rgba(74,222,128,.35);color:#8ff0b0}
+  .ov-bdg.wait{border-color:rgba(255,132,106,.34);color:#ffb39f}
+  .ov-node.campaign{border-color:rgba(23,248,224,.30);background:linear-gradient(135deg,rgba(23,248,224,.07),rgba(9,12,35,.72))}
+  .ov-node.adset{border-color:rgba(150,57,243,.32)}
+  .ov-node.entry{border-color:rgba(102,102,255,.34)}
+  .ov-node.path{border-color:rgba(237,251,140,.22)}
+  .ov-node.email{border-color:rgba(23,248,224,.26)}
+  .ov-node.rt{border-color:rgba(255,60,141,.32)}
+  .ov-node.conv{border-color:rgba(74,222,128,.34);background:linear-gradient(135deg,rgba(74,222,128,.07),rgba(9,12,35,.72))}
+  .ov-node.open{border-style:dashed;background:rgba(255,255,255,.02)}
+  .ov-node.open .nlabel{color:#aab0d6;font-weight:700}
+  .ov-adstack{display:flex;flex-direction:column;gap:6px;margin-top:9px}
+  .ov-admini{border:1px solid var(--tn-border);background:rgba(255,255,255,.035);border-radius:9px;padding:7px 8px;cursor:pointer}
+  .ov-admini:hover{border-color:rgba(102,102,255,.5)}
+  .ov-admini b{font-size:12px;color:#e7e9ff}
+  .ov-admini small{display:block;font-family:"SF Mono",Menlo,Consolas,monospace;color:#8791c7;font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ov-more{font-size:10.5px;color:#8791c7;padding:2px}
+  .ov-empty{color:#6b7099;font-size:12px;padding:10px 4px}
+  .ov-lane.dim{opacity:.32}
+  .ov-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px}
+  .ov-db{border:1px solid var(--tn-border);background:var(--tn-surf-1);border-radius:var(--tn-r-m);padding:13px 15px}
+  .ov-db h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#aab0d6;margin:0 0 6px;font-weight:700}
+  .ov-db p{margin:0;color:#cfd4f0;font-size:12.5px;line-height:1.5}
+  .ov-db .mono{font-family:"SF Mono",Menlo,Consolas,monospace;color:#8ff0b0;font-size:11.5px}
+  @media(max-width:1050px){.ov-details{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -460,6 +548,7 @@
     <nav class="nav" id="nav">
       <button data-v="dashboard" class="on"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span><span data-i18n="nav.dashboard">Dashboard</span></button>
       <button data-v="naming"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span><span data-i18n="nav.naming">Naming Studio</span></button>
+      <button data-v="structure"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-2h14v2"/></svg></span><span data-i18n="nav.structure">Campaign Structure Map</span></button>
       <button data-v="utm"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span data-i18n="nav.utm">UTM-Builder</span></button>
       <button data-v="fc"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></span><span data-i18n="nav.fc">Funnel &amp; Tracking</span></button>
       <button data-v="campaigns"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg></span><span data-i18n="nav.campaigns">Kampagnen-Übersicht</span></button>
@@ -506,6 +595,7 @@
       <div class="derivefrom">
         <label style="margin-top:0" data-i18n="nm.derivelabel">Oder: von bestehender Kampagne/AdSet ableiten <span class="hint">(nur Hook/CTA/Asset ändern)</span></label>
         <select id="nDerive" onchange="deriveFrom(this.value);this.value=''"></select>
+        <div id="nDeriveCtx" class="dctx" style="display:none"></div>
       </div>
       <label data-i18n="f.ptype">Plattform-Typ</label>
       <div class="seg" id="nptype">
@@ -590,6 +680,30 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- ═══════════ VIEW · CAMPAIGN STRUCTURE MAP ═══════════ -->
+  <div class="view" id="view-structure">
+    <div class="note" data-i18n="sm.note"></div>
+    <div class="card">
+      <div class="toolbar">
+        <h2 style="margin:0"><span data-i18n="sm.title">Campaign Structure Map</span> <span class="pill" id="smCount">…</span></h2>
+        <span style="flex:1"></span>
+        <input id="smSearch" class="fc-search" style="width:250px;margin:0" data-i18n-ph="sm.search" placeholder="Suchen: cb01, Cold, Podcast…" oninput="renderStructure()">
+        <div class="segfilter" id="smView">
+          <button class="on" onclick="setSmView('tree')" data-i18n="sm.v.tree">Liste</button>
+          <button onclick="setSmView('map')" data-i18n="sm.v.map">Struktur-Map</button>
+        </div>
+      </div>
+      <p class="hint" data-i18n="sm.sub" style="margin:-4px 0 14px">Zweite Sicht auf dieselben gespeicherten Namen — Campaign → AdSet/Automation → Ads. Kurz-Labels für die Orientierung; voller SOP-Name bei Hover; Klick öffnet den Eintrag im Naming Studio.</p>
+      <div id="smTree"></div>
+      <div id="smMap" style="display:none">
+        <div class="sm-soon">
+          <b data-i18n="sm.mapsoon.h">Visueller Struktur-Graph — folgt</b>
+          <p data-i18n="sm.mapsoon.p">Das Auto-Layout-Diagramm (Campaign → AdSet → Ads als Netz) kommt als nächster Ausbau. Die Baum-Liste links deckt heute schon dieselbe Struktur ab und wächst automatisch mit den Daten.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════ VIEW · UTM-BUILDER ═══════════ -->
@@ -814,12 +928,37 @@
   <!-- ═══════════ VIEW · KAMPAGNEN-ÜBERSICHT ═══════════ -->
   <div class="view" id="view-campaigns">
     <div class="note" data-i18n="cm.note"></div>
-    <div class="toolbar">
-      <input id="cmFilter" data-i18n-ph="cm.filter" style="min-width:220px">
+    <div class="ov-controls">
+      <div class="ov-tabs" id="ovTabs"></div>
       <span style="flex:1"></span>
+      <input id="cmFilter" data-i18n-ph="cm.filter" style="min-width:180px;max-width:220px">
+      <select id="ovSrc" style="width:auto">
+        <option value="all" data-i18n="ov.src.all">Quelle: alle</option>
+        <option value="paid" data-i18n="ov.src.paid">Paid</option>
+        <option value="email" data-i18n="ov.src.email">E-Mail</option>
+        <option value="organic" data-i18n="ov.src.organic">Organic</option>
+      </select>
+      <div class="seg" id="ovSeg">
+        <button class="on" data-seg="all" data-i18n="ov.seg.all">Gesamt</button>
+        <button data-seg="website" data-i18n="ov.seg.web">Website</button>
+        <button data-seg="tracking" data-i18n="ov.seg.track">Tracking</button>
+      </div>
       <span class="pill" id="cmCount">…</span>
     </div>
-    <div id="cmList"></div>
+    <div class="ov-legend">
+      <span class="ov-lg"><span class="d" style="background:var(--tn-teal)"></span><span data-i18n="ov.lg.real">realer Knoten</span></span>
+      <span class="ov-lg"><span class="d" style="background:var(--tn-pink)"></span><span data-i18n="ov.lg.rt">Retargeting</span></span>
+      <span class="ov-lg"><span class="d" style="background:var(--tn-success)"></span><span data-i18n="ov.lg.ok">Tracking OK</span></span>
+      <span class="ov-lg"><span class="d" style="background:#6b7099"></span><span data-i18n="ov.lg.open">offen / fehlt</span></span>
+    </div>
+    <div class="ov-shell">
+      <div class="ov-inner" id="ovInner"></div>
+    </div>
+    <div class="ov-details">
+      <div class="ov-db"><h4 data-i18n="ov.db.a.h">Auto-Fluss</h4><p data-i18n="ov.db.a.p">Gelesen aus <span class="mono">naming_registry</span>, <span class="mono">funnels</span>, <span class="mono">conversions</span> und <span class="mono">utm_registry</span>. Nichts erfunden — nur zweite Darstellung.</p></div>
+      <div class="ov-db"><h4 data-i18n="ov.db.b.h">Flow-Links</h4><p data-i18n="ov.db.b.p">Retargeting ist über das AdSet impliziert. Explizite Pfeile („RT retargetet X") kommen in Phase 2.</p></div>
+      <div class="ov-db"><h4 data-i18n="ov.db.c.h">Planung</h4><p data-i18n="ov.db.c.p">Geplante Knoten &amp; Notizen sind Phase 2 — sie dürfen keine zweite Wahrheit werden.</p></div>
+    </div>
   </div>
 
   <!-- ═══════════ VIEW · SOP / SETTINGS ═══════════ -->
@@ -861,12 +1000,26 @@ const T={
   'app.sub':'Naming · UTM · Funnels & Conversions','app.howto':"So funktioniert's",'app.logout':'Abmelden','app.who':'Dein Name (created_by)',
   'howto.close':'Schließen',
   'tab.naming':'1 · Naming','tab.utm':'2 · UTM-Builder','tab.fc':'3 · Funnels & Conversions','tab.campaigns':'4 · Kampagnen-Übersicht',
-  'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.utm':'UTM-Builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Kampagnen-Übersicht','nav.settings':'SOP / Settings',
+  'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.structure':'Campaign Structure Map','nav.utm':'UTM-Builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Kampagnen-Übersicht','nav.settings':'SOP / Settings',
+  'sm.note':'<b>Campaign Structure Map.</b> Zweitsicht auf die gespeicherten Namen — Campaign → AdSet/Automation → Ads. Bearbeitet wird weiter im <b>Naming Studio</b>; hier klickst Du einen Eintrag an, um ihn dort zu öffnen.','sm.title':'Campaign Structure Map','sm.search':'Suchen: cb01, Cold, Podcast…','sm.sub':'Zweite Sicht auf dieselben gespeicherten Namen — Campaign → AdSet/Automation → Ads. Kurz-Labels für die Orientierung; voller SOP-Name bei Hover; Klick öffnet den Eintrag im Naming Studio.','sm.empty':'Noch keine gespeicherten Namen — im Naming Studio anlegen.','sm.edit':'im Naming Studio öffnen','sm.v.tree':'Liste','sm.v.map':'Struktur-Map','sm.mapsoon.h':'Visueller Struktur-Graph — folgt','sm.mapsoon.p':'Das Auto-Layout-Diagramm (Campaign → AdSet → Ads als Netz) kommt als nächster Ausbau. Die Baum-Liste deckt heute schon dieselbe Struktur ab und wächst automatisch mit den Daten.','sm.derivectx':'Du leitest ab von:','sm.siblings':'{n} bestehende Schwester-Ads:','sm.openmap':'In Structure Map öffnen',
   'dash.title':'Ein Cockpit. Fünf Module.','dash.lead':'Springe direkt in das Modul, das gerade gebraucht wird — Namen bauen, UTM kopieren, Funnel & Tracking prüfen oder Kampagnen im Zusammenhang sehen.','dash.open':'Öffnen',
   'set.title':'SOP / Settings','set.lead':'Regelquellen. Die SOP bleibt maßgeblich — das Tool bildet sie nur ab.',
   'ub.onlyopen':'Nur noch nicht verknüpfte zeigen','nm.linkcol':'UTM?','fn.producthint':'(oder neue tippen)',
   'cm.note':'<b>Kampagnen-Übersicht.</b> Vogelperspektive je Kampagne (utm_campaign): welche Naming-Einträge, UTM-Links, Funnels und Conversions hängen zusammen — und was ist noch <b>offen</b> (Naming ohne UTM-Verknüpfung).',
   'cm.filter':'Kampagne filtern','cm.empty':'Noch keine Kampagnen — im Naming- oder UTM-Tab anlegen.',
+  'ov.src.all':'Quelle: alle','ov.src.paid':'Paid','ov.src.email':'E-Mail','ov.src.organic':'Organic',
+  'ov.seg.all':'Gesamt','ov.seg.web':'Website','ov.seg.track':'Tracking',
+  'ov.lg.real':'realer Knoten','ov.lg.rt':'Retargeting','ov.lg.ok':'Tracking OK','ov.lg.open':'offen / fehlt',
+  'ov.db.a.h':'Auto-Fluss','ov.db.a.p':'Gelesen aus <span class="mono">naming_registry</span>, <span class="mono">funnels</span>, <span class="mono">conversions</span> und <span class="mono">utm_registry</span>. Nichts erfunden — nur zweite Darstellung.',
+  'ov.db.b.h':'Flow-Links','ov.db.b.p':'Retargeting ist über das AdSet impliziert. Explizite Pfeile („RT retargetet X") kommen in Phase 2.',
+  'ov.db.c.h':'Planung','ov.db.c.p':'Geplante Knoten &amp; Notizen sind Phase 2 — sie dürfen keine zweite Wahrheit werden.',
+  'ov.lane1':'Traffic &amp; Struktur','ov.lane1s':'Campaigns, AdSets, Ads','ov.lane2':'Entry / Landing','ov.lane2s':'Landingpages, UTM-Ziele',
+  'ov.lane3':'Conversion-Pfad','ov.lane3s':'Funnel-Steps bis Goal','ov.lane4':'Follow-up &amp; Retargeting','ov.lane4s':'Automationen, RT-AdSets',
+  'ov.lane5':'Conversion / QA','ov.lane5s':'Event-Katalog + Ampel',
+  'ov.open.entry':'Landingpage offen','ov.open.entrys':'Noch kein Funnel-Step/UTM-Ziel verknüpft.',
+  'ov.open.path':'Kein Funnel angelegt','ov.open.paths':'In „Funnel & Tracking" einen Funnel für diese Kampagne anlegen.',
+  'ov.open.conv':'Conversion offen','ov.open.convs':'Kein Goal-Step mit Conversion verknüpft.','ov.tabAll':'Alle',
+  'ov.retargets':'retargetet Cold','ov.ads':'Ads','ov.emails':'E-Mails',
   'f.ptype':'Plattform-Typ','seg.paid':'Werbe (Paid)','seg.email':'E-Mail (AC)','seg.organic':'Organisch',
   'f.channel':'Channel','f.tag':'Funktions-Tag','f.funnelstage':'Funnel-Stufe',
   'f.thema':'Thema <span class="hint">(Slug)</span>','f.datum':'Datum <span class="hint">(YYYY-MM)</span>','f.variant':'Variant <span class="hint">(opt.)</span>',
@@ -930,12 +1083,26 @@ const T={
   'app.sub':'Naming · UTM · Funnels & Conversions','app.howto':'How it works','app.logout':'Log out','app.who':'Your name (created_by)',
   'howto.close':'Close',
   'tab.naming':'1 · Naming','tab.utm':'2 · UTM builder','tab.fc':'3 · Funnels & Conversions','tab.campaigns':'4 · Campaign overview',
-  'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.utm':'UTM builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Campaign overview','nav.settings':'SOP / Settings',
+  'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.structure':'Campaign Structure Map','nav.utm':'UTM builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Campaign overview','nav.settings':'SOP / Settings',
+  'sm.note':'<b>Campaign Structure Map.</b> A second view of the saved names — Campaign → AdSet/Automation → Ads. Editing stays in the <b>Naming Studio</b>; click an entry here to open it there.','sm.title':'Campaign Structure Map','sm.search':'Search: cb01, Cold, Podcast…','sm.sub':'A second view of the same saved names — Campaign → AdSet/Automation → Ads. Short labels for orientation; full SOP name on hover; click opens the entry in the Naming Studio.','sm.empty':'No saved names yet — create them in the Naming Studio.','sm.edit':'open in Naming Studio','sm.v.tree':'List','sm.v.map':'Structure map','sm.mapsoon.h':'Visual structure graph — coming','sm.mapsoon.p':'The auto-layout diagram (Campaign → AdSet → Ads as a network) is the next step. The tree list already covers the same structure today and grows automatically with the data.','sm.derivectx':'You are deriving from:','sm.siblings':'{n} existing sibling ads:','sm.openmap':'Open in Structure Map',
   'dash.title':'One cockpit. Five modules.','dash.lead':'Jump straight into the module you need — build names, copy UTMs, check funnel & tracking, or see campaigns in context.','dash.open':'Open',
   'set.title':'SOP / Settings','set.lead':'The rule sources live here. The SOP stays authoritative — the tool only reflects it.',
   'ub.onlyopen':'Show only not-yet-linked','nm.linkcol':'UTM?','fn.producthint':'(or type a new one)',
   'cm.note':'<b>Campaign overview.</b> Bird-eye view per campaign (utm_campaign): which naming entries, UTM links, funnels and conversions belong together — and what is still <b>open</b> (naming without a UTM link).',
   'cm.filter':'Filter campaign','cm.empty':'No campaigns yet — create them in the Naming or UTM tab.',
+  'ov.src.all':'Source: all','ov.src.paid':'Paid','ov.src.email':'Email','ov.src.organic':'Organic',
+  'ov.seg.all':'Overall','ov.seg.web':'Website','ov.seg.track':'Tracking',
+  'ov.lg.real':'real node','ov.lg.rt':'Retargeting','ov.lg.ok':'Tracking OK','ov.lg.open':'open / missing',
+  'ov.db.a.h':'Auto-flow','ov.db.a.p':'Read from <span class="mono">naming_registry</span>, <span class="mono">funnels</span>, <span class="mono">conversions</span> and <span class="mono">utm_registry</span>. Nothing invented — just a second view.',
+  'ov.db.b.h':'Flow links','ov.db.b.p':'Retargeting is implied by the AdSet. Explicit arrows ("RT retargets X") come in phase 2.',
+  'ov.db.c.h':'Planning','ov.db.c.p':'Planned nodes &amp; notes are phase 2 — they must not become a second truth.',
+  'ov.lane1':'Traffic &amp; Structure','ov.lane1s':'Campaigns, AdSets, Ads','ov.lane2':'Entry / Landing','ov.lane2s':'Landing pages, UTM targets',
+  'ov.lane3':'Conversion path','ov.lane3s':'Funnel steps to goal','ov.lane4':'Follow-up &amp; Retargeting','ov.lane4s':'Automations, RT AdSets',
+  'ov.lane5':'Conversion / QA','ov.lane5s':'Event catalog + status',
+  'ov.open.entry':'Landing page open','ov.open.entrys':'No funnel step / UTM target linked yet.',
+  'ov.open.path':'No funnel created','ov.open.paths':'Create a funnel for this campaign in "Funnel & Tracking".',
+  'ov.open.conv':'Conversion open','ov.open.convs':'No goal step linked to a conversion.','ov.tabAll':'All',
+  'ov.retargets':'retargets Cold','ov.ads':'ads','ov.emails':'emails',
   'f.ptype':'Platform type','seg.paid':'Advertising (Paid)','seg.email':'Email (AC)','seg.organic':'Organic',
   'f.channel':'Channel','f.tag':'Function tag','f.funnelstage':'Funnel stage',
   'f.thema':'Topic <span class="hint">(slug)</span>','f.datum':'Date <span class="hint">(YYYY-MM)</span>','f.variant':'Variant <span class="hint">(opt.)</span>',
@@ -1002,7 +1169,7 @@ function applyLang(){
   $('howtoDE').style.display=LANG==='de'?'':'none';
   $('howtoEN').style.display=LANG==='en'?'':'none';
   setConn(connState);
-  if(authed){renderNamingOut();renderUtmOut();refreshDynamic();refreshFilters();renderRegistry();renderNamingList();renderFcTabs();renderFunnelList();renderFunnelDetail();renderConversions();renderFunnelRegistry();renderCampaigns();renderDashboard();}
+  if(authed){renderNamingOut();renderUtmOut();refreshDynamic();refreshFilters();renderRegistry();renderNamingList();renderFcTabs();renderFunnelList();renderFunnelDetail();renderConversions();renderFunnelRegistry();renderCampaigns();renderDashboard();renderStructure();}
 }
 function setLang(l){LANG=l;localStorage.setItem('tn_cockpit_lang',l);applyLang();}
 
@@ -1086,7 +1253,7 @@ function fillMed(id){$(id).innerHTML=MEDIUM_OPTS.map(m=>`<option>${m}</option>`)
 
 let nameMode='paid';
 let currentNamingId=null; // im UTM-Builder gewählter Naming-Eintrag
-const state={rows:[],naming:[],funnels:[],convs:[],editN:null,editF:null,editCvId:null,fcTab:'all',stepSel:0,regFilter:'all'};
+const state={rows:[],naming:[],funnels:[],convs:[],editN:null,editF:null,editCvId:null,fcTab:'all',stepSel:0,regFilter:'all',smView:'tree'};
 // Ist ein Naming-Eintrag schon mit einer UTM-Zeile verknüpft? (= „Übertragen"-Häkchen)
 function namingLinked(id){return state.rows.some(r=>r.naming_id===id)}
 function whoami(){return ($('who').value||'').trim()}
@@ -1151,7 +1318,7 @@ async function loadAll(){
     ]);
     state.rows=rows||[];state.naming=naming||[];state.funnels=funnels||[];state.convs=convs||[];
     setConn('ok');
-    refreshDynamic();refreshFilters();renderRegistry();renderNamingList();renderFcTabs();renderFunnelList();renderFunnelDetail();renderConversions();renderFunnelRegistry();renderCampaigns();renderDashboard();
+    refreshDynamic();refreshFilters();renderRegistry();renderNamingList();renderFcTabs();renderFunnelList();renderFunnelDetail();renderConversions();renderFunnelRegistry();renderCampaigns();renderDashboard();renderStructure();
     if(!state.editF)newFunnel(false); // Default: leeren Funnel offen halten, kein großer leerer Bereich
   }catch(e){setConn('err');toast(t('ct.loadfail')+': '+e.message,true)}
 }
@@ -1308,7 +1475,55 @@ function deriveFrom(id){
     else if(parts.length===1){$('nTargeting').value=parts[0];}
   }
   renderNamingOut();
+  // Kontext-Preview: wo hängt das neue Schwester-Ad, welche Ads existieren schon?
+  const sibs=state.naming.filter(x=>x.campaign_name===n.campaign_name && x.adset_or_automation===n.adset_or_automation);
+  const ctx=$('nDeriveCtx');
+  if(ctx){ctx.style.display='';ctx.innerHTML=`<div class="dctx-h">${t('sm.derivectx')}</div>`
+    +`<div class="dctx-row"><span class="sm-badge camp">Campaign</span><b title="${esc(n.campaign_name)}">${esc(campaignShort(n))}</b></div>`
+    +`<div class="dctx-row"><span class="sm-badge adset">AdSet</span><b title="${esc(n.adset_or_automation)}">${esc(adsetShort(n))}</b></div>`
+    +`<div class="dctx-sibs"><span class="dctx-slab">${t('sm.siblings',{n:sibs.length})}</span> ${sibs.map(s=>`<span class="ad-pill" title="${esc(s.asset_identifier||s.utm_content||'')}">${esc(assetShort(s))}</span>`).join(' ')||'—'}</div>`
+    +`<button class="linkbtn" onclick="switchView('structure')">${t('sm.openmap')} ↗</button>`;}
   toast(LANG==='de'?'Kampagne + AdSet übernommen — jetzt Hook/CTA/Asset für die neue Ad anpassen und speichern.':'Campaign + adset copied — now adjust hook/CTA/asset for the new ad and save.');
+}
+// ── Kurz-Labels (nur UI, generisch aus den Feldern; voller Name bleibt via title) ──
+function monthShort(p){if(!p)return '';const seg=String(p).split('-');const nm={'01':'Jan','02':'Feb','03':'Mär','04':'Apr','05':'Mai','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Okt','11':'Nov','12':'Dez'};const m=nm[seg[1]]||seg[1]||'';return (m+(seg[0]?" '"+seg[0].slice(2):'')).trim();}
+function campaignShort(n){const parts=[];if(n.funnel_type)parts.push(n.funnel_type);if(n.topic_slug)parts.push(n.topic_slug.replace(/-/g,' '));let s=parts.join(' · ')||n.campaign_name||'—';const mo=monthShort(n.period);if(mo)s+=' · '+mo;if(n.variant)s+=' · '+n.variant;return s;}
+function adsetShort(n){const s=n.adset_or_automation||'';if(!s)return '—';if((n.platform_type||'paid')!=='email'){const p=s.split('_');return p[0]+(p.length>=3?' · '+p[p.length-1]:(p[1]?' · '+p[1]:''));}let rem=s;if(n.campaign_name&&s.startsWith(n.campaign_name+'_'))rem=s.slice(n.campaign_name.length+1);return rem.replace(/_/g,' · ');}
+function assetShort(n){const c=n.utm_content||'';if(c)return c.replace(/_/g,' · ');const a=n.asset_identifier||'';if(!a)return '—';return a.split('_').slice(-3).join(' · ');}
+function openNaming(id){switchView('naming');editNaming(id);}
+function setSmView(v){state.smView=v;document.querySelectorAll('#smView button').forEach(b=>b.classList.toggle('on',b.getAttribute('onclick')===`setSmView('${v}')`));$('smTree').style.display=v==='tree'?'':'none';$('smMap').style.display=v==='map'?'':'none';}
+// Baum-Ansicht: Campaign → AdSet/Automation → Ads. Reine Zweitsicht auf naming_registry.
+function renderStructure(){
+  const box=$('smTree');if(!box)return;
+  const q=($('smSearch')?.value||'').toLowerCase();
+  const list=state.naming.filter(n=>!q||[n.campaign_name,n.adset_or_automation,n.asset_identifier,n.utm_content,n.utm_campaign].filter(Boolean).join(' ').toLowerCase().includes(q));
+  if($('smCount'))$('smCount').textContent=list.length;
+  const camps=new Map();
+  list.forEach(n=>{const ck=n.campaign_name||'—';if(!camps.has(ck))camps.set(ck,new Map());const sets=camps.get(ck);const sk=n.adset_or_automation||'—';if(!sets.has(sk))sets.set(sk,[]);sets.get(sk).push(n);});
+  if(!camps.size){box.innerHTML=`<div class="hint" style="padding:16px">${t('sm.empty')}</div>`;return;}
+  let h='';
+  for(const [ck,sets] of camps){
+    const total=[...sets.values()].reduce((a,x)=>a+x.length,0);const anyN=[...sets.values()][0][0];
+    h+=`<div class="sm-camp"><div class="sm-c-head" onclick="this.parentNode.classList.toggle('collapsed')">
+      <span class="sm-caret">▾</span><span class="sm-badge camp">Campaign</span>
+      <b title="${esc(ck)}">${esc(campaignShort(anyN))}</b>
+      <span class="sm-count">${sets.size} AdSets · ${total} Ads</span>
+      <span class="sm-full mono" title="${esc(ck)}">${esc(ck)}</span></div><div class="sm-c-body">`;
+    for(const [sk,ads] of sets){
+      const a0=ads[0];const isEmail=(a0.platform_type||'paid')==='email';
+      h+=`<div class="sm-set"><div class="sm-s-head" onclick="this.parentNode.classList.toggle('collapsed')">
+        <span class="sm-caret">▾</span><span class="sm-badge ${isEmail?'email':'adset'}">${isEmail?'Automation':'AdSet'}</span>
+        <b title="${esc(sk)}">${esc(adsetShort(a0))}</b>
+        <span class="sm-count">${ads.length} ${isEmail?'E-Mails':'Ads'}</span></div><div class="sm-s-body">`;
+      ads.forEach(n=>{h+=`<div class="sm-ad" onclick="openNaming(${n.id})" title="${esc(n.asset_identifier||n.campaign_name)}">
+        <span class="sm-badge ${esc(n.platform_type||'paid')}">${esc(n.platform_type||'paid')}</span>
+        <b>${esc(assetShort(n))}</b><span class="mono sm-utm">${esc(n.utm_content||'')}</span>
+        <span class="sm-open">${t('sm.edit')} ↗</span></div>`;});
+      h+=`</div></div>`;
+    }
+    h+=`</div></div>`;
+  }
+  box.innerHTML=h;
 }
 async function delNaming(id){
   const n=state.naming.find(x=>x.id===id);if(!n)return;
@@ -1795,32 +2010,107 @@ async function delConv(id){
 
 /* ═══════════════ TAB 4 · KAMPAGNEN-ÜBERSICHT ═══════════════ */
 // Vogelperspektive: je Kampagne (utm_campaign) der Baum Naming → UTM → Funnel + Conversion.
+/* ── Campaign Overview · Swimlanes (Phase 1 · read-only, liest Supabase) ── */
+function ovGroup(n){
+  const f=state.funnels.find(x=>x.name===n.funnel_reference||x.slug===kebab(n.funnel_reference||''));
+  if(f&&f.product)return f.product;
+  if(n.channel&&FUNNEL_GROUPS.some(g=>g[0]===n.channel))return n.channel;
+  return '—';
+}
+function ovFunnelFor(fr){const k=kebab(fr||'');return state.funnels.find(x=>x.name===fr||x.slug===k||kebab(x.name)===k);}
+function ovIsRT(n){const s=(n.adset_or_automation||'');return /(^|[_-])RT([_-]|$)/i.test(s);}
+function ovStMark(s){return s==='done'?'✓':s==='open'?(LANG==='de'?'offen':'open'):'—';}
+function ovNode(o){
+  let stack='';
+  if(o.ads&&o.ads.length){
+    const show=o.ads.slice(0,4);
+    stack='<div class="ov-adstack">'+show.map(a=>`<div class="ov-admini" onclick="openNaming(${a.id})" title="${esc(a.title)}"><b>${esc(a.short)}</b>${a.utm?`<small>${esc(a.utm)}</small>`:''}</div>`).join('')
+      +(o.ads.length>4?`<div class="ov-more">+${o.ads.length-4} ${t('ov.ads')}</div>`:'')+'</div>';
+  }
+  const metaH=(o.meta||[]).map(m=>`<span class="ov-bdg ${m.cls||''}">${esc(m.txt)}</span>`).join('');
+  return `<div class="ov-node ${o.cls}" title="${esc(o.full||'')}"><div class="ntype">${esc(o.type)}</div><div class="nlabel">${esc(o.label)}</div>`
+    +(o.full?`<div class="nfull">${esc(o.full)}</div>`:'')+(metaH?`<div class="nmeta">${metaH}</div>`:'')+stack+'</div>';
+}
+function ovOpen(kind){const lbl=LANG==='de'?'offen':'open';
+  return `<div class="ov-node open"><div class="ntype">${lbl}</div><div class="nlabel">${t('ov.open.'+kind)}</div><div class="nfull" style="white-space:normal;text-overflow:clip">${t('ov.open.'+kind+'s')}</div></div>`;}
+function renderOvTabs(){
+  const wrap=$('ovTabs');if(!wrap)return;
+  const groups=[...new Set(state.naming.map(ovGroup))].filter(g=>g&&g!=='—');
+  const order=FUNNEL_GROUPS.map(x=>x[0]).filter(Boolean);
+  groups.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+  const tabs=['all',...groups];if(state.ovGrp&&!tabs.includes(state.ovGrp))state.ovGrp='all';
+  wrap.innerHTML=tabs.map(g=>{const lbl=g==='all'?t('ov.tabAll'):(groupLabel(g).split(' · ')[0]);
+    return `<button class="ov-tab${(state.ovGrp||'all')===g?' on':''}" onclick="setOvGrp('${g}')">${esc(lbl)}</button>`;}).join('');
+}
+function setOvGrp(g){state.ovGrp=g;renderCampaigns();}
+function setOvSeg(s){state.ovSeg=s;document.querySelectorAll('#ovSeg button').forEach(b=>b.classList.toggle('on',b.dataset.seg===s));renderCampaigns();}
+function ovBoard(fr,rows,seg){
+  const dash=`<div class="ov-empty">—</div>`;
+  const funnel=ovFunnelFor(fr);
+  const paid=rows.filter(n=>(n.platform_type||'paid')==='paid');
+  // Lane 1 · Traffic (Cold campaigns/adsets)
+  const camps=new Map();
+  paid.filter(n=>!ovIsRT(n)).forEach(n=>{const c=n.campaign_name||'—';if(!camps.has(c))camps.set(c,new Map());const sets=camps.get(c);const s=n.adset_or_automation||'—';if(!sets.has(s))sets.set(s,[]);sets.get(s).push(n);});
+  let lane1='';
+  for(const [c,sets] of camps){
+    const any=[...sets.values()][0][0];const total=[...sets.values()].reduce((a,x)=>a+x.length,0);
+    lane1+=ovNode({cls:'campaign',type:'Campaign',label:campaignShort(any),full:c,meta:[{txt:'utm: '+(any.utm_campaign||'—')},{txt:total+' '+t('ov.ads')},{txt:'Paid'}]});
+    for(const [s,ads] of sets)
+      lane1+=ovNode({cls:'adset',type:'AdSet · Cold',label:adsetShort(ads[0]),full:s,meta:[{txt:ads.length+' '+t('ov.ads')}],ads:ads.map(a=>({id:a.id,short:assetShort(a),utm:a.utm_content,title:a.asset_identifier||a.campaign_name}))});
+  }
+  if(!lane1)lane1=dash;
+  // Lane 2 · Entry / Landing
+  const lps=[];
+  if(funnel)(funnel.steps||[]).forEach(st=>{if(/(lp|land|einstieg)/i.test(st.type||''))lps.push({label:st.title||'Landingpage',url:st.url||''});});
+  const ucs=[...new Set(rows.map(n=>n.utm_campaign).filter(Boolean))];
+  state.rows.filter(r=>ucs.includes(r.utm_campaign)&&r.target_url).forEach(r=>{if(!lps.some(l=>normUrl(l.url)===normUrl(r.target_url)))lps.push({label:'UTM-Ziel',url:r.target_url,src:r.utm_source});});
+  const lane2=lps.length?lps.map(l=>ovNode({cls:'entry',type:'Landingpage',label:l.label,full:l.url,meta:l.src?[{txt:'source='+l.src}]:[]})).join(''):ovOpen('entry');
+  // Lane 3 · Conversion Path (funnel steps)
+  let lane3;
+  if(funnel&&(funnel.steps||[]).length){
+    const steps=funnel.steps||[];const gk=steps.map((s,i)=>s.conversion_key?i:-1).filter(i=>i>=0);const goalIdx=gk.length?gk[gk.length-1]:-1;
+    lane3=steps.map((st,i)=>ovNode({cls:'path',type:i===goalIdx?'Goal-Step':'Step',label:st.title||('Step '+(i+1)),full:st.interaction||st.url||'',meta:st.conversion_key?[{txt:'→ '+st.conversion_key}]:[]})).join('');
+  }else lane3=ovOpen('path');
+  // Lane 4 · Follow-up & Retargeting
+  let lane4='';
+  const autos=new Map();
+  rows.filter(n=>(n.platform_type||'')==='email').forEach(n=>{const a=n.adset_or_automation||'—';if(!autos.has(a))autos.set(a,[]);autos.get(a).push(n);});
+  for(const [a,list] of autos)
+    lane4+=ovNode({cls:'email',type:'Automation',label:adsetShort(list[0]),full:a,meta:[{txt:list.length+' '+t('ov.emails')},{txt:'email_campaign'}],ads:list.map(x=>({id:x.id,short:assetShort(x),utm:x.utm_content,title:x.asset_identifier}))});
+  const rtSets=new Map();
+  paid.filter(ovIsRT).forEach(n=>{const s=n.adset_or_automation||'—';if(!rtSets.has(s))rtSets.set(s,[]);rtSets.get(s).push(n);});
+  for(const [s,ads] of rtSets)
+    lane4+=ovNode({cls:'rt',type:'AdSet · Retargeting',label:adsetShort(ads[0]),full:s,meta:[{txt:ads.length+' '+t('ov.ads')},{txt:t('ov.retargets'),cls:'wait'}],ads:ads.map(a=>({id:a.id,short:assetShort(a),utm:a.utm_content,title:a.asset_identifier}))});
+  if(!lane4)lane4=dash;
+  // Lane 5 · Conversion / QA
+  let lane5;const convKeys=new Set();
+  if(funnel)(funnel.steps||[]).forEach(s=>{if(s.conversion_key)convKeys.add(s.conversion_key)});
+  if(convKeys.size){
+    lane5=[...convKeys].map(k=>{const c=state.convs.find(x=>x.key===k);
+      const meta=c?[{txt:'GA4 '+ovStMark(c.ga4_status),cls:c.ga4_status==='done'?'ok':'wait'},{txt:'Ads '+ovStMark(c.ads_status),cls:c.ads_status==='done'?'ok':'wait'},{txt:'Meta '+ovStMark(c.meta_status),cls:c.meta_status==='done'?'ok':'wait'}]:[{txt:LANG==='de'?'Katalog fehlt':'not in catalog',cls:'wait'}];
+      return ovNode({cls:'conv',type:'Conversion',label:c?(c.name||k):k,full:k,meta});}).join('');
+  }else lane5=ovOpen('conv');
+  const dims=seg==='website'?[0,0,0,0,1]:seg==='tracking'?[1,1,1,1,0]:[0,0,0,0,0];
+  const lh=(k)=>`<div class="ov-lt"><b>${t('ov.'+k)}</b><span>${t('ov.'+k+'s')}</span></div>`;
+  const lanes=[lane1,lane2,lane3,lane4,lane5];
+  return `<div class="ov-board">
+    <div class="ov-bhead"><b>${esc(campaignShort(rows[0])||fr)}</b><span class="mono">${esc(fr)}</span></div>
+    <div class="ov-lanehd">${lh('lane1')}${lh('lane2')}${lh('lane3')}${lh('lane4')}${lh('lane5')}</div>
+    <div class="ov-lanes">${lanes.map((l,i)=>`<div class="ov-lane${dims[i]?' dim':''}">${l}</div>`).join('')}</div>
+  </div>`;
+}
 function renderCampaigns(){
-  if(!$('cmList'))return;
+  const inner=$('ovInner');if(!inner)return;
+  renderOvTabs();
+  const grp=state.ovGrp||'all',src=state.ovSrc||'all',seg=state.ovSeg||'all';
   const q=($('cmFilter').value||'').trim().toLowerCase();
-  const keys=[...new Set([...state.naming.map(n=>n.utm_campaign),...state.rows.map(r=>r.utm_campaign)].filter(Boolean))].sort();
-  const shown=keys.filter(k=>!q||k.toLowerCase().includes(q));
-  $('cmCount').textContent=shown.length+' '+(LANG==='de'?'Kampagnen':'campaigns');
-  if(!shown.length){$('cmList').innerHTML=`<p class="cmempty">${t('cm.empty')}</p>`;return}
-  const openTxt=LANG==='de'?'offen':'open';
-  const sec=(title,inner)=>`<div class="cmsec"><div class="cmsec-h">${title}</div>${inner||`<div class="cmempty">—</div>`}</div>`;
-  $('cmList').innerHTML=shown.map(k=>{
-    const nm=state.naming.filter(n=>n.utm_campaign===k);
-    const rows=state.rows.filter(r=>r.utm_campaign===k);
-    const funnelRefs=[...new Set(rows.map(r=>r.funnel_ref).filter(Boolean))];
-    const convKeys=new Set();
-    funnelRefs.forEach(fr=>{const f=state.funnels.find(x=>x.name===fr);if(f)(f.steps||[]).forEach(s=>{if(s.conversion_key)convKeys.add(s.conversion_key)})});
-    const nmHtml=nm.map(n=>`<div class="cmitem"><span class="mono">${esc(n.asset_identifier||n.campaign_name)}</span> ${namingLinked(n.id)?'<span class="cmlink on">✓</span>':`<span class="cmlink off">${openTxt}</span>`}</div>`).join('');
-    const rowHtml=rows.map(r=>`<div class="cmitem"><span class="mono">${esc(r.utm_id)}</span> <span class="tag ${esc(r.platform_type)}">${esc(r.utm_source)||''}</span> <span class="mono muted">${esc(r.target_url||'')}</span></div>`).join('');
-    const fnHtml=funnelRefs.map(fr=>`<div class="cmitem">${esc(fr)}</div>`).join('');
-    const cvHtml=[...convKeys].map(ck=>{const c=state.convs.find(x=>x.key===ck);return `<div class="cmitem"><span class="mono">${esc(ck)}</span> ${c?stChip(c.ga4_status):''}</div>`}).join('');
-    return `<div class="cmcamp"><h3>${esc(k)}</h3>
-      ${sec('Naming ('+nm.length+')',nmHtml)}
-      ${sec('UTM ('+rows.length+')',rowHtml)}
-      ${funnelRefs.length?sec('Funnels ('+funnelRefs.length+')',fnHtml):''}
-      ${convKeys.size?sec('Conversions ('+convKeys.size+')',cvHtml):''}
-    </div>`;
-  }).join('');
+  let nm=state.naming.filter(n=>grp==='all'||ovGroup(n)===grp);
+  if(src!=='all')nm=nm.filter(n=>(n.platform_type||'paid')===src);
+  if(q)nm=nm.filter(n=>[n.campaign_name,n.adset_or_automation,n.asset_identifier,n.utm_content,n.funnel_reference].filter(Boolean).join(' ').toLowerCase().includes(q));
+  const frs=[...new Set(nm.map(n=>n.funnel_reference||n.campaign_name||'—'))];
+  if($('cmCount'))$('cmCount').textContent=frs.length+' '+(LANG==='de'?'Funnels':'funnels');
+  if(!frs.length){inner.innerHTML=`<div class="ov-empty" style="padding:26px">${t('cm.empty')}</div>`;return;}
+  inner.innerHTML=frs.map(fr=>ovBoard(fr,nm.filter(n=>(n.funnel_reference||n.campaign_name||'—')===fr),seg)).join('');
 }
 
 /* ─────────────── Utils ─────────────── */
@@ -1848,6 +2138,7 @@ function switchView(v){
   if(v==='campaigns')renderCampaigns();
   if(v==='fc')renderFcTabs();
   if(v==='dashboard')renderDashboard();
+  if(v==='structure')renderStructure();
 }
 
 /* ─────────────── Init ─────────────── */
@@ -1867,6 +2158,8 @@ $('ctrOverride').addEventListener('input',renderUtmOut);
 $('showArch').addEventListener('change',()=>{renderFcTabs();renderFunnelList();renderFunnelRegistry();});
 $('uOnlyOpen').addEventListener('change',refreshDynamic);
 $('cmFilter').addEventListener('input',renderCampaigns);
+$('ovSrc').addEventListener('change',()=>{state.ovSrc=$('ovSrc').value;renderCampaigns();});
+document.querySelectorAll('#ovSeg button').forEach(b=>b.onclick=()=>setOvSeg(b.dataset.seg));
 $('who').value=localStorage.getItem('tn_cockpit_who')||'';
 $('who').addEventListener('input',()=>localStorage.setItem('tn_cockpit_who',$('who').value));
 $('nSave').onclick=saveNaming;
