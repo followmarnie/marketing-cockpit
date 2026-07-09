@@ -276,6 +276,18 @@
   .editor-sec .sec-n{width:24px;height:24px;border-radius:8px;background:rgba(150,57,243,.16);border:1px solid rgba(150,57,243,.32);color:#cfa6ff;display:inline-flex;align-items:center;justify-content:center;font-weight:900;flex:none}
   .goalchk{margin:14px 0 0;font-size:12.5px;color:#cbd0ff}
   .goal-panel{margin-top:10px;background:rgba(23,248,224,.05);border:1px solid rgba(23,248,224,.22);border-radius:12px;padding:12px}
+  .fn-id{display:inline-block;font-size:10px;font-weight:800;color:#cfa6ff;background:rgba(150,57,243,.16);border:1px solid rgba(150,57,243,.3);border-radius:6px;padding:1px 5px;vertical-align:middle;letter-spacing:.02em}
+  .fn-id.new{color:#7df3e6;background:rgba(23,248,224,.12);border-color:rgba(23,248,224,.3)}
+  table.reg .rfunnel{white-space:nowrap;min-width:250px}
+  table.reg .reg-edit{background:var(--tn-surf-3);border:1px solid var(--tn-border);color:#cfa6ff;border-radius:6px;padding:1px 6px;cursor:pointer;font-size:11px;margin-right:7px}
+  table.reg .reg-edit:hover{background:rgba(150,57,243,.2);border-color:rgba(150,57,243,.4)}
+  .minicopy{margin-left:4px}
+  /* Gestylte Scrollbars (statt hässlicher nativer) */
+  *::-webkit-scrollbar{height:9px;width:9px}
+  *::-webkit-scrollbar-thumb{background:rgba(150,57,243,.32);border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+  *::-webkit-scrollbar-thumb:hover{background:rgba(150,57,243,.55);background-clip:padding-box}
+  *::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:99px}
+  *{scrollbar-width:thin;scrollbar-color:rgba(150,57,243,.4) transparent}
   /* Overlay */
   .overlay{position:fixed;inset:0;background:rgba(3,3,14,.82);backdrop-filter:blur(6px);z-index:50;
            display:flex;align-items:center;justify-content:center;padding:20px}
@@ -1110,6 +1122,7 @@ async function loadAll(){
     state.rows=rows||[];state.naming=naming||[];state.funnels=funnels||[];state.convs=convs||[];
     setConn('ok');
     refreshDynamic();refreshFilters();renderRegistry();renderNamingList();renderFcTabs();renderFunnelList();renderFunnelDetail();renderConversions();renderFunnelRegistry();renderCampaigns();renderDashboard();
+    if(!state.editF)newFunnel(false); // Default: leeren Funnel offen halten, kein großer leerer Bereich
   }catch(e){setConn('err');toast(t('ct.loadfail')+': '+e.message,true)}
 }
 // Dropdowns, die von geladenen Daten abhängen (Naming-Picker, Funnel-Referenzen)
@@ -1362,6 +1375,7 @@ function refreshFilters(){
   $('fSource').innerHTML=`<option value="">${t('r.srcAll')}</option>`+srcs.map(s=>`<option${s===fs?' selected':''}>${esc(s)}</option>`).join('');
   $('fFunnel').innerHTML=`<option value="">${t('r.funAll')}</option>`+funs.map(s=>`<option${s===ff?' selected':''}>${esc(s)}</option>`).join('');
 }
+function paramsOnly(u){if(!u)return '';const q=String(u).split('#')[0];const i=q.indexOf('?');return i>=0?q.slice(i+1):'';}
 function renderRegistry(){
   const fy=$('fYear').value.trim(), fc=$('fCampaign').value.trim().toLowerCase(), fs=$('fSource').value, ff=$('fFunnel').value, fch=$('fChannel').value;
   const flt=state.rows.filter(r=>(!fy||(r.period||'').includes(fy)||(r.utm_campaign||'').includes(fy))&&(!fc||(r.utm_campaign||'').toLowerCase().includes(fc))
@@ -1377,7 +1391,8 @@ function renderRegistry(){
     <td class="mono url" data-col="full_url" title="${esc(r.full_url)}">${esc(r.full_url)||'—'}</td>
     <td>
       <span class="act edit" title="Edit" onclick="startEdit('${esc(r.utm_id)}')">✎</span>
-      <span class="minicopy" title="Copy URL" onclick="copyText(${JSON.stringify(String(r.full_url||''))})">⧉</span>
+      <span class="minicopy" title="${t('o.copyUrl')}" onclick="copyText(${JSON.stringify(String(r.full_url||''))})">⧉URL</span>
+      <span class="minicopy" title="${t('o.copyParams')}" onclick="copyText(${JSON.stringify(paramsOnly(r.full_url))})">⧉?=</span>
       <span class="act del" title="Delete" onclick="delRow('${esc(r.utm_id)}')">✕</span>
     </td></tr>`).join('')||`<tr><td colspan="9" style="color:#5b6090;padding:20px">${t('tbl.empty')}</td></tr>`;
   $('rowCount').textContent=state.rows.length+' '+(state.rows.length===1?(LANG==='de'?'Zeile':'row'):(LANG==='de'?'Zeilen':'rows'));
@@ -1468,7 +1483,7 @@ function renderFunnelList(){
   const curId=state.editF?state.editF.id:null;
   const gl=LANG==='de'?'Goals':'Goals';
   pane.innerHTML=list.map(f=>{const s=funnelStats(f);return `<button class="fn-item${(f.id===curId&&curId!=null)?' active':''}${f.status==='archived'?' arch':''}" onclick="selectFunnel(${f.id})">
-    <b>${esc(f.name)}</b>
+    <b>${f.id!=null?`<span class="fn-id">#${f.id}</span>`:`<span class="fn-id new">${LANG==='de'?'neu':'new'}</span>`} ${esc(f.name)}</b>
     <div class="fn-meta"><span>${esc(glabel(f.product))}</span><span>${s.steps} Steps</span><span>${s.goals} ${gl}</span><span>${s.pct}% Tracking</span></div>
   </button>`}).join('')||`<div class="hint" style="padding:14px">${t('fn.emptylist')}</div>`;
   const active=state.funnels.filter(f=>f.status!=='archived').length;
@@ -1487,10 +1502,11 @@ function selectFunnel(id){
   state.stepSel=0;
   renderFunnelDetail();renderFunnelList();$('fnDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-function newFunnel(){
-  state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:'',traffic:'',steps:[]};
+function newFunnel(scroll){
+  const grp=(state.fcTab!=='all'&&state.fcTab!=='conv')?state.fcTab:'';
+  state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:grp,traffic:'',steps:[{type:'page',title:'',url:'',conversion_key:'',ac_tag:'',note:'',interaction:''}]};
   state.stepSel=0;
-  renderFunnelDetail();renderFunnelList();$('fnDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderFunnelDetail();renderFunnelList();if(scroll!==false)$('fnDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function renderFunnelDetail(){
   const f=state.editF; const card=$('fnDetail'); if(!card)return;
@@ -1579,7 +1595,7 @@ function renderFunnelRegistry(){
     let cells='';
     for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];cells+=`<td class="rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}`:''}</td>`}
     const notes=(f.steps||[]).map(s=>s.note).filter(Boolean).join(' · ');
-    return `<tr><td>${esc(glabel(f.product))}</td><td><span class="fname" onclick="selectFunnel(${f.id})">${esc(f.name)}</span></td><td>${esc(f.purpose||'')}</td>${cells}<td>${esc(notes)}</td>`
+    return `<tr><td>${esc(glabel(f.product))}</td><td class="rfunnel"><button class="reg-edit" title="${t('fc.open')}" onclick="selectFunnel(${f.id})">✎</button><span class="fname" onclick="selectFunnel(${f.id})">${f.id!=null?`#${f.id} · `:''}${esc(f.name)}</span></td><td>${esc(f.purpose||'')}</td>${cells}<td>${esc(notes)}</td>`
       +`<td class="rmono">${cv?(esc(cv.ga4_event)||'—'):'—'}</td><td>${cv?yn(cv.ga4_status):'—'}</td><td class="rmono">${cv?esc(cv.ga4_trigger||''):''}</td>`
       +`<td class="rmono">${cv?esc(cv.ads_conversion_id||''):''}</td><td class="rmono">${cv?esc(cv.ads_label||''):''}</td><td>${cv?esc(cv.ads_value||''):''}</td>`
       +`<td class="rmono">${cv?(esc(cv.meta_event)||'—'):'—'}</td><td>${cv?yn(cv.meta_status):'—'}</td><td>${cv?esc(cv.notes||''):''}</td></tr>`;
