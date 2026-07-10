@@ -215,6 +215,11 @@
   .flow .fcard:hover{border-color:rgba(255,255,255,.22);transform:translateY(-2px)}
   .flow .fcard.sel{border-color:var(--tn-pink);box-shadow:0 0 0 1px rgba(255,60,141,.35),0 0 30px rgba(255,60,141,.14)}
   .flow .fcard.goal{background:linear-gradient(180deg,rgba(23,248,224,.08),var(--tn-surf-1));border-color:rgba(23,248,224,.4)}
+  .flow .fcard.lifecycle{background:linear-gradient(180deg,rgba(237,251,140,.06),var(--tn-surf-1));border-color:rgba(237,251,140,.28)}
+  .flow .fcard .fc-actag{font-size:10.5px;font-weight:700;color:#d9e08c;background:rgba(237,251,140,.12);border:1px solid rgba(237,251,140,.24);border-radius:7px;padding:4px 7px;margin-top:7px;display:inline-block}
+  .flow .fc-handoff{position:relative;display:flex;align-items:center;justify-content:center;min-width:46px;max-width:46px}
+  .flow .fc-handoff::before{content:'';position:absolute;top:8px;bottom:8px;left:50%;border-left:2px dashed rgba(237,251,140,.55)}
+  .flow .fc-handoff .hoff-lbl{writing-mode:vertical-rl;text-orientation:mixed;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#e4ea9a;background:rgba(237,251,140,.1);border:1px solid rgba(237,251,140,.22);border-radius:8px;padding:10px 4px;white-space:nowrap;position:relative;z-index:2}
   .flow .fcard.add{min-width:120px;max-width:120px;display:flex;align-items:center;justify-content:center;border-style:dashed;color:#8e94c0;font-weight:600}
   .flow .fcard:not(.add):not(:last-child)::after{content:'→';position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:#5b6090;font-size:18px;z-index:2}
   .fcard .fc-no{display:flex;justify-content:space-between;align-items:center;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8e94c0}
@@ -265,7 +270,7 @@
   .fc-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
   .fc-legend .lg{display:inline-flex;align-items:center;gap:6px;color:#9aa1cc;font-size:11.5px}
   .fc-legend .d{width:9px;height:9px;border-radius:50%;flex:none}
-  .fc-legend .d.v{background:#9639f3}.fc-legend .d.g{background:#17f8e0}.fc-legend .d.p{background:var(--tn-pink)}
+  .fc-legend .d.v{background:#9639f3}.fc-legend .d.g{background:#17f8e0}.fc-legend .d.p{background:var(--tn-pink)}.fc-legend .d.lc{background:#d9e08c}
   .fc-hints{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 16px}
   @media(max-width:760px){.fc-hints{grid-template-columns:1fr}}
   .hintbox{background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:12px;padding:12px 14px}
@@ -881,6 +886,7 @@
           <span class="lg"><i class="d v"></i><span data-i18n="fc.lg.step">Interaction Step</span></span>
           <span class="lg"><i class="d g"></i><span data-i18n="fc.lg.goal">Conversion Goal / Ende</span></span>
           <span class="lg"><i class="d p"></i><span data-i18n="fc.lg.sel">Ausgewählt</span></span>
+          <span class="lg"><i class="d lc"></i><span data-i18n="fc.lg.life">Lifecycle · ActiveCampaign</span></span>
         </div>
 
         <div id="fnSteps" class="flow"></div>
@@ -1142,7 +1148,7 @@ const T={
   'fn.stepn':'Step {n}','fn.step.empty':'(leer)','fn.step.type':'Typ','fn.expandall':'Alle ausklappen','fn.collapseall':'Alle einklappen',
   'fn.step.interaction':'Was passiert hier? (opt.)','fn.step.edit':'Schritt bearbeiten','fn.stepshint':'Karte anklicken → unten bearbeiten',
   'reg.title':'Alle Funnel & Tracking · Breitsicht','reg.toggle':'Ein-/ausklappen','reg.sub':'Eine Zeile pro Funnel — alle Steps + Prabas Tracking nebeneinander (wie die Ursprungs-Excel). Folgt den Tabs oben. Horizontal scrollen.','reg.step':'Step','reg.notes':'Notizen (TradeNeon)','reg.qa':'QA / MeasureSchool','reg.f.label':'Prabas Tracking:','reg.f.all':'Alle','reg.f.open':'offen','reg.f.done':'komplett','reg.f.empty':'Keine Funnels in diesem Filter.',
-  'fc.search':'Suchen…','fc.worksub':'Website-/App-Conversion-Pfade bauen: Step-Kette → Goal (Conversion) setzen → Prabas Tracking klappt darunter auf → unten die Excel-Registry prüfen.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / Ende','fc.lg.sel':'Ausgewählt','fc.hint.step.h':'Step-Logik','fc.hint.step.p':'Jede Karte beantwortet: Wo ist der User? Welche URL / welcher Ort? Welche Interaktion passiert?','fc.hint.track.h':'Tracking-Logik','fc.hint.track.p':'Tracking hängt am Goal-Step. Sobald ein Step als Goal eine Conversion trägt, öffnet sich Prabas Tracking darunter.','fc.sec.funnel':'Funnel & ausgewählten Step bearbeiten','fn.step.isgoal':'Dieser Step ist das Goal / Ende dieses Funnel-Pfads','fn.step.convpick':'Conversion aus dem Katalog (misst dieses Goal)','fn.step.convhint':'Wähle eine Conversion — Prabas Tracking-Felder erscheinen dann unten im Katalog-Block.',
+  'fc.search':'Suchen…','fc.worksub':'Website-/App-Conversion-Pfade bauen: Step-Kette → Goal (Conversion) setzen → Prabas Tracking klappt darunter auf → unten die Excel-Registry prüfen.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / Ende','fc.lg.sel':'Ausgewählt','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'ab hier · ActiveCampaign','fc.handoff.title':'Ab dem Goal endet Prabas Tracking (Pixel/GA4/Ads). Was danach kommt, läuft als Lifecycle in ActiveCampaign — Automationen & Tags, keine URL, kein Pixel.','fc.hint.step.h':'Step-Logik','fc.hint.step.p':'Jede Karte beantwortet: Wo ist der User? Welche URL / welcher Ort? Welche Interaktion passiert?','fc.hint.track.h':'Tracking-Logik','fc.hint.track.p':'Tracking hängt am Goal-Step. Sobald ein Step als Goal eine Conversion trägt, öffnet sich Prabas Tracking darunter.','fc.sec.funnel':'Funnel & ausgewählten Step bearbeiten','fn.step.isgoal':'Dieser Step ist das Goal / Ende dieses Funnel-Pfads','fn.step.convpick':'Conversion aus dem Katalog (misst dieses Goal)','fn.step.convhint':'Wähle eine Conversion — Prabas Tracking-Felder erscheinen dann unten im Katalog-Block.',
   'fn.emptylist':'Noch keine Funnels — „+ Neuer Funnel".',
   'cv.title':'Conversions · Event-Katalog','cv.name':'Name','cv.notes':'Notizen','cv.new':'Neue Conversion','cv.edit':'Conversion bearbeiten',
   'cv.keyhint':'(Slug, fix nach Anlage)','cv.value':'Wert (AED)','cv.purpose':'Zweck','cv.path':'Pfad (LP → … → Danke)','cv.status':'Status','cv.trigger':'Trigger (GA4)',
@@ -1228,7 +1234,7 @@ const T={
   'fn.stepn':'Step {n}','fn.step.empty':'(empty)','fn.step.type':'Type','fn.expandall':'Expand all','fn.collapseall':'Collapse all',
   'fn.step.interaction':'What happens here? (opt.)','fn.step.edit':'Edit step','fn.stepshint':'Click a card → edit below',
   'reg.title':'All funnels & tracking · wide view','reg.toggle':'Collapse/expand','reg.sub':'One row per funnel — all steps + Praba tracking side by side (like the original Excel). Follows the tabs above. Scroll horizontally.','reg.step':'Step','reg.notes':'Notes (TradeNeon)','reg.qa':'QA / MeasureSchool','reg.f.label':'Praba tracking:','reg.f.all':'All','reg.f.open':'open','reg.f.done':'complete','reg.f.empty':'No funnels in this filter.',
-  'fc.search':'Search…','fc.worksub':'Build website/app conversion paths: step chain → set the goal (conversion) → Praba tracking expands below → check the Excel registry at the bottom.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / End','fc.lg.sel':'Selected','fc.hint.step.h':'Step logic','fc.hint.step.p':'Each card answers: where is the user? Which URL / place? Which interaction happens?','fc.hint.track.h':'Tracking logic','fc.hint.track.p':'Tracking hangs on the goal step. As soon as a step carries a conversion as its goal, Praba tracking opens below.','fc.sec.funnel':'Edit funnel & selected step','fn.step.isgoal':'This step is the goal / end of this funnel path','fn.step.convpick':'Conversion from the catalog (measures this goal)','fn.step.convhint':'Pick a conversion — Praba tracking fields then appear in the catalog block below.',
+  'fc.search':'Search…','fc.worksub':'Build website/app conversion paths: step chain → set the goal (conversion) → Praba tracking expands below → check the Excel registry at the bottom.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / End','fc.lg.sel':'Selected','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'from here · ActiveCampaign','fc.handoff.title':'At the goal, Praba tracking ends (pixel/GA4/Ads). What comes after runs as lifecycle in ActiveCampaign — automations & tags, no URL, no pixel.','fc.hint.step.h':'Step logic','fc.hint.step.p':'Each card answers: where is the user? Which URL / place? Which interaction happens?','fc.hint.track.h':'Tracking logic','fc.hint.track.p':'Tracking hangs on the goal step. As soon as a step carries a conversion as its goal, Praba tracking opens below.','fc.sec.funnel':'Edit funnel & selected step','fn.step.isgoal':'This step is the goal / end of this funnel path','fn.step.convpick':'Conversion from the catalog (measures this goal)','fn.step.convhint':'Pick a conversion — Praba tracking fields then appear in the catalog block below.',
   'fn.emptylist':'No funnels yet — “+ New funnel”.',
   'cv.title':'Conversions · Event catalog','cv.name':'Name','cv.notes':'Notes','cv.new':'New conversion','cv.edit':'Edit conversion',
   'cv.keyhint':'(slug, fixed after creation)','cv.value':'Value (AED)','cv.purpose':'Purpose','cv.path':'Path (LP → … → thank-you)','cv.status':'Status','cv.trigger':'Trigger (GA4)',
@@ -1923,18 +1929,27 @@ function renderFunnelDetail(){
   $('fnStatusPill').textContent=(f.id==null?(LANG==='de'?'neu':'new'):('#'+f.id))+(f.slug?' · '+f.slug:'');
   if($('fnTitleView'))$('fnTitleView').textContent=f.name||(LANG==='de'?'Neuer Funnel':'New funnel');
   $('fnArchive').style.display=(f.id!=null&&f.status!=='archived')?'':'none';
-  $('fnSteps').innerHTML=(f.steps||[]).map((s,i)=>{
+  const allSteps=f.steps||[];
+  // Goal-Step = die Naht zwischen Akquise (Prabas Welt) und Lifecycle (ActiveCampaign).
+  const gk=allSteps.map((s,i)=>s.conversion_key?i:-1).filter(i=>i>=0);
+  const goalIdx=gk.length?gk[gk.length-1]:-1;
+  $('fnSteps').innerHTML=allSteps.map((s,i)=>{
     const cv=state.convs.find(c=>c.key===s.conversion_key);
     const sel=i===state.stepSel;
+    const life=goalIdx>=0&&i>goalIdx;
     const p=cv?convPct(cv):null;
     const title=(s.title||s.url)?esc(s.title||s.url):`<span style="color:#6b7099;font-style:italic">${t('fn.step.empty')}</span>`;
-    return `<div class="fcard${sel?' sel':''}${cv?' goal':''}" onclick="selectStep(${i})">
+    const card=`<div class="fcard${sel?' sel':''}${cv?' goal':''}${life?' lifecycle':''}" onclick="selectStep(${i})">
       <div class="fc-no"><span>${t('fn.stepn',{n:i+1})}</span>${cv?`<span class="fc-goal">GOAL</span>`:`<span class="ttype ${esc(s.type||'page')}">${esc(s.type||'page')}</span>`}</div>
       <div class="fc-title">${title}</div>
       ${s.url?`<div class="fc-url">${esc(s.url)}</div>`:''}
       ${s.interaction?`<div class="fc-int">${esc(s.interaction)}</div>`:''}
+      ${s.ac_tag&&life?`<div class="fc-actag">AC · ${esc(s.ac_tag)}</div>`:''}
       ${cv?`<div class="fc-track"><div class="fc-no"><span>Tracking</span><span class="fc-goal">${p}%</span></div><div class="prog"><i style="width:${p}%"></i></div></div>`:''}
     </div>`;
+    // Nach dem Goal-Step die Übergabe-Trennlinie einfügen (nur wenn danach noch Steps folgen).
+    const divider=(i===goalIdx&&i<allSteps.length-1)?`<div class="fc-handoff" title="${t('fc.handoff.title')}"><span class="hoff-lbl">${t('fc.handoff.lbl')}</span></div>`:'';
+    return card+divider;
   }).join('')+`<div class="fcard add" onclick="addStep()">${t('fn.addstep')}</div>`;
   renderStepEditor(f);
   renderFunnelPraba(f);
