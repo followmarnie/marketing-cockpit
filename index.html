@@ -1269,7 +1269,7 @@ const OPT = {
   channel:[['ACA','ACA · Academy'],['DAY','DAY · Daytrading'],['SWG','SWG · Swingtrading'],
            ['PSY','PSY · Trading-Psychologie'],['SWA','SWA · Software'],['LOI','LOI'],['FI','FI'],['LOT','LOT · Lab of Trades']],
   tag:[['','— (keiner)'],['LM','LM · Lead Magnet'],['EVT','EVT · Event']],
-  funnel:[['Webinar','Webinar'],['Brochure','Brochure'],['Consultation','Consultation'],['Brand','Brand'],['Retargeting','Retargeting']],
+  funnel:[['Webinar','Webinar'],['LeadMagnet','LeadMagnet'],['Brochure','Brochure'],['Consultation','Consultation'],['Brand','Brand'],['Retargeting','Retargeting']],
   variant:[['','— (keiner)'],['Website','Website'],['InstantForm','InstantForm'],['Retargeting','Retargeting']],
   audtyp:[['Cold','Cold'],['Lookalike','Lookalike'],['Retargeting','Retargeting'],['CustomAudience','CustomAudience']],
   geo:[['','— (kein Geo)'],['DACH','DACH'],['DE','DE'],['AT-CH','AT-CH'],['EN-Worldwide','EN-Worldwide']],
@@ -1287,7 +1287,7 @@ const SRC = {
   paid:['meta_ads','facebook_ads','instagram_ads','google','youtube_ads','bing_ads','tiktok_ads','linkedin_ads'],
   organic:['facebook','instagram','youtube','tiktok','linkedin','snapchat','pinterest','reddit','x','blog','podcast','homepage','qr_code','event'],
   email:['newsletter','email_campaign','welcome_email','confirmation_email','webinar_campaign','sales_campaign','onboarding_email','nurture_email','crm_flow'],
-  other:['affiliate_partner','partner_name']
+  other:['affiliate_partner','partner_name','lead_magnet']
 };
 // utm_source → utm_medium Default-Mapping (Marnies Medium-Liste)
 const MEDIUM = {
@@ -1298,15 +1298,16 @@ const MEDIUM = {
   blog:'referral',podcast:'referral',homepage:'referral',qr_code:'offline',event:'offline',
   newsletter:'email',email_campaign:'email',welcome_email:'email',confirmation_email:'email',webinar_campaign:'email',
   sales_campaign:'email',onboarding_email:'email',nurture_email:'email',crm_flow:'email',
-  affiliate_partner:'affiliate',partner_name:'affiliate'
+  affiliate_partner:'affiliate',partner_name:'affiliate',lead_magnet:'pdf'
 };
-const MEDIUM_OPTS=['paid_social','cpc','organic_social','video','display','email','affiliate','referral','messaging','offline'];
+const MEDIUM_OPTS=['paid_social','cpc','organic_social','video','display','email','affiliate','referral','messaging','offline','pdf'];
 const KNOWN_SOURCES=new Set([...SRC.paid,...SRC.organic,...SRC.email,...SRC.other]);
 const KNOWN_MEDIUMS=new Set(MEDIUM_OPTS);
 function srcType(s){if(SRC.paid.includes(s))return 'paid';if(SRC.email.includes(s))return 'email';return 'organic'}
-const STEP_TYPES=['ad','lp','form','email','page','call','purchase'];
+const STEP_TYPES=['ad','lp','form','email','asset','page','call','purchase'];
 // Welche Step-Typen sind ein *Ort* (haben eine URL) vs. reine Interaktion/Touchpoint.
-const STEP_URL_TYPES=['lp','page','purchase'];
+// asset = heruntergeladenes Wert-Asset (PDF/Handout); die URL ist das Ziel des enthaltenen CTAs.
+const STEP_URL_TYPES=['lp','page','purchase','asset'];
 const stepHasUrl=ty=>STEP_URL_TYPES.includes(String(ty||'').toLowerCase());
 const FUNNEL_GROUPS=[['','— (keine)'],['DAY','DAY · Daytrading'],['SWG','SWG · Swingtrading'],['LOI','LOI'],['FI','FI'],
   ['ACA','ACA · Academy'],['PSY','PSY · Psychologie'],['SWA','SWA · Software'],['LOT','LOT'],['BRAND','Brand'],['COMMON','Common · Conversions']];
