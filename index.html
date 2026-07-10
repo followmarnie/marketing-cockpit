@@ -423,6 +423,25 @@
   .dashstats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
   .dstat{background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:999px;padding:6px 14px;font-size:12px;color:#aab0d6}
   .dstat b{color:#fff;font-family:"SF Mono",Menlo,Consolas,monospace;margin-right:3px}
+  .dstat.attn{border-color:rgba(255,132,106,.42);background:rgba(255,132,106,.08);color:#ffb39f}
+  .dstat.attn b{color:#ffb39f}
+  .dstat.clear{border-color:rgba(74,222,128,.4);background:rgba(74,222,128,.08);color:#8ff0b0}
+  .dstat.clear b{color:#8ff0b0}
+  /* Offene Aufgaben (Dashboard) */
+  .ot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ot-col{border:1px solid var(--tn-border);border-radius:var(--tn-r-m);padding:14px;background:var(--tn-surf-1)}
+  .ot-col.mine{border-top:2px solid rgba(150,57,243,.65)}
+  .ot-col.praba{border-top:2px solid rgba(102,102,255,.75)}
+  .ot-h{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+  .ot-h b{font-size:13px;color:#fff}
+  .ot-h .ot-own{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8e94c0;margin-left:auto}
+  .ot-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--tn-border);border-radius:10px;background:rgba(255,255,255,.02);cursor:pointer;margin-bottom:6px;transition:.12s}
+  .ot-item:hover{border-color:rgba(102,102,255,.5);background:var(--tn-surf-2)}
+  .ot-item b{font-size:12.5px;color:#e6eaff;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ot-item .ot-d{font-size:11px;color:#ffb39f;margin-left:auto;flex:none;text-align:right}
+  .ot-item .ot-go{color:#8e94c0;font-size:12px;flex:none}
+  .ot-ok{display:flex;align-items:center;gap:8px;color:#8ff0b0;font-size:12.5px;padding:12px 4px}
+  @media(max-width:900px){.ot-grid{grid-template-columns:1fr}}
   @media(max-width:900px){.app-shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:grid;grid-template-columns:repeat(2,1fr)}.dashgrid{grid-template-columns:1fr}}
   /* ═══ Campaign Overview (Swimlanes) ═══ */
   .ov-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
@@ -600,12 +619,18 @@
       <p class="sub" data-i18n="dash.lead">Springe direkt in das Modul, das gerade gebraucht wird.</p>
     </div>
     <div class="dashstats" id="dashStats"></div>
+    <div class="card" style="margin-bottom:20px">
+      <h2 style="margin:0 0 4px"><span data-i18n="ot.title">Offene Aufgaben</span></h2>
+      <p class="hint" style="margin:0 0 14px" data-i18n="ot.sub">Was noch nicht abgeschlossen ist — nach Zuständigkeit getrennt. Klick springt an die Stelle.</p>
+      <div id="otBox"></div>
+    </div>
     <div class="dashgrid">
-      <div class="dashcard"><h3>Naming Studio</h3><p>Asset → Delivery Group → Campaign. SOP-konforme Namen.</p><button class="btn sm" onclick="switchView('naming')" data-i18n="dash.open">Öffnen</button></div>
-      <div class="dashcard"><h3>UTM-Builder</h3><p>Tracking-URLs bauen, suchen, kopieren.</p><button class="btn sm" onclick="switchView('utm')" data-i18n="dash.open">Öffnen</button></div>
-      <div class="dashcard"><h3>Funnel &amp; Tracking</h3><p>Funnel-Wege + Conversion-Messpunkte (GA4 / Ads / Meta).</p><button class="btn sm" onclick="switchView('fc')" data-i18n="dash.open">Öffnen</button></div>
-      <div class="dashcard"><h3>Kampagnen-Übersicht</h3><p>Wie Naming, UTM, Funnel &amp; Conversions zusammenhängen.</p><button class="btn sm" onclick="switchView('campaigns')" data-i18n="dash.open">Öffnen</button></div>
-      <div class="dashcard"><h3>SOP / Settings</h3><p>Regelquellen: Plattform-Labels, Source/Medium, Rezepte.</p><button class="btn sm" onclick="switchView('settings')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.naming">Naming Studio</h3><p data-i18n="dash.c.naming">Asset → AdSet → Campaign. SOP-konforme Namen.</p><button class="btn sm" onclick="switchView('naming')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.structure">Campaign Structure Map</h3><p data-i18n="dash.c.structure">Campaign → AdSet/Automation → Ads, als Baum und Graph.</p><button class="btn sm" onclick="switchView('structure')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.utm">UTM-Builder</h3><p data-i18n="dash.c.utm">Tracking-URLs bauen, suchen, kopieren.</p><button class="btn sm" onclick="switchView('utm')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.fc">Funnel &amp; Tracking</h3><p data-i18n="dash.c.fc">Funnel-Wege + Conversion-Messpunkte (GA4 / Ads / Meta).</p><button class="btn sm" onclick="switchView('fc')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.campaigns">Kampagnen-Übersicht</h3><p data-i18n="dash.c.campaigns">Wie Naming, UTM, Funnel &amp; Conversions zusammenhängen.</p><button class="btn sm" onclick="switchView('campaigns')" data-i18n="dash.open">Öffnen</button></div>
+      <div class="dashcard"><h3 data-i18n="nav.settings">SOP / Settings</h3><p data-i18n="dash.c.settings">Regelquellen: Plattform-Labels, Source/Medium, Rezepte.</p><button class="btn sm" onclick="switchView('settings')" data-i18n="dash.open">Öffnen</button></div>
     </div>
   </div>
 
@@ -1001,7 +1026,7 @@
           <tr><td>ActiveCampaign</td><td>Campaign / Automation</td><td>Sequence</td><td>Email</td></tr>
         </tbody>
       </table></div>
-      <p class="hint" style="margin-top:12px">Source/Medium-Defaults und bestätigte Naming-Rezepte folgen (Stage 5).</p>
+      <p class="hint" style="margin-top:12px" data-i18n="set.rec">Source/Medium-Defaults und bestätigte Naming-Rezepte.</p>
     </div>
   </div>
     </div>
@@ -1016,7 +1041,7 @@ const SB_KEY='sb_publishable_U2Is6eXQrFnek43jCv5Z2g_oVqkg19E'; // publishable �
 const LS_SESS='tn_cockpit_session';
 
 /* ═══════════════ i18n ═══════════════ */
-let LANG=localStorage.getItem('tn_cockpit_lang')||'de';
+let LANG=localStorage.getItem('tn_cockpit_lang')||(String(navigator.language||'de').toLowerCase().startsWith('de')?'de':'en');
 const T={
  de:{
   'login.lead':'Campaign Control — bitte anmelden.','login.email':'E-Mail','login.password':'Passwort','login.btn':'Anmelden',
@@ -1025,11 +1050,17 @@ const T={
   'tab.naming':'1 · Naming','tab.utm':'2 · UTM-Builder','tab.fc':'3 · Funnels & Conversions','tab.campaigns':'4 · Kampagnen-Übersicht',
   'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.structure':'Campaign Structure Map','nav.utm':'UTM-Builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Kampagnen-Übersicht','nav.settings':'SOP / Settings',
   'sm.note':'<b>Campaign Structure Map.</b> Zweitsicht auf die gespeicherten Namen — Campaign → AdSet/Automation → Ads. Bearbeitet wird weiter im <b>Naming Studio</b>; hier klickst Du einen Eintrag an, um ihn dort zu öffnen.','sm.title':'Campaign Structure Map','sm.search':'Suchen: cb01, Cold, Podcast…','sm.sub':'Zweite Sicht auf dieselben gespeicherten Namen — Campaign → AdSet/Automation → Ads. Kurz-Labels für die Orientierung; voller SOP-Name bei Hover; Klick öffnet den Eintrag im Naming Studio.','sm.empty':'Noch keine gespeicherten Namen — im Naming Studio anlegen.','sm.edit':'im Naming Studio öffnen','sm.v.tree':'Liste','sm.v.map':'Struktur-Map','sm.mapsoon.h':'Visueller Struktur-Graph — folgt','sm.mapsoon.p':'Das Auto-Layout-Diagramm (Campaign → AdSet → Ads als Netz) kommt als nächster Ausbau. Die Baum-Liste deckt heute schon dieselbe Struktur ab und wächst automatisch mit den Daten.','sm.derivectx':'Du leitest ab von:','sm.siblings':'{n} bestehende Schwester-Ads:','sm.openmap':'In Structure Map öffnen',
-  'dash.title':'Ein Cockpit. Fünf Module.','dash.lead':'Springe direkt in das Modul, das gerade gebraucht wird — Namen bauen, UTM kopieren, Funnel & Tracking prüfen oder Kampagnen im Zusammenhang sehen.','dash.open':'Öffnen',
+  'dash.title':'Campaign Control. Sechs Module.','dash.lead':'Springe direkt in das Modul, das gerade gebraucht wird — Namen bauen, UTM kopieren, Funnel & Tracking prüfen oder Kampagnen im Zusammenhang sehen.','dash.open':'Öffnen',
+  'dash.c.naming':'Asset → AdSet → Campaign. SOP-konforme Namen.','dash.c.structure':'Campaign → AdSet/Automation → Ads, als Baum und Graph.',
+  'dash.c.utm':'Tracking-URLs bauen, suchen, kopieren.','dash.c.fc':'Funnel-Wege + Conversion-Messpunkte (GA4 / Ads / Meta).',
+  'dash.c.campaigns':'Wie Naming, UTM, Funnel & Conversions zusammenhängen.','dash.c.settings':'Regelquellen: Plattform-Labels, Source/Medium, Rezepte.',
+  'reg.open':'offen','reg.tk.done':'Tracking komplett','reg.tk.open':'Tracking offen','reg.tk.na':'keine Conversion verknüpft',
+  'set.rec':'Source/Medium-Defaults und bestätigte Naming-Rezepte.',
   'set.title':'SOP / Settings','set.lead':'Regelquellen. Die SOP bleibt maßgeblich — das Tool bildet sie nur ab.',
   'ub.onlyopen':'Nur noch nicht verknüpfte zeigen','nm.linkcol':'UTM?','fn.producthint':'(oder neue tippen)',
   'cm.note':'<b>Kampagnen-Übersicht.</b> Vogelperspektive je Kampagne (utm_campaign): welche Naming-Einträge, UTM-Links, Funnels und Conversions hängen zusammen — und was ist noch <b>offen</b> (Naming ohne UTM-Verknüpfung).',
   'cm.filter':'Kampagne filtern','cm.empty':'Noch keine Kampagnen — im Naming- oder UTM-Tab anlegen.',
+  'ot.title':'Offene Aufgaben','ot.sub':'Was noch nicht abgeschlossen ist — nach Zuständigkeit getrennt. Klick springt an die Stelle.',
   'ov.src.all':'Quelle: alle','ov.src.paid':'Paid','ov.src.email':'E-Mail','ov.src.organic':'Organic',
   'ov.seg.all':'Gesamt','ov.seg.web':'Website','ov.seg.track':'Tracking',
   'ov.lg.real':'realer Knoten','ov.lg.rt':'Retargeting','ov.lg.ok':'Tracking OK','ov.lg.open':'offen / fehlt',
@@ -1108,11 +1139,17 @@ const T={
   'tab.naming':'1 · Naming','tab.utm':'2 · UTM builder','tab.fc':'3 · Funnels & Conversions','tab.campaigns':'4 · Campaign overview',
   'nav.dashboard':'Dashboard','nav.naming':'Naming Studio','nav.structure':'Campaign Structure Map','nav.utm':'UTM builder','nav.fc':'Funnel & Tracking','nav.campaigns':'Campaign overview','nav.settings':'SOP / Settings',
   'sm.note':'<b>Campaign Structure Map.</b> A second view of the saved names — Campaign → AdSet/Automation → Ads. Editing stays in the <b>Naming Studio</b>; click an entry here to open it there.','sm.title':'Campaign Structure Map','sm.search':'Search: cb01, Cold, Podcast…','sm.sub':'A second view of the same saved names — Campaign → AdSet/Automation → Ads. Short labels for orientation; full SOP name on hover; click opens the entry in the Naming Studio.','sm.empty':'No saved names yet — create them in the Naming Studio.','sm.edit':'open in Naming Studio','sm.v.tree':'List','sm.v.map':'Structure map','sm.mapsoon.h':'Visual structure graph — coming','sm.mapsoon.p':'The auto-layout diagram (Campaign → AdSet → Ads as a network) is the next step. The tree list already covers the same structure today and grows automatically with the data.','sm.derivectx':'You are deriving from:','sm.siblings':'{n} existing sibling ads:','sm.openmap':'Open in Structure Map',
-  'dash.title':'One cockpit. Five modules.','dash.lead':'Jump straight into the module you need — build names, copy UTMs, check funnel & tracking, or see campaigns in context.','dash.open':'Open',
+  'dash.title':'Campaign Control. Six modules.','dash.lead':'Jump straight into the module you need — build names, copy UTMs, check funnel & tracking, or see campaigns in context.','dash.open':'Open',
+  'dash.c.naming':'Asset → AdSet → Campaign. SOP-compliant names.','dash.c.structure':'Campaign → AdSet/Automation → Ads, as tree and graph.',
+  'dash.c.utm':'Build, search and copy tracking URLs.','dash.c.fc':'Funnel paths + conversion measurement points (GA4 / Ads / Meta).',
+  'dash.c.campaigns':'How naming, UTM, funnels & conversions connect.','dash.c.settings':'Rule sources: platform labels, source/medium, recipes.',
+  'reg.open':'open','reg.tk.done':'Tracking complete','reg.tk.open':'Tracking open','reg.tk.na':'no conversion linked',
+  'set.rec':'Source/medium defaults and confirmed naming recipes.',
   'set.title':'SOP / Settings','set.lead':'The rule sources live here. The SOP stays authoritative — the tool only reflects it.',
   'ub.onlyopen':'Show only not-yet-linked','nm.linkcol':'UTM?','fn.producthint':'(or type a new one)',
   'cm.note':'<b>Campaign overview.</b> Bird-eye view per campaign (utm_campaign): which naming entries, UTM links, funnels and conversions belong together — and what is still <b>open</b> (naming without a UTM link).',
   'cm.filter':'Filter campaign','cm.empty':'No campaigns yet — create them in the Naming or UTM tab.',
+  'ot.title':'Open tasks','ot.sub':'What is not finished yet — split by ownership. Click jumps to the spot.',
   'ov.src.all':'Source: all','ov.src.paid':'Paid','ov.src.email':'Email','ov.src.organic':'Organic',
   'ov.seg.all':'Overall','ov.seg.web':'Website','ov.seg.track':'Tracking',
   'ov.lg.real':'real node','ov.lg.rt':'Retargeting','ov.lg.ok':'Tracking OK','ov.lg.open':'open / missing',
@@ -1902,7 +1939,7 @@ function renderFunnelRegistry(){
   const flist=fltr==='open'?list.filter(f=>trackState(f)==='open'):fltr==='done'?list.filter(f=>trackState(f)==='done'):list;
   const glabel=k=>{const m=FUNNEL_GROUPS.find(x=>x[0]===k);return m?m[1].split(' · ')[0]:(k||'—')};
   const maxSteps=Math.max(4,...list.map(f=>(f.steps||[]).length),0);
-  const yn=st=>st==='done'?'<span class="st done">✓</span>':'<span class="st open">offen</span>';
+  const yn=st=>st==='done'?'<span class="st done">✓</span>':`<span class="st open">${t('reg.open')}</span>`;
   // Kopf: „meine" Spalten (lila) links, Prabas Spalten (blau) ab GA4; Bearbeiten-Stift ganz rechts.
   let head='<tr><th class="col-mine">'+esc(t('fn.product'))+'</th><th class="col-mine">Funnel</th><th class="col-mine">'+esc(t('fn.purpose'))+'</th>';
   for(let i=0;i<maxSteps;i++)head+=`<th class="col-mine">${t('reg.step')} ${String(i+1).padStart(2,'0')}</th>`;
@@ -1913,7 +1950,7 @@ function renderFunnelRegistry(){
     +`<th class="col-edit"></th></tr>`;
   const rows=flist.map(f=>{
     const cv=goalConv(f);const ts=trackState(f);
-    const dot=`<span class="rdot ${ts==='done'?'ok':ts==='open'?'wait':'na'}" title="${ts==='done'?'Tracking komplett':ts==='open'?'Tracking offen':'keine Conversion verknüpft'}"></span>`;
+    const dot=`<span class="rdot ${ts==='done'?'ok':ts==='open'?'wait':'na'}" title="${ts==='done'?t('reg.tk.done'):ts==='open'?t('reg.tk.open'):t('reg.tk.na')}"></span>`;
     let cells='';
     for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];cells+=`<td class="col-mine rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}`:''}</td>`}
     const notes=(f.steps||[]).map(s=>s.note).filter(Boolean).join(' · ');
@@ -2168,10 +2205,49 @@ function toast(m,err){const el=$('toast');el.textContent=m;el.classList.toggle('
 function setConn(s){connState=s;const d=$('connDot'),l=$('connLabel');if(!d)return;
   d.className='dot'+(s==='ok'?' ok':s==='err'?' err':'');l.textContent=t('conn.'+s);}
 function toggleHowto(show){$('howtoOverlay').classList.toggle('hidden',!show)}
+/* ── Offene Aufgaben: aus den Daten abgeleitet, nach Zuständigkeit getrennt ── */
+function openTasks(){
+  const de=LANG==='de';
+  const mine=[],praba=[];
+  const isOpen=s=>s!=='done'&&s!=='-';
+  state.convs.forEach(c=>{
+    const o=[];
+    if(isOpen(c.ga4_status))o.push('GA4');
+    if(isOpen(c.ads_status))o.push('Google Ads');
+    if(isOpen(c.meta_status))o.push('Meta');
+    if(o.length)praba.push({label:c.name||c.key,detail:o.join(' · ')+(de?' offen':' open'),view:'fc'});
+  });
+  state.funnels.filter(f=>f.status!=='archived').forEach(f=>{
+    const steps=f.steps||[];
+    if(!steps.some(s=>s.conversion_key))mine.push({label:f.name,detail:de?'kein Goal verknüpft':'no goal linked',view:'fc'});
+    const noUrl=steps.filter(s=>/(lp|land|page|seite)/i.test(s.type||'')&&!String(s.url||'').trim()).length;
+    if(noUrl)mine.push({label:f.name,detail:noUrl+(de?' Step(s) ohne URL':' step(s) without URL'),view:'fc'});
+    if(f.status==='draft')mine.push({label:f.name,detail:de?'noch Entwurf':'still draft',view:'fc'});
+  });
+  const unlinked=state.naming.filter(n=>!namingLinked(n.id)).length;
+  if(unlinked)mine.push({label:unlinked+(de?' Namen ohne UTM-Link':' names without UTM link'),detail:de?'im UTM-Builder verknüpfen':'link in UTM builder',view:'utm'});
+  return {mine,praba};
+}
+function renderOpenTasks(){
+  const box=$('otBox');if(!box)return {mine:[],praba:[]};
+  const de=LANG==='de';
+  const tasks=openTasks();
+  const col=(cls,title,owner,items)=>`<div class="ot-col ${cls}"><div class="ot-h"><b>${esc(title)}</b><span class="pill">${items.length}</span><span class="ot-own">${esc(owner)}</span></div>`
+    +(items.length?items.map(i=>`<div class="ot-item" onclick="switchView('${i.view}')" title="${esc(i.label)}"><b>${esc(i.label)}</b><span class="ot-d">${esc(i.detail)}</span><span class="ot-go">↗</span></div>`).join('')
+      :`<div class="ot-ok">✓ ${de?'alles erledigt':'all done'}</div>`)+`</div>`;
+  box.innerHTML=`<div class="ot-grid">
+    ${col('mine',de?'Marketing':'Marketing',de?'Marnie':'Marnie',tasks.mine)}
+    ${col('praba',de?'Tracking':'Tracking',de?'Praba':'Praba',tasks.praba)}
+  </div>`;
+  return tasks;
+}
 function renderDashboard(){
   const s=$('dashStats'); if(!s)return;
+  const tasks=renderOpenTasks();
+  const openCount=tasks.mine.length+tasks.praba.length;
   const items=[[state.funnels.length,'Funnels'],[state.convs.length,'Conversions'],[state.rows.length,'UTM-Links'],[state.naming.length,LANG==='de'?'Namen':'Names']];
-  s.innerHTML=items.map(([n,l])=>`<span class="dstat"><b>${n}</b> ${esc(l)}</span>`).join('');
+  s.innerHTML=items.map(([n,l])=>`<span class="dstat"><b>${n}</b> ${esc(l)}</span>`).join('')
+    +`<span class="dstat ${openCount?'attn':'clear'}"><b>${openCount}</b> ${LANG==='de'?'offen':'open'}</span>`;
 }
 function switchView(v){
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
