@@ -1297,6 +1297,7 @@ const T={
   'wz.s4.todo':'ℹ Der Tag wird nur am Funnel vermerkt — <b>nicht</b> automatisch in ActiveCampaign angelegt. Prüfe in AC, ob es ihn schon gibt; wenn nicht: dort anlegen und die Automation dranhängen.',
   'wz.todo.h':'Danach zu tun (außerhalb des Tools)','wz.todo.ac':'AC-Tag „{tag}" in ActiveCampaign anlegen/prüfen + Automation dranhängen','wz.todo.conv':'Conversion „{key}" mit Praba in GA4/Ads/Meta verdrahten (bei rein organischem Traffic oft nicht nötig)','wz.todo.utm':'UTM-Links in die Assets einsetzen (z. B. Newsletter-Link auf die LP)',
   'wz.s5.h':'Überblick — das lege ich an','wz.s5.lead':'Prüfe kurz. Mit „Alles anlegen" schreibe ich es in einem Rutsch in die Datenbank.',
+  'wz.f.themahint':'(Slug · Angle/Anlass, nicht nur das Produkt)','wz.s4.sug':'Vorschlag aus Typ + Thema:','wz.dup':'⚠ Diese Kampagne gibt es schon (gleicher Name). Mach das Thema spezifischer (z. B. …-Warmliste, …-Reaktivierung) oder ändere den Zeitraum.',
   'wz.f.type':'Art der Kampagne','wz.f.product':'Produkt','wz.f.thema':'Thema','wz.f.datum':'Zeitraum','wz.f.count':'Anzahl','wz.f.aud':'Audience','wz.f.lps':'Landingpage(s)','wz.f.addlp':'+ weitere LP','wz.f.danke':'Danke-Seite (URL)','wz.f.conv':'Conversion (misst den Abschluss)','wz.f.convkey':'Key','wz.f.convname':'Name','wz.f.convval':'Wert','wz.f.actag':'AC-Tag nach der Conversion','wz.f.seq':'Strecke / Sequenz-Name',
   'wz.src.meta':'Meta-Ad','wz.src.google':'Google-Ad','wz.src.email':'E-Mail','wz.src.organic':'Organisch','wz.src.rt':'Retargeting-Ad',
   'wz.conv.new':'Neue Conversion','wz.conv.exist':'Aus Katalog','wz.conv.later':'Später festlegen','wz.conv.laterhint':'Kein Conversion-Ziel jetzt — der Funnel bleibt offen (⚠ in der Übersicht). Du kannst es später in „Funnel & Tracking" ergänzen.','wz.pv.camp':'Kampagnen-Name (SOP)',
@@ -1420,6 +1421,7 @@ const T={
   'wz.s4.todo':'ℹ The tag is only recorded on the funnel — <b>not</b> created in ActiveCampaign automatically. Check in AC whether it already exists; if not: create it there and attach the automation.',
   'wz.todo.h':'To do next (outside the tool)','wz.todo.ac':'Create/check AC tag “{tag}” in ActiveCampaign + attach the automation','wz.todo.conv':'Wire conversion “{key}” with Praba in GA4/Ads/Meta (often not needed for purely organic traffic)','wz.todo.utm':'Put the UTM links into the assets (e.g. the newsletter link to the LP)',
   'wz.s5.h':'Review — this is what I create','wz.s5.lead':'Take a quick look. “Create everything” writes it to the database in one go.',
+  'wz.f.themahint':'(slug · angle/occasion, not just the product)','wz.s4.sug':'Suggestion from type + topic:','wz.dup':'⚠ This campaign already exists (same name). Make the topic more specific (e.g. …-warmlist, …-reactivation) or change the period.',
   'wz.f.type':'Campaign type','wz.f.product':'Product','wz.f.thema':'Topic','wz.f.datum':'Period','wz.f.count':'Count','wz.f.aud':'Audience','wz.f.lps':'Landing page(s)','wz.f.addlp':'+ another LP','wz.f.danke':'Thank-you page (URL)','wz.f.conv':'Conversion (measures the finish)','wz.f.convkey':'Key','wz.f.convname':'Name','wz.f.convval':'Value','wz.f.actag':'AC tag after the conversion','wz.f.seq':'Sequence name',
   'wz.src.meta':'Meta ad','wz.src.google':'Google ad','wz.src.email':'Email','wz.src.organic':'Organic','wz.src.rt':'Retargeting ad',
   'wz.conv.new':'New conversion','wz.conv.exist':'From catalog','wz.conv.later':'Decide later','wz.conv.laterhint':'No conversion goal now — the funnel stays open (⚠ in the overview). You can add it later in “Funnel & Tracking”.','wz.pv.camp':'Campaign name (SOP)',
@@ -2707,6 +2709,10 @@ const WIZ_SOURCES=[
 // general_consultation_booked, webinar_trading_with_ai_signup …): <thema>_<aktion-verb>.
 const WIZ_GOAL={LeadMagnet:'email_optin',Webinar:'signup',Consultation:'consultation_booked',Brand:'signup',Retargeting:'email_optin',Brochure:'email_optin'};
 const WIZ_VALUE={LeadMagnet:'60',Webinar:'',Consultation:'2000',Brand:'',Retargeting:'60',Brochure:'60'};
+// AC-Tag-Kategorie je Kampagnen-Typ (Konvention „Kategorie: Wert"). Lead: verifiziert (Börsenampel).
+const WIZ_ACCAT={LeadMagnet:'Lead',Webinar:'Lead',Consultation:'Goal',Brand:'Interest',Retargeting:'Lead',Brochure:'Lead'};
+function wizTopicNice(){const th=(wiz.thema||'').trim();return th?th.charAt(0).toUpperCase()+th.slice(1):'';}
+function wizAcTagSug(){const th=wizTopicNice();return th?((WIZ_ACCAT[wiz.type]||'Lead')+': '+th):'';}
 const AC_PREFIXES=['Customer','Source','Status','Goal','Lead','Engagement','Interest','Language','Funnel','Subscription','Promotion','Signup'];
 let wizStep=0;
 let wiz=null;
@@ -2735,13 +2741,14 @@ function wizAddLp(){wiz.lps.push({url:'',quelle:''});wizPersist();wizRenderBody(
 function wizDelLp(i){wiz.lps.splice(i,1);if(!wiz.lps.length)wiz.lps.push({url:'',quelle:''});wizPersist();wizRenderBody();}
 function wizSetLp(i,f,v){wiz.lps[i][f]=v;wizPersist();}
 function wizSetConvMode(m){wiz.convMode=m;wizPersist();wizRenderBody();}
-function wizSetAcTag(v){wiz.acTag=v;wizPersist();var w=document.getElementById('wizAcWarn');if(w)w.innerHTML=wizAcTagWarn(v);}
+function wizSetAcTag(v){wiz.acTag=v;wiz._acTouched=true;wizPersist();var w=document.getElementById('wizAcWarn');if(w)w.innerHTML=wizAcTagWarn(v);}
 function wizAcTagWarn(v){v=(v||'').trim();if(!v)return '';const m=v.match(/^([A-Za-zÄÖÜäöü]+)\s*:\s*.+/);
   if(!m)return t('wz.ac.format');
   const pfx=m[1];if(!AC_PREFIXES.some(p=>p.toLowerCase()===pfx.toLowerCase()))return t('wz.ac.prefix',{p:AC_PREFIXES.slice(0,6).join(', ')});
   return '<span class="wiz-ok">'+t('wz.ac.ok')+'</span>';}
 
-function wizLive(){const c=document.getElementById('wizCampPrev');if(c)c.textContent=wizCampBase()||'—';const u=document.getElementById('wizUtmCampPrev');if(u)u.textContent=wizUtmCamp()||'—';const f=document.getElementById('wizFunPrev');if(f)f.textContent=wizFunnelName()||'—';}
+function wizLive(){const c=document.getElementById('wizCampPrev');if(c)c.textContent=wizCampBase()||'—';const u=document.getElementById('wizUtmCampPrev');if(u)u.textContent=wizUtmCamp()||'—';const f=document.getElementById('wizFunPrev');if(f)f.textContent=wizFunnelName()||'—';
+  const dw=document.getElementById('wizDupWarn');if(dw){const base=wizCampBase();const dup=!!base&&(state.naming||[]).some(n=>{const cn=n.campaign_name||'';return cn===base||cn.startsWith(base+'_');});dw.innerHTML=dup?t('wz.dup'):'';dw.style.display=dup?'':'none';}}
 
 function wizStepper(){
   const labels=['wz.s1.tab','wz.s2.tab','wz.s3.tab','wz.s4.tab','wz.s5.tab'];
@@ -2770,11 +2777,12 @@ function wizRenderBody(){
     <div class="wiz-grid">
       <div><label>${t('wz.f.type')}</label><select onchange="wizSet('type',this.value)">${selOpts(OPT.funnel,wiz.type)}</select></div>
       <div><label>${t('wz.f.product')}</label><select onchange="wizSet('channel',this.value)">${selOpts(OPT.channel,wiz.channel)}</select></div>
-      <div><label>${t('wz.f.thema')} <span class="hint">(Slug)</span></label><input value="${esc(wiz.thema)}" oninput="wizSet('thema',this.value,true)" placeholder="Boersenampel"></div>
+      <div><label>${t('wz.f.thema')} <span class="hint">${t('wz.f.themahint')}</span></label><input value="${esc(wiz.thema)}" oninput="wizSet('thema',this.value,true)" placeholder="Boersenampel-Warmliste"></div>
       <div><label>${t('wz.f.datum')} <span class="hint">(YYYY-MM)</span></label><input value="${esc(wiz.datum)}" oninput="wizSet('datum',this.value,true)" placeholder="2026-07"></div>
       <div class="full"><label>${t('nm.temp')}</label><div class="wiz-chips">${['cold','warm','hot'].map(tk=>`<div class="wiz-chip ${wiz.temperature===tk?'sel':''}" onclick="wizSet('temperature','${tk}')">${t('temp.'+tk)}</div>`).join('')}<div class="wiz-chip ${!wiz.temperature?'sel':''}" onclick="wizSet('temperature','')">${t('temp.open')}</div></div></div>
     </div>
-    <div class="wiz-preview"><span class="pk">${t('wz.pv.camp')}</span><span class="pl" id="wizCampPrev">${esc(wizCampBase())||'—'}</span><span class="pk">utm_campaign</span><span class="pl" id="wizUtmCampPrev">${esc(wizUtmCamp())||'—'}</span></div>`;
+    <div class="wiz-preview"><span class="pk">${t('wz.pv.camp')}</span><span class="pl" id="wizCampPrev">${esc(wizCampBase())||'—'}</span><span class="pk">utm_campaign</span><span class="pl" id="wizUtmCampPrev">${esc(wizUtmCamp())||'—'}</span><div class="wiz-warn" id="wizDupWarn" style="display:none;margin-top:8px"></div></div>`;
+    setTimeout(wizLive,0);
   }else if(wizStep===1){
     h=`<div class="wiz-h">${t('wz.s2.h')}</div><div class="wiz-lead">${t('wz.s2.lead')}</div>
     <div class="wiz-chips" style="margin-bottom:14px">${WIZ_SOURCES.map(s=>`<div class="wiz-chip ${wiz.sources[s.k].on?'sel':''}" onclick="wizToggleSrc('${s.k}')">${t(s.label)} <span class="ph">${s.src}</span></div>`).join('')}</div>
@@ -2811,7 +2819,9 @@ function wizRenderBody(){
     }
     h+=`</div>`;
   }else if(wizStep===3){
+    if(!wiz._acTouched){var _sug=wizAcTagSug();if(_sug)wiz.acTag=_sug;}
     h=`<div class="wiz-h">${t('wz.s4.h')}</div><div class="wiz-lead">${t('wz.s4.lead')}</div>
+    <div class="wiz-hint" style="margin:-8px 0 12px">${t('wz.s4.sug')} <b style="color:#c9a6ff">${esc(wizAcTagSug()||'—')}</b></div>
     <div class="wiz-grid">
       <div class="full"><label>${t('wz.f.actag')} <span class="hint">(Kategorie: Wert)</span></label><input value="${esc(wiz.acTag)}" oninput="wizSetAcTag(this.value)" placeholder="Lead: Börsenampel"><div class="wiz-warn" id="wizAcWarn" style="${wiz.acTag?'':'display:none'}">${wizAcTagWarn(wiz.acTag)}</div></div>
       <div class="full"><label>${t('wz.f.seq')} <span class="hint">(opt.)</span></label><input value="${esc(wiz.seqName)}" oninput="wizSet('seqName',this.value,true)" placeholder="Willkommens-Strecke"></div>
