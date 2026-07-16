@@ -450,6 +450,16 @@
   .lc-step{display:flex;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--tn-border);border-radius:10px;background:rgba(255,255,255,.02);font-size:13px}
   .lc-step .lc-tag{margin-left:auto;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:11px;color:#d9e08c}
   .lc-empty{color:#8a90c0;font-style:italic;font-size:13px}
+  .lc-grp{margin-bottom:22px}
+  .lc-grp-h{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#8a90c0;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--tn-border)}
+  .lc-series{background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .lc-series-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lc-series-h b{color:#fff;font-size:14px}
+  .lc-trig{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#8fe3c8;background:rgba(23,248,224,.10);border:1px solid rgba(23,248,224,.25);border-radius:5px;padding:2px 7px}
+  .lc-count{margin-left:auto;font-size:12px;color:#9198c4}
+  .lc-chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .lc-mail{font-size:12px;color:#c9cdf5;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:7px;padding:5px 10px}
+  .lc-arr{color:#6b70a0}
   .temp-chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--tn-border);white-space:nowrap}
   .temp-chip.cold{color:#7cc4ff;border-color:rgba(124,196,255,.4);background:rgba(124,196,255,.08)}
   .temp-chip.warm{color:#ffce7a;border-color:rgba(255,206,122,.4);background:rgba(255,206,122,.08)}
@@ -1681,6 +1691,8 @@ const FUNNEL_GROUPS=[['','— (keine)'],['DAY','DAY · Daytrading'],['SWG','SWG 
 const $=id=>document.getElementById(id);
 const kebab=s=>(s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 const snake=s=>(s||'').toString().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+// Lifecycle-Serie (Phase 3) explizit über kind='lifecycle' — kein Raten, damit nichts ungewollt verschwindet.
+const isLifecycle=f=>!!f&&f.kind==='lifecycle';
 const join_=(...a)=>a.filter(x=>x!==''&&x!=null).join('_');
 const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fmtId=n=>'tradeneon'+String(parseInt(n,10)).padStart(5,'0');
@@ -2338,7 +2350,7 @@ function ccImportClear(){$('impText').value='';$('impPreview').innerHTML='';ccIm
 // Gruppen-Leiste (wie Excel-Tabs): Alle · <Gruppen mit Funnels> · Common Conversions
 function renderFcTabs(){
   const bar=$('fcTabs'); if(!bar)return;
-  const activeF=state.funnels.filter(f=>f.status!=='archived');
+  const activeF=state.funnels.filter(f=>f.status!=='archived'&&!isLifecycle(f));
   // Ungültige Gruppe (keine Funnels mehr) → zurück auf „Alle"
   if(state.fcTab!=='all'&&state.fcTab!=='conv'&&!groupsInUse().includes(state.fcTab))state.fcTab='all';
   const chip=(key,label,count,cls)=>`<button class="${cls||''}${state.fcTab===key?' on':''}" onclick="setFcTab('${key}')">${esc(label)}${count!=null?`<span class="n">${count}</span>`:''}</button>`;
@@ -2366,7 +2378,7 @@ function renderFunnelList(){
   const order=FUNNEL_GROUPS.map(x=>x[0]).filter(Boolean).concat('—');
   const grp=state.fcTab;
   const glabel=k=>{const m=FUNNEL_GROUPS.find(x=>x[0]===k);return m?m[1].split(' · ')[0]:(k||'—')};
-  const list=state.funnels.filter(f=>(showArch||f.status!=='archived') && (grp==='all'||grp==='conv'||f.product===grp)
+  const list=state.funnels.filter(f=>(showArch||f.status!=='archived') && (grp==='all'||grp==='conv'||f.product===grp) && !isLifecycle(f)
       && (!q||[f.name,f.product,f.purpose].filter(Boolean).join(' ').toLowerCase().includes(q)))
     .slice().sort((a,b)=>{const ia=order.indexOf(a.product||'—'),ib=order.indexOf(b.product||'—');
       return ia!==ib?ia-ib:(a.name||'').localeCompare(b.name||'')});
@@ -2508,7 +2520,7 @@ function renderFunnelRegistry(){
   const goalConv=f=>{const ks=(f.steps||[]).filter(s=>s.conversion_key);const s=ks[ks.length-1];return s?state.convs.find(c=>c.key===s.conversion_key):null};
   const trackState=f=>{const cv=goalConv(f);if(!cv)return 'none';return (cv.ga4_status==='done'&&cv.ads_status==='done'&&cv.meta_status==='done')?'done':'open';};
   const q=($('fnSearch')?.value||'').toLowerCase();
-  let list=state.funnels.filter(f=>(showArch||f.status!=='archived') && (grp==='all'||grp==='conv'||f.product===grp) && (!q||[f.name,f.product,f.purpose].filter(Boolean).join(' ').toLowerCase().includes(q)));
+  let list=state.funnels.filter(f=>(showArch||f.status!=='archived') && (grp==='all'||grp==='conv'||f.product===grp) && !isLifecycle(f) && (!q||[f.name,f.product,f.purpose].filter(Boolean).join(' ').toLowerCase().includes(q)));
   const fltr=state.regFilter||'all';
   let flist=fltr==='open'?list.filter(f=>trackState(f)==='open'):fltr==='done'?list.filter(f=>trackState(f)==='done'):list;
   // Sekundär nach Name vorsortieren (stabiler Tiebreak), dann nach der aktiven Spalte.
@@ -3317,17 +3329,30 @@ function loadLieferkette(){var f=document.getElementById('lkFrame');if(!f||f.dat
 window.addEventListener('resize',fitLk);
 function renderLifecycle(){
   var host=document.getElementById('lcSteps');if(!host)return;
+  var de=LANG==='de';
+  var lc=(state.funnels||[]).filter(function(f){return f.status!=='archived'&&isLifecycle(f);});
+  if(!lc.length){host.innerHTML='<div class="lc-empty">'+t('lc.empty')+'</div>';renderTagCatalog();return;}
+  var glabel=function(k){var m=FUNNEL_GROUPS.find(function(x){return x[0]===k;});return m?m[1].split(' · ')[0]:(k||'—');};
+  var groups={},order=[];
+  lc.forEach(function(f){var g=f.product||'—';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(f);});
   var out=[];
-  (state.funnels||[]).forEach(function(f){
-    var steps=f.steps||[];
-    var gk=steps.map(function(s,i){return s.conversion_key?i:-1;}).filter(function(i){return i>=0;});
-    var goalIdx=gk.length?gk[gk.length-1]:-1;
-    if(goalIdx<0)return;
-    steps.forEach(function(s,i){
-      if(i>goalIdx){out.push('<div class="lc-step"><span>'+esc(f.name||f.slug||'—')+' · '+esc(s.title||s.type||'Step')+'</span>'+(s.ac_tag?'<span class="lc-tag">AC · '+esc(s.ac_tag)+'</span>':'')+'</div>');}
+  order.forEach(function(g){
+    out.push('<div class="lc-grp"><div class="lc-grp-h">'+esc(glabel(g))+'</div>');
+    groups[g].forEach(function(f){
+      var steps=f.steps||[];
+      var utmN=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;}).length;
+      var trig=steps.map(function(s){return s.ac_tag;}).filter(Boolean)[0]||'';
+      var chain=steps.map(function(s){return '<span class="lc-mail">'+esc(s.title||s.type||'Step')+'</span>';}).join('<span class="lc-arr">&rarr;</span>');
+      out.push('<div class="lc-series">'
+        +'<div class="lc-series-h"><b>'+esc(f.name||f.slug||'—')+'</b>'
+        +(trig?'<span class="lc-trig">'+esc(trig)+'</span>':'')
+        +'<span class="lc-count">'+steps.length+' '+(de?'Mails':'emails')+' &middot; '+utmN+' UTMs</span></div>'
+        +(chain?'<div class="lc-chain">'+chain+'</div>':'')
+        +'</div>');
     });
+    out.push('</div>');
   });
-  host.innerHTML=out.length?out.join(''):'<div class="lc-empty">'+t('lc.empty')+'</div>';
+  host.innerHTML=out.join('');
   renderTagCatalog();
 }
 function tcWhoBadge(who){var m={du:['tc-du',t('tc.who.du')],auto:['tc-auto',t('tc.who.auto')],portal:['tc-portal',t('tc.who.portal')]};var x=m[who]||m.du;return '<span class="tc-who '+x[0]+'">'+x[1]+'</span>';}
