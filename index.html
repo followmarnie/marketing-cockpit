@@ -459,6 +459,13 @@
   .lpv-row input{margin:0}
   .lpv-del{all:unset;cursor:pointer;color:var(--tn-pink);padding:0 8px;display:flex;align-items:center;border-radius:6px}
   .lpv-del:hover{background:rgba(255,60,141,.1)}
+  .url-with-dom{display:flex;gap:6px;align-items:center;min-width:0}
+  .url-with-dom input{flex:1;min-width:0}
+  .dom-pick{flex:none;max-width:155px;font-size:12px;padding:7px 8px;border-radius:8px;background:#15173a;color:#cfd4f0;border:1px solid #2a2f5c;cursor:pointer}
+  .rvars{margin-top:5px;display:flex;flex-direction:column;gap:2px}
+  .rvar-badge{align-self:flex-start;font-size:10px;color:#c9a6ff;background:rgba(150,57,243,.14);border:1px solid rgba(150,57,243,.3);border-radius:6px;padding:1px 6px;margin-bottom:1px}
+  .rvar{color:#8f96c9;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+  .rvar i{color:#7d84b4}
   .fc-vars{margin-top:6px;font-size:11px;color:#8f8cff;font-weight:600}
   .ov-sublbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin:2px 0 6px;padding-left:2px}
   .ov-sublbl.lc{color:#d9e08c}
@@ -2299,12 +2306,12 @@ function renderStepEditor(f){
       <div><label>${t('fn.step.actag')}</label><input data-f="ac_tag" value="${esc(s.ac_tag)}"></div>
       <div class="full"><label>${t('fn.step.title')}</label><input data-f="title" value="${esc(s.title)}"></div>
       ${stepHasUrl(s.type)
-        ? `<div class="full"><label>${t('fn.step.url')}</label><input data-f="url" value="${esc(s.url)}"></div>`
+        ? `<div class="full"><label>${t('fn.step.url')}</label><div class="url-with-dom">${domSelectHtml()}<input data-f="url" value="${esc(s.url)}"></div></div>`
         : `<div class="full"><label>${t('fn.step.url')}</label><p class="hint nourlhint">${t('fn.step.nourltype')}</p></div>`}
       ${s.type==='lp'?`<div class="full lp-vars">
         <label>${t('fn.lpvars')} <span class="hint">${t('fn.lpvarshint')}</span></label>
         ${(s.variants||[]).map((v,vi)=>`<div class="lpv-row">
-          <input class="lpv-url" placeholder="${t('fn.lpv.urlph')}" value="${esc(v.url||'')}" oninput="updVariant(${i},${vi},'url',this.value)">
+          <div class="url-with-dom">${domSelectHtml()}<input class="lpv-url" placeholder="${t('fn.lpv.urlph')}" value="${esc(v.url||'')}" oninput="updVariant(${i},${vi},'url',this.value)"></div>
           <input class="lpv-q" placeholder="${t('fn.lpv.qph')}" value="${esc(v.quelle||'')}" oninput="updVariant(${i},${vi},'quelle',this.value)">
           <button class="lpv-del" onclick="delVariant(${i},${vi})" title="${t('fn.lpv.del')}">✕</button>
         </div>`).join('')}
@@ -2361,7 +2368,7 @@ function renderFunnelRegistry(){
     const cv=goalConv(f);const ts=trackState(f);
     const dot=`<span class="rdot ${ts==='done'?'ok':ts==='open'?'wait':'na'}" title="${ts==='done'?t('reg.tk.done'):ts==='open'?t('reg.tk.open'):t('reg.tk.na')}"></span>`;
     let cells='';
-    for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];cells+=`<td class="col-mine rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}`:''}</td>`}
+    for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];const vh=(s&&s.variants&&s.variants.length)?`<div class="rvars"><span class="rvar-badge">+${s.variants.length} ${LANG==='de'?'Türen':'doors'}</span>${s.variants.map(v=>`<small class="rvar">${esc(v.url||'')}${v.quelle?` · <i>${esc(v.quelle)}</i>`:''}</small>`).join('')}</div>`:'';cells+=`<td class="col-mine rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}${vh}`:''}</td>`}
     const notes=(f.steps||[]).map(s=>s.note).filter(Boolean).join(' · ');
     return `<tr class="reg-row" onclick="selectFunnel(${f.id})"><td class="col-mine rid">${f.id!=null?`#${esc(f.id)}`:'—'}</td><td class="col-mine">${esc(glabel(f.product))}</td><td class="col-mine rfunnel">${dot}<span class="fname" onclick="selectFunnel(${f.id})">${esc(f.name)}</span></td><td class="col-mine">${esc(f.purpose||'')}</td>${cells}<td class="col-mine">${esc(notes)}</td>`
       +`<td class="col-praba pcol-first rmono">${cv?(esc(cv.ga4_event)||'—'):'—'}</td><td class="col-praba">${cv?yn(cv.ga4_status):'—'}</td><td class="col-praba rmono">${cv?esc(cv.ga4_trigger||''):''}</td>`
@@ -2406,6 +2413,13 @@ function moveStep(i,d){if(!state.editF)return;syncFunnelInputs();const s=state.e
 function addVariant(i){if(!state.editF)return;syncFunnelInputs();const s=state.editF.steps[i];if(!s)return;s.variants=(s.variants||[]).concat([{url:'',quelle:''}]);renderFunnelDetail();}
 function delVariant(i,vi){if(!state.editF)return;syncFunnelInputs();const s=state.editF.steps[i];if(!s||!s.variants)return;s.variants.splice(vi,1);if(!s.variants.length)delete s.variants;renderFunnelDetail();}
 function updVariant(i,vi,field,val){if(!state.editF)return;const s=state.editF.steps[i];if(!s||!s.variants||!s.variants[vi])return;s.variants[vi][field]=val;}
+// --- Domain-Schnellauswahl für URL-Felder (Tipp-Helfer; gespeichert wird immer die volle URL) ---
+const CC_DOMAINS_SEED=['tradeneon.com','tradeneon-academy.com'];
+function ccDomains(){let e=[];try{e=JSON.parse(localStorage.getItem('cc_domains')||'[]')||[]}catch(x){}return CC_DOMAINS_SEED.concat(e.filter(d=>CC_DOMAINS_SEED.indexOf(d)<0));}
+function ccSaveDomain(d){let e=[];try{e=JSON.parse(localStorage.getItem('cc_domains')||'[]')||[]}catch(x){}if(d&&e.indexOf(d)<0&&CC_DOMAINS_SEED.indexOf(d)<0){e.push(d);try{localStorage.setItem('cc_domains',JSON.stringify(e))}catch(x){}}}
+function ccApplyDomain(domain,cur){cur=String(cur||'').trim();const m=cur.match(/^https?:\/\/[^\/]+(\/.*)?$/i);const path=m?(m[1]||'/'):(cur?(cur[0]==='/'?cur:'/'+cur):'/');return 'https://'+domain+path;}
+function domSelectHtml(){const cust=LANG==='de'?'+ Eigene…':'+ Custom…';return '<select class="dom-pick" onchange="ccDomPick(this)" title="Domain voranstellen"><option value="">Domain…</option>'+ccDomains().map(d=>'<option value="'+esc(d)+'">'+esc(d)+'</option>').join('')+'<option value="__custom__">'+cust+'</option></select>';}
+function ccDomPick(sel){const v=sel.value;sel.selectedIndex=0;if(!v)return;const inp=sel.parentNode.querySelector('input');if(!inp)return;let dom=v;if(v==='__custom__'){let d=prompt(LANG==='de'?'Eigene Domain (ohne https://):':'Custom domain (without https://):');if(!d)return;d=d.replace(/^https?:\/\//i,'').replace(/\/+$/,'').trim();if(!d)return;if(confirm((LANG==='de'?'Domain „':'Save domain “')+d+(LANG==='de'?'" in die Liste speichern?':'” to the list?')))ccSaveDomain(d);dom=d;}inp.value=ccApplyDomain(dom,inp.value);inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();}
 function syncFunnelInputs(){
   const f=state.editF;if(!f)return;
   f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;f.product=$('fnProduct').value;f.purpose=$('fnPurpose').value;f.traffic=$('fnTraffic').value;
