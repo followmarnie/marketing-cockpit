@@ -455,7 +455,7 @@
   .reg tbody tr.reg-row:hover>td{background:rgba(150,57,243,.07)}
   .lp-vars{border:1px dashed var(--tn-border);border-radius:10px;padding:10px 12px;background:rgba(111,107,255,.05);margin-top:2px}
   .lp-vars>label{margin-top:0}
-  .lpv-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:7px 0}
+  .lpv-row{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;margin:7px 0}
   .lpv-row input{margin:0}
   .lpv-del{all:unset;cursor:pointer;color:var(--tn-pink);padding:0 8px;display:flex;align-items:center;border-radius:6px}
   .lpv-del:hover{background:rgba(255,60,141,.1)}
@@ -464,8 +464,12 @@
   .dom-pick{flex:none;max-width:155px;font-size:12px;padding:7px 8px;border-radius:8px;background:#15173a;color:#cfd4f0;border:1px solid #2a2f5c;cursor:pointer}
   .rvars{margin-top:5px;display:flex;flex-direction:column;gap:2px}
   .rvar-badge{align-self:flex-start;font-size:10px;color:#c9a6ff;background:rgba(150,57,243,.14);border:1px solid rgba(150,57,243,.3);border-radius:6px;padding:1px 6px;margin-bottom:1px}
-  .rvar{color:#8f96c9;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+  .rvar{color:#8f96c9;font-size:10.5px;white-space:nowrap}
   .rvar i{color:#7d84b4}
+  .lpv-utm{display:flex;align-items:center;gap:4px;font-size:11px;color:#c9a6ff;white-space:nowrap;cursor:pointer}
+  .lpv-utm.off{visibility:hidden}
+  .lpv-utm input{margin:0}
+  .ac-tag-warn{font-size:11px;margin-top:4px;line-height:1.4;color:#ffb37a}
   .fc-vars{margin-top:6px;font-size:11px;color:#8f8cff;font-weight:600}
   .ov-sublbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin:2px 0 6px;padding-left:2px}
   .ov-sublbl.lc{color:#d9e08c}
@@ -2303,7 +2307,7 @@ function renderStepEditor(f){
       </span></div>
     <div class="se-grid">
       <div><label>${t('fn.step.type')}</label><select data-f="type" onchange="onStepTypeChange()">${STEP_TYPES.map(x=>`<option${x===(s.type||'page')?' selected':''}>${x}</option>`).join('')}</select></div>
-      <div><label>${t('fn.step.actag')}</label><input data-f="ac_tag" value="${esc(s.ac_tag)}"></div>
+      <div><label>${t('fn.step.actag')}</label><input data-f="ac_tag" list="acTagList" value="${esc(s.ac_tag)}" oninput="acTagGuard(this)"><div class="ac-tag-warn">${s.ac_tag?wizAcTagWarn(s.ac_tag):''}</div>${acTagDatalistHtml()}</div>
       <div class="full"><label>${t('fn.step.title')}</label><input data-f="title" value="${esc(s.title)}"></div>
       ${stepHasUrl(s.type)
         ? `<div class="full"><label>${t('fn.step.url')}</label><div class="url-with-dom">${domSelectHtml()}<input data-f="url" value="${esc(s.url)}"></div></div>`
@@ -2313,6 +2317,7 @@ function renderStepEditor(f){
         ${(s.variants||[]).map((v,vi)=>`<div class="lpv-row">
           <div class="url-with-dom">${domSelectHtml()}<input class="lpv-url" placeholder="${t('fn.lpv.urlph')}" value="${esc(v.url||'')}" oninput="updVariant(${i},${vi},'url',this.value)"></div>
           <input class="lpv-q" placeholder="${t('fn.lpv.qph')}" value="${esc(v.quelle||'')}" oninput="updVariant(${i},${vi},'quelle',this.value)">
+          <label class="lpv-utm ${utmKeyword(v.quelle)?'':'off'}" title="${LANG==='de'?'UTM gebaut?':'UTM built?'}"><input type="checkbox" ${v.utm_done?'checked':''} onchange="updVariant(${i},${vi},'utm_done',this.checked)">UTM</label>
           <button class="lpv-del" onclick="delVariant(${i},${vi})" title="${t('fn.lpv.del')}">✕</button>
         </div>`).join('')}
         <button class="btn sm ghost" onclick="addVariant(${i})">${t('fn.lpv.add')}</button>
@@ -2368,7 +2373,7 @@ function renderFunnelRegistry(){
     const cv=goalConv(f);const ts=trackState(f);
     const dot=`<span class="rdot ${ts==='done'?'ok':ts==='open'?'wait':'na'}" title="${ts==='done'?t('reg.tk.done'):ts==='open'?t('reg.tk.open'):t('reg.tk.na')}"></span>`;
     let cells='';
-    for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];const vh=(s&&s.variants&&s.variants.length)?`<div class="rvars"><span class="rvar-badge">+${s.variants.length} ${LANG==='de'?'Türen':'doors'}</span>${s.variants.map(v=>`<small class="rvar">${esc(v.url||'')}${v.quelle?` · <i>${esc(v.quelle)}</i>`:''}</small>`).join('')}</div>`:'';cells+=`<td class="col-mine rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}${vh}`:''}</td>`}
+    for(let i=0;i<maxSteps;i++){const s=(f.steps||[])[i];const mh=((s&&s.url||'').match(/^https?:\/\/([^\/]+)/)||[])[1]||'';const vh=(s&&s.variants&&s.variants.length)?`<div class="rvars"><span class="rvar-badge">+${s.variants.length} ${LANG==='de'?'Türen':'doors'}</span>${s.variants.map(v=>{const m=String(v.url||'').match(/^https?:\/\/([^\/]+)(\/.*)?$/);const disp=m?((m[1]!==mh?m[1]:'')+(m[2]||'/')):(v.url||'');return `<small class="rvar">${esc(disp)}${v.quelle?` · <i>${esc(v.quelle)}</i>`:''}</small>`;}).join('')}</div>`:'';cells+=`<td class="col-mine rstep">${s?`<b>${esc(s.title)||'—'}</b>${(s.url||s.interaction)?`<small>${esc(s.url||s.interaction)}</small>`:''}${vh}`:''}</td>`}
     const notes=(f.steps||[]).map(s=>s.note).filter(Boolean).join(' · ');
     return `<tr class="reg-row" onclick="selectFunnel(${f.id})"><td class="col-mine rid">${f.id!=null?`#${esc(f.id)}`:'—'}</td><td class="col-mine">${esc(glabel(f.product))}</td><td class="col-mine rfunnel">${dot}<span class="fname" onclick="selectFunnel(${f.id})">${esc(f.name)}</span></td><td class="col-mine">${esc(f.purpose||'')}</td>${cells}<td class="col-mine">${esc(notes)}</td>`
       +`<td class="col-praba pcol-first rmono">${cv?(esc(cv.ga4_event)||'—'):'—'}</td><td class="col-praba">${cv?yn(cv.ga4_status):'—'}</td><td class="col-praba rmono">${cv?esc(cv.ga4_trigger||''):''}</td>`
@@ -2420,6 +2425,11 @@ function ccSaveDomain(d){let e=[];try{e=JSON.parse(localStorage.getItem('cc_doma
 function ccApplyDomain(domain,cur){cur=String(cur||'').trim();const m=cur.match(/^https?:\/\/[^\/]+(\/.*)?$/i);const path=m?(m[1]||'/'):(cur?(cur[0]==='/'?cur:'/'+cur):'/');return 'https://'+domain+path;}
 function domSelectHtml(){const cust=LANG==='de'?'+ Eigene…':'+ Custom…';return '<select class="dom-pick" onchange="ccDomPick(this)" title="Domain voranstellen"><option value="">Domain…</option>'+ccDomains().map(d=>'<option value="'+esc(d)+'">'+esc(d)+'</option>').join('')+'<option value="__custom__">'+cust+'</option></select>';}
 function ccDomPick(sel){const v=sel.value;sel.selectedIndex=0;if(!v)return;const inp=sel.parentNode.querySelector('input');if(!inp)return;let dom=v;if(v==='__custom__'){let d=prompt(LANG==='de'?'Eigene Domain (ohne https://):':'Custom domain (without https://):');if(!d)return;d=d.replace(/^https?:\/\//i,'').replace(/\/+$/,'').trim();if(!d)return;if(confirm((LANG==='de'?'Domain „':'Save domain “')+d+(LANG==='de'?'" in die Liste speichern?':'” to the list?')))ccSaveDomain(d);dom=d;}inp.value=ccApplyDomain(dom,inp.value);inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();}
+// --- UTM-nötig-Heuristik (aus der Quelle abgeleitet) + AC-Tag-Katalog fürs Step-Feld ---
+function utmKeyword(q){return /(mail|newsletter|activecampaign|anzeige|werbe|retarget|paid|ads|ad-|\bad\b|meta|google)/i.test(String(q||''));}
+function acTagOptions(){const out=[];TAG_CATALOG.forEach(c=>{if(c.values&&c.values.length)c.values.forEach(v=>out.push(v?c.cat+': '+v:c.cat));else out.push(c.cat+': ');});return out;}
+function acTagDatalistHtml(){return '<datalist id="acTagList">'+acTagOptions().map(o=>'<option value="'+esc(o)+'"></option>').join('')+'</datalist>';}
+function acTagGuard(inp){const w=inp.parentNode.querySelector('.ac-tag-warn');if(!w)return;const v=(inp.value||'').trim();w.innerHTML=v?wizAcTagWarn(v):'';}
 function syncFunnelInputs(){
   const f=state.editF;if(!f)return;
   f.name=$('fnName').value;f.status=$('fnStatus').value;f.description=$('fnDesc').value;f.product=$('fnProduct').value;f.purpose=$('fnPurpose').value;f.traffic=$('fnTraffic').value;
@@ -2712,6 +2722,7 @@ function openTasks(){
     const noUrl=steps.filter(s=>stepHasUrl(s.type)&&!String(s.url||'').trim()&&!((s.variants||[]).some(v=>String(v.url||'').trim()))).length;
     if(noUrl)mine.push({label:f.name,detail:noUrl+(de?' Step(s) ohne URL':' step(s) without URL'),view:'fc'});
     if(f.status==='draft')mine.push({label:f.name,detail:de?'noch Entwurf':'still draft',view:'fc'});
+    steps.forEach(s=>{(s.variants||[]).forEach(v=>{if(utmKeyword(v.quelle)&&!v.utm_done&&String(v.url||'').trim())mine.push({label:f.name,detail:(de?'UTM fehlt · ':'UTM missing · ')+(v.quelle||'Tür'),view:'utm'});});});
   });
   const unlinked=state.naming.filter(n=>!namingLinked(n.id)).length;
   if(unlinked)mine.push({label:unlinked+(de?' Namen ohne UTM-Link':' names without UTM link'),detail:de?'im UTM-Builder verknüpfen':'link in UTM builder',view:'utm'});
