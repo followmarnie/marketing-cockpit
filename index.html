@@ -1807,7 +1807,23 @@ const MEDIUM_OPTS=['paid_social','cpc','organic_social','video','display','email
 const KNOWN_SOURCES=new Set([...SRC.paid,...SRC.organic,...SRC.email,...SRC.other]);
 const KNOWN_MEDIUMS=new Set(MEDIUM_OPTS);
 function srcType(s){if(SRC.paid.includes(s))return 'paid';if(SRC.email.includes(s))return 'email';return 'organic'}
-const STEP_TYPES=['ad','lp','form','email','asset','page','call','purchase'];
+// utm_source → menschlicher Kanal-Name (fürs Phase-1-Band: „ob Meta, ob Google").
+function srcChannel(s){s=String(s||'').toLowerCase();
+  if(/meta|facebook|instagram/.test(s))return 'Meta';
+  if(/google/.test(s))return 'Google';
+  if(/youtube/.test(s))return 'YouTube';
+  if(/tiktok/.test(s))return 'TikTok';
+  if(/linkedin/.test(s))return 'LinkedIn';
+  if(/bing/.test(s))return 'Bing';
+  if(/^x$|twitter/.test(s))return 'X';
+  if(SRC.email.includes(s)||/email|newsletter|campaign|nurture|onboarding|crm/.test(s))return (LANG==='de'?'E-Mail':'Email');
+  if(/blog|podcast|homepage|referral/.test(s))return 'Web';
+  if(/affiliate|partner/.test(s))return 'Affiliate';
+  if(/qr_code|event|offline/.test(s))return 'Offline';
+  return s?s:(LANG==='de'?'Direkt':'Direct');}
+// „ad" ist bewusst KEIN Step-Typ: eine Werbeanzeige steht VOR der Tür = Phase 1 · Ankunft
+// (UTM-Link mit funnel_ref), nicht als On-Site-Step. Phase 2 beginnt an der Tür (LP).
+const STEP_TYPES=['lp','form','email','asset','page','call','purchase'];
 // Welche Step-Typen sind ein *Ort* (haben eine URL) vs. reine Interaktion/Touchpoint.
 // asset = heruntergeladenes Wert-Asset (PDF/Handout); die URL ist das Ziel des enthaltenen CTAs.
 const STEP_URL_TYPES=['lp','page','purchase','asset'];
@@ -2778,6 +2794,9 @@ function renderFcJourney(f){
   // P1 · Ankunft: das Anliefern VOR der Tür — UTM-Links (Ads, E-Mail, Social) mit
   // funnel_ref auf diesen Funnel. Die Türen selbst sind On-Site = Phase 2 / Step 1.
   var arrivals=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;});
+  // Kanäle der Ankunft benennen (Meta · Google · …), dedupliziert — statt bloßem Zähler.
+  var p1chans=[];arrivals.forEach(function(r){var c=srcChannel(r.utm_source);if(p1chans.indexOf(c)<0)p1chans.push(c);});
+  var p1sum=arrivals.length?p1chans.join(' &middot; '):(de?'keine Ankunft':'no arrival');
   // Phase 1 · Ankunft: UTM-Links nach Kampagne gebündelt, inline bearbeitbar (fcUtmListHtml).
   var p1body=fcUtmListHtml(f.name);
   // P3 · Lifecycle: verknüpfte Serien (Match über die Produkt-Gruppe)
@@ -2802,7 +2821,7 @@ function renderFcJourney(f){
   var seam2t=de?'Besitz-Naht: an der Conversion gibt der Mensch seine E-Mail — Praba endet, ActiveCampaign übernimmt. Klick: 3-Phasen-Modell.':'Ownership seam: at the conversion the person hands over their email — Praba ends, ActiveCampaign takes over. Click: 3-phase model.';
   host.innerHTML=
     '<div class="jband jp1'+(jbandOpen('p1')?'':' closed')+'">'
-      +jbH('p1',de?'Phase 1 · Ankunft':'Phase 1 · Arrival',arrivals.length+' '+(de?'Ankunfts-Links':'arrival links'))
+      +jbH('p1',de?'Phase 1 · Ankunft':'Phase 1 · Arrival',p1sum)
       +'<div class="jb-body">'+p1body+'</div></div>'
     +'<div class="jseam" onclick="switchView(\'verstehen\')" title="'+seam1t+'"><span class="js-lbl">'+(de?'Mess-Naht · P1→P2':'Measure seam · P1→P2')+'</span></div>'
     +'<div class="jband jp2'+(jbandOpen('p2')?'':' closed')+'">'
