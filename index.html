@@ -2468,7 +2468,9 @@ function renderFunnelDetail(){
   card.style.display='';
   $('fnName').value=f.name||'';$('fnStatus').value=f.status||'draft';$('fnProduct').value=f.product||'';
   $('fnPurpose').value=f.purpose||'';$('fnDesc').value=f.description||'';$('fnTraffic').value=f.traffic||'';
-  $('fnStatusPill').innerHTML=(f.id==null?(LANG==='de'?'neu':'new'):('<b style="color:#c9a6ff;font-size:1.05em">#'+f.id+'</b>'))+(f.slug?' · '+esc(f.slug):'');
+  // Serien tragen keine Funnel-# (benanntes, geteiltes Objekt) — Funnels behalten ihre #.
+  const idpill=isLifecycle(f)?(LANG==='de'?'Serie':'Series'):(f.id==null?(LANG==='de'?'neu':'new'):('<b style="color:#c9a6ff;font-size:1.05em">#'+f.id+'</b>'));
+  $('fnStatusPill').innerHTML=idpill+(f.slug?' · '+esc(f.slug):'');
   if($('fnTitleView'))$('fnTitleView').textContent=f.name||(LANG==='de'?'Neuer Funnel':'New funnel');
   $('fnArchive').style.display=(f.id!=null&&f.status!=='archived')?'':'none';
   const allSteps=f.steps||[];
@@ -2506,11 +2508,13 @@ function renderEditCtx(f){
   var box=$('fnEditCtx');if(!box)return;
   if(!f){box.innerHTML='';return;}
   var de=LANG==='de';
-  var idlbl=f.id==null?(de?'neu':'new'):('#'+f.id);
-  var kind=isLifecycle(f)?(de?'Lifecycle-Serie':'Lifecycle series'):'Funnel';
+  var lc=isLifecycle(f);
+  // Serien tragen KEINE Funnel-# — sie sind benannte, geteilte Objekte (wie eine Conversion beim Key).
+  var idlbl=lc?'':(f.id==null?(de?'neu &middot; ':'new &middot; '):('#'+f.id+' &middot; '));
+  var kind=lc?(de?'Lifecycle-Serie':'Lifecycle series'):'Funnel';
   var back=state.jret?'<button type="button" class="ectx-back" onclick="jretBack()">&larr; #'+state.jret.id+' '+esc(state.jret.name||'')+'</button>':'';
   box.innerHTML='<div class="ectx">'+back
-    +'<div class="ectx-now"><span class="ectx-lbl">'+(de?'Bearbeiten':'Editing')+'</span> <b>'+idlbl+' &middot; '+esc(f.name||(de?'Neuer Funnel':'New funnel'))+'</b> <span class="ectx-kind">'+kind+'</span></div></div>';
+    +'<div class="ectx-now"><span class="ectx-lbl">'+(de?'Bearbeiten':'Editing')+'</span> <b>'+idlbl+esc(f.name||(de?'Neuer Funnel':'New funnel'))+'</b> <span class="ectx-kind">'+kind+'</span></div></div>';
 }
 // ── Reise-Bänder ──────────────────────────────────────────────
 // Die ganze Reise eines Akquise-Funnels, gestapelt: P1 Ankunft → Mess-Naht →
