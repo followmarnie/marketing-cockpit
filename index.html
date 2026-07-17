@@ -229,21 +229,45 @@
   .flow .fcard:not(.add):not(:last-child)::after{content:'→';position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:#5b6090;font-size:18px;z-index:2}
   .fcard .fc-no{display:flex;justify-content:space-between;align-items:center;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8e94c0}
   .fcard .fc-goal{color:#7df3e6;font-weight:800}
-  /* Bookends: die zwei Nähte sichtbar — Ankunft (P1→P2) oben, Übergabe an AC (P2→P3) unten */
-  .fc-book{display:flex;align-items:center;gap:14px;border:1px dashed var(--tn-border);border-radius:var(--tn-r-m);padding:11px 15px;cursor:pointer;background:var(--tn-surf-1);transition:border-color .15s var(--tn-ease),background .15s var(--tn-ease)}
-  .fc-book:hover{border-color:currentColor;background:var(--tn-surf-2)}
-  .fc-book:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-  .fc-book.start{color:#9a97ff;margin-bottom:12px}
-  .fc-book.end{color:#d9e08c;margin-top:12px}
-  .fc-book .bk-eye{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;color:currentColor}
-  .fc-book .bk-seam{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:.05em;border:1px solid currentColor;border-radius:6px;padding:2px 6px;opacity:.85;text-transform:none}
-  .fc-book .bk-body{flex:1;font-size:12px;color:#cfd4f0;line-height:1.55;font-weight:300}
-  .fc-book .bk-body b{color:#fff;font-weight:600}
-  .fc-book .bk-hand{color:#e9edff}
-  .fc-book .bk-tag{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:10px;color:currentColor;border:1px solid currentColor;border-radius:5px;padding:1px 5px;opacity:.85;white-space:nowrap}
-  .fc-book .bk-go{flex:none;font-size:11px;font-weight:700;white-space:nowrap;color:currentColor;border:1px solid currentColor;border-radius:8px;padding:6px 10px}
-  .fc-book:hover .bk-go{background:currentColor;color:var(--tn-bg)}
-  @media(max-width:700px){.fc-book{flex-wrap:wrap;gap:8px}.fc-book .bk-body{flex-basis:100%;order:3}}
+  /* Reise-Bänder: die Phasen gestapelt (P1→P2→P3→Tracking), jedes Band klappt einzeln — IN der Phase wird horizontal gescrollt */
+  #fnJourney{display:flex;flex-direction:column;margin-bottom:8px}
+  .jband{border:1px solid var(--tn-border);border-left:3px solid var(--jc,#8f8cff);border-radius:var(--tn-r-m);background:var(--tn-surf-1)}
+  .jband.jp1{--jc:#8f8cff}
+  .jband.jp2{--jc:#b07cf0}
+  .jband.jp3{--jc:#d9e08c}
+  .jband.jtrack{--jc:#17f8e0}
+  .jb-h{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:inherit;font-family:inherit;padding:11px 14px;cursor:pointer;text-align:left}
+  .jb-h:focus-visible{outline:2px solid var(--jc);outline-offset:2px;border-radius:8px}
+  .jb-car{flex:none;color:var(--jc);font-size:9px;transition:transform .18s var(--tn-ease)}
+  .jband.closed .jb-car{transform:rotate(-90deg)}
+  .jb-eye{font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--jc);white-space:nowrap}
+  .jb-sum{margin-left:auto;font-size:11.5px;color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .jb-body{padding:4px 14px 13px;border-top:1px dashed var(--tn-border)}
+  .jband.closed .jb-body{display:none}
+  .jb-hint{font-size:12px;color:#8e94c0;padding:8px 2px 2px;font-weight:300}
+  /* Naht-Verbinder zwischen den Bändern */
+  .jseam{display:flex;align-items:center;gap:12px;margin:7px 10px;cursor:pointer}
+  .jseam::before,.jseam::after{content:'';flex:1;border-top:2px dashed rgba(23,248,224,.32)}
+  .jseam .js-lbl{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#7df3e6;border:1px solid rgba(23,248,224,.35);border-radius:999px;padding:4px 12px;background:rgba(23,248,224,.06);white-space:nowrap}
+  .jseam:hover .js-lbl{background:rgba(23,248,224,.16)}
+  /* Tür-Karten (Phase 1 · Ankunft) */
+  .dcard{min-width:180px;max-width:180px;background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:var(--tn-r-s);padding:10px 11px;cursor:pointer;transition:border-color .15s var(--tn-ease)}
+  .dcard:hover{border-color:#8f8cff}
+  .dcard .dc-q{font-size:12.5px;color:#fff;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dcard .dc-url{font-size:9.5px;color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace;word-break:break-all;margin-top:3px;max-height:26px;overflow:hidden}
+  .dcard .dc-meta{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .dchip{font-size:9.5px;font-weight:700;border-radius:5px;padding:2px 6px;letter-spacing:.04em}
+  .dchip.lv-live{color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3)}
+  .dchip.lv-planned{color:#ffb38a;background:rgba(255,132,106,.1);border:1px solid rgba(255,132,106,.3)}
+  .dchip.lv-off{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
+  .dchip.utm-y{color:#7df3e6;background:rgba(23,248,224,.08);border:1px solid rgba(23,248,224,.3)}
+  .dchip.utm-n{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
+  /* Serien-Karten (Phase 3 · Lifecycle) */
+  .scard{min-width:250px;max-width:310px;background:linear-gradient(180deg,rgba(237,251,140,.05),var(--tn-surf-1));border:1px solid rgba(237,251,140,.26);border-radius:var(--tn-r-s);padding:11px 12px;cursor:pointer;transition:border-color .15s var(--tn-ease)}
+  .scard:hover{border-color:rgba(237,251,140,.6)}
+  .scard .sc-h{font-size:12.5px;color:#fff;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .scard .sc-meta{font-size:10px;color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace;margin-top:8px}
+  @media(max-width:700px){.jb-sum{max-width:40%}}
   .fcard .fc-title{font-size:14px;font-weight:700;color:#eef0ff;margin:7px 0 4px;line-height:1.25;word-break:break-word}
   .fcard .fc-url{font-size:11px;color:#8b91bd;word-break:break-all}
   .fcard .fc-int{font-size:11.5px;color:#b6bce6;background:rgba(150,57,243,.12);border:1px solid rgba(150,57,243,.22);border-radius:8px;padding:6px 8px;margin-top:7px}
@@ -1158,9 +1182,8 @@
           <span class="lg"><i class="d lc"></i><span data-i18n="fc.lg.life">Lifecycle · ActiveCampaign</span></span>
         </div>
 
-        <div id="fnBookStart"></div>
-        <div id="fnSteps" class="flow"></div>
-        <div id="fnBookEnd"></div>
+        <!-- Reise-Bänder: P1 Ankunft → Mess-Naht → P2 On-Site → Besitz-Naht → P3 Lifecycle → Tracking (JS-gerendert) -->
+        <div id="fnJourney"></div>
 
         <div class="fc-hints">
           <div class="hintbox"><h4 data-i18n="fc.hint.step.h">Step-Logik</h4><p data-i18n="fc.hint.step.p">Jede Karte beantwortet: Wo ist der User? Welche URL / welcher Ort? Welche Interaktion passiert?</p></div>
@@ -1201,7 +1224,6 @@
           <button class="btn sm danger" id="fnDelete" data-i18n="fn.delete">Funnel löschen</button>
           <button class="btn sm" id="fnSave" data-i18n="fn.save">Funnel speichern</button>
         </div>
-        <div id="fnPraba"></div>
       </main>
     </div><!-- /fcFunnels -->
 
@@ -1498,7 +1520,7 @@ const T={
   'fn.stepn':'Step {n}','fn.step.empty':'(leer)','fn.step.type':'Typ','fn.expandall':'Alle ausklappen','fn.collapseall':'Alle einklappen',
   'fn.step.interaction':'Was passiert hier? (opt.)','fn.step.edit':'Schritt bearbeiten','fn.stepshint':'Karte anklicken → unten bearbeiten',
   'reg.title':'Alle Funnel & Tracking · Breitsicht','reg.toggle':'Ein-/ausklappen','reg.sub':'Eine Zeile pro Funnel — alle Steps + Prabas Tracking nebeneinander (wie die Ursprungs-Excel). Folgt den Tabs oben. Horizontal scrollen.','reg.step':'Step','reg.notes':'Notizen (TradeNeon)','reg.qa':'QA / MeasureSchool','reg.f.label':'Prabas Tracking:','reg.f.all':'Alle','reg.f.open':'offen','reg.f.done':'komplett','reg.f.empty':'Keine Funnels in diesem Filter.',
-  'fc.search':'Suchen…','fc.worksub':'Website-/App-Conversion-Pfade bauen: Step-Kette → Goal (Conversion) setzen → Prabas Tracking klappt darunter auf → unten die Excel-Registry prüfen.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / Ende','fc.lg.sel':'Ausgewählt','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'ab hier · ActiveCampaign','fc.handoff.title':'Ab dem Goal endet Prabas Tracking (Pixel/GA4/Ads). Was danach kommt, läuft als Lifecycle in ActiveCampaign — Automationen & Tags, keine URL, kein Pixel.','fc.hint.step.h':'Step-Logik','fc.hint.step.p':'Jede Karte beantwortet: Wo ist der User? Welche URL / welcher Ort? Welche Interaktion passiert?','fc.hint.track.h':'Tracking-Logik','fc.hint.track.p':'Tracking hängt am Goal-Step. Sobald ein Step als Goal eine Conversion trägt, öffnet sich Prabas Tracking darunter.','fc.sec.funnel':'Funnel & ausgewählten Step bearbeiten','fn.step.isgoal':'Dieser Step ist das Goal / Ende dieses Funnel-Pfads','fn.step.convpick':'Conversion aus dem Katalog (misst dieses Goal)','fn.step.convhint':'Wähle eine Conversion — Prabas Tracking-Felder erscheinen dann unten im Katalog-Block.',
+  'fc.search':'Suchen…','fc.worksub':'Die ganze Reise dieses Funnels, von oben nach unten: Phase 1 (Türen &amp; UTMs) → Phase 2 (Step-Kette bis zum Goal) → Phase 3 (Lifecycle-Serien) → Tracking. Jedes Band klappt einzeln auf/zu; aufgeklappt scrollst Du horizontal durch die Karten.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / Ende','fc.lg.sel':'Ausgewählt','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'ab hier · ActiveCampaign','fc.handoff.title':'Ab dem Goal endet Prabas Tracking (Pixel/GA4/Ads). Was danach kommt, läuft als Lifecycle in ActiveCampaign — Automationen & Tags, keine URL, kein Pixel.','fc.hint.step.h':'Step-Logik','fc.hint.step.p':'Jede Karte beantwortet: Wo ist der User? Welche URL / welcher Ort? Welche Interaktion passiert?','fc.hint.track.h':'Tracking-Logik','fc.hint.track.p':'Tracking hängt am Goal-Step. Sobald ein Step als Goal eine Conversion trägt, füllt sich das Tracking-Band (unter Phase 3) mit Prabas Feldern.','fc.sec.funnel':'Funnel & ausgewählten Step bearbeiten','fn.step.isgoal':'Dieser Step ist das Goal / Ende dieses Funnel-Pfads','fn.step.convpick':'Conversion aus dem Katalog (misst dieses Goal)','fn.step.convhint':'Wähle eine Conversion — Prabas Tracking-Felder erscheinen dann unten im Katalog-Block.',
   'fn.emptylist':'Noch keine Funnels — „+ Neuer Funnel".',
   'cv.title':'Conversions · Event-Katalog','cv.name':'Name','cv.notes':'Notizen','cv.new':'Neue Conversion','cv.edit':'Conversion bearbeiten',
   'cv.keyhint':'(Slug, fix nach Anlage)','cv.value':'Wert (AED)','cv.purpose':'Zweck','cv.path':'Pfad (LP → … → Danke)','cv.status':'Status','cv.trigger':'Trigger (GA4)',
@@ -1622,7 +1644,7 @@ const T={
   'fn.stepn':'Step {n}','fn.step.empty':'(empty)','fn.step.type':'Type','fn.expandall':'Expand all','fn.collapseall':'Collapse all',
   'fn.step.interaction':'What happens here? (opt.)','fn.step.edit':'Edit step','fn.stepshint':'Click a card → edit below',
   'reg.title':'All funnels & tracking · wide view','reg.toggle':'Collapse/expand','reg.sub':'One row per funnel — all steps + Praba tracking side by side (like the original Excel). Follows the tabs above. Scroll horizontally.','reg.step':'Step','reg.notes':'Notes (TradeNeon)','reg.qa':'QA / MeasureSchool','reg.f.label':'Praba tracking:','reg.f.all':'All','reg.f.open':'open','reg.f.done':'complete','reg.f.empty':'No funnels in this filter.',
-  'fc.search':'Search…','fc.worksub':'Build website/app conversion paths: step chain → set the goal (conversion) → Praba tracking expands below → check the Excel registry at the bottom.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / End','fc.lg.sel':'Selected','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'from here · ActiveCampaign','fc.handoff.title':'At the goal, Praba tracking ends (pixel/GA4/Ads). What comes after runs as lifecycle in ActiveCampaign — automations & tags, no URL, no pixel.','fc.hint.step.h':'Step logic','fc.hint.step.p':'Each card answers: where is the user? Which URL / place? Which interaction happens?','fc.hint.track.h':'Tracking logic','fc.hint.track.p':'Tracking hangs on the goal step. As soon as a step carries a conversion as its goal, Praba tracking opens below.','fc.sec.funnel':'Edit funnel & selected step','fn.step.isgoal':'This step is the goal / end of this funnel path','fn.step.convpick':'Conversion from the catalog (measures this goal)','fn.step.convhint':'Pick a conversion — Praba tracking fields then appear in the catalog block below.',
+  'fc.search':'Search…','fc.worksub':'This funnel&rsquo;s whole journey, top to bottom: Phase 1 (doors &amp; UTMs) → Phase 2 (step chain to the goal) → Phase 3 (lifecycle series) → tracking. Each band collapses on its own; expanded, you scroll horizontally through the cards.','fc.lg.step':'Interaction Step','fc.lg.goal':'Conversion Goal / End','fc.lg.sel':'Selected','fc.lg.life':'Lifecycle · ActiveCampaign','fc.handoff.lbl':'from here · ActiveCampaign','fc.handoff.title':'At the goal, Praba tracking ends (pixel/GA4/Ads). What comes after runs as lifecycle in ActiveCampaign — automations & tags, no URL, no pixel.','fc.hint.step.h':'Step logic','fc.hint.step.p':'Each card answers: where is the user? Which URL / place? Which interaction happens?','fc.hint.track.h':'Tracking logic','fc.hint.track.p':'Tracking hangs on the goal step. As soon as a step carries a conversion as its goal, the tracking band (below Phase 3) fills with Praba&rsquo;s fields.','fc.sec.funnel':'Edit funnel & selected step','fn.step.isgoal':'This step is the goal / end of this funnel path','fn.step.convpick':'Conversion from the catalog (measures this goal)','fn.step.convhint':'Pick a conversion — Praba tracking fields then appear in the catalog block below.',
   'fn.emptylist':'No funnels yet — “+ New funnel”.',
   'cv.title':'Conversions · Event catalog','cv.name':'Name','cv.notes':'Notes','cv.new':'New conversion','cv.edit':'Edit conversion',
   'cv.keyhint':'(slug, fixed after creation)','cv.value':'Value (AED)','cv.purpose':'Purpose','cv.path':'Path (LP → … → thank-you)','cv.status':'Status','cv.trigger':'Trigger (GA4)',
@@ -2437,6 +2459,8 @@ function renderFunnelDetail(){
   if($('fnTitleView'))$('fnTitleView').textContent=f.name||(LANG==='de'?'Neuer Funnel':'New funnel');
   $('fnArchive').style.display=(f.id!=null&&f.status!=='archived')?'':'none';
   const allSteps=f.steps||[];
+  // Reise-Bänder zuerst rendern — sie enthalten den #fnSteps-Rahmen, der gleich gefüllt wird.
+  renderFcJourney(f);
   // Goal-Step = die Naht zwischen Akquise (Prabas Welt) und Lifecycle (ActiveCampaign).
   const gk=allSteps.map((s,i)=>s.conversion_key?i:-1).filter(i=>i>=0);
   const goalIdx=gk.length?gk[gk.length-1]:-1;
@@ -2461,10 +2485,11 @@ function renderFunnelDetail(){
   }).join('')+`<div class="fcard add" onclick="addStep()">${t('fn.addstep')}</div>`;
   renderStepEditor(f);
   renderFunnelPraba(f);
-  renderFcBookends(f);
 }
-// Bookends = die zwei Nähte sichtbar machen, damit die Reise linear liest:
-// oben Ankunft (Mess-Naht P1→P2), unten Übergabe an ActiveCampaign (Besitz-Naht P2→P3).
+// ── Reise-Bänder ──────────────────────────────────────────────
+// Die ganze Reise eines Akquise-Funnels, gestapelt: P1 Ankunft → Mess-Naht →
+// P2 On-Site → Besitz-Naht → P3 Lifecycle → Tracking. Jedes Band klappt
+// einzeln; aufgeklappt scrollt der Inhalt horizontal (wie die Step-Kette).
 function fcSeg(s){return String(s||'').toLowerCase().split('·')[0].trim();}
 function fcLifecycleHandoff(f){
   if(!f)return[];
@@ -2473,45 +2498,73 @@ function fcLifecycleHandoff(f){
     return x.status!=='archived'&&isLifecycle(x)&&fcSeg(x.product)===fp;
   });
 }
-function renderFcBookends(f){
-  var start=document.getElementById('fnBookStart'),end=document.getElementById('fnBookEnd');
-  if(!start||!end)return;
+function jbandOpen(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};return !!state.jband[k];}
+function toggleBand(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};if(state.editF)syncFunnelInputs();state.jband[k]=!state.jband[k];renderFunnelDetail();}
+function jbH(k,eye,sum){return '<button class="jb-h" type="button" onclick="toggleBand(\''+k+'\')"><span class="jb-car">&#9660;</span><span class="jb-eye">'+eye+'</span><span class="jb-sum">'+sum+'</span></button>';}
+function renderFcJourney(f){
+  var host=$('fnJourney');if(!host)return;
+  if(!f){host.innerHTML='';return;}
   var de=LANG==='de';
-  if(!f||isLifecycle(f)){start.innerHTML='';end.innerHTML='';return;}
-  // ── Start · Ankunft / Mess-Naht (P1→P2) ──
-  var tr=(f.traffic||'').toLowerCase();
-  var arrive=de
-    ? (tr==='organic'
-        ? 'Menschen kommen über die Türen dieses Funnels. Organische Ankünfte brauchen keine UTM — nur eigene Social-Links werden getaggt.'
-        : 'Menschen kommen über die Türen dieses Funnels. Bezahlte &amp; externe Klicks tragen eine UTM — hier startet die GA4-Session. Praba überspannt diese Naht.')
-    : (tr==='organic'
-        ? 'People arrive through this funnel&rsquo;s doors. Organic arrivals need no UTM — only your own social links get tagged.'
-        : 'People arrive through this funnel&rsquo;s doors. Paid &amp; external clicks carry a UTM — the GA4 session starts here. Praba spans this seam.');
-  start.innerHTML='<div class="fc-book start" tabindex="0" role="button" onclick="switchView(\'verstehen\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchView(\'verstehen\')}" title="'+(de?'Zum 3-Phasen-Modell':'Open the 3-phase model')+'">'
-    +'<span class="bk-eye">'+(de?'Phase 1 · Ankunft':'Phase 1 · Arrival')+'<span class="bk-seam">'+(de?'Mess-Naht · P1→P2':'Measure seam · P1→P2')+'</span></span>'
-    +'<span class="bk-body">'+arrive+'</span>'
-    +'<span class="bk-go">'+(de?'Modell ansehen':'View model')+' &rarr;</span></div>';
-  // ── End · Übergabe / Besitz-Naht (P2→P3) ──
+  // Lifecycle-Serien haben keine Akquise-Reise — nur die nackte Step-Kette zeigen.
+  if(isLifecycle(f)){host.innerHTML='<div id="fnSteps" class="flow"></div>';return;}
+  var steps=f.steps||[];
+  var lpIdx=-1;for(var i=0;i<steps.length;i++){if((steps[i].type||'')==='lp'){lpIdx=i;break;}}
+  var doors=lpIdx>=0?(steps[lpIdx].variants||[]):[];
+  var utmN=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;}).length;
+  var gk=steps.map(function(s,i){return s.conversion_key?i:-1;}).filter(function(i){return i>=0;});
+  var goalKey=gk.length?steps[gk[gk.length-1]].conversion_key:'';
+  var cv=goalKey?state.convs.find(function(c){return c.key===goalKey;}):null;
   var hand=fcLifecycleHandoff(f);
-  var seam=de?'Besitz-Naht · P2→P3':'Ownership seam · P2→P3';
-  var lead=de
-    ? 'An der Conversion gibt der Mensch seine E-Mail — ab hier übernimmt <b>ActiveCampaign</b>, gesteuert vom Signup-Tag. Praba trackt nicht mehr.'
-    : 'At the conversion the person hands over their email — from here <b>ActiveCampaign</b> takes over, steered by the signup tag. Praba no longer tracks.';
-  var handTxt;
-  if(hand.length){
-    var names=hand.map(function(x){
-      var trig=(x.steps||[]).map(function(s){return s.ac_tag;}).filter(Boolean)[0]||'';
-      return '<b>'+esc(x.name||x.slug||'—')+'</b>'+(trig?' <span class="bk-tag">'+esc(trig)+'</span>':'');
-    }).join(' · ');
-    handTxt=(de?'Übergabe an: ':'Hands off to: ')+names;
+  var st=function(x){return x==='done'?'&#10003;':'&middot;';};
+  // P1 · Ankunft: die Türen (LP-Varianten des ersten lp-Steps)
+  var p1body;
+  if(doors.length){
+    p1body='<div class="flow">'+doors.map(function(v,vi){
+      var lv=v.live||'live';
+      return '<div class="dcard" onclick="selectStep('+lpIdx+')" title="'+(de?'Tür im Step-Editor öffnen':'Open door in step editor')+'">'
+        +'<div class="dc-q">'+esc(v.quelle||((de?'Tür ':'Door ')+(vi+1)))+'</div>'
+        +(v.url?'<div class="dc-url">'+esc(v.url)+'</div>':'')
+        +'<div class="dc-meta"><span class="dchip lv-'+esc(lv)+'">'+(lv==='planned'?(de?'geplant':'planned'):esc(lv))+'</span>'
+        +'<span class="dchip '+(v.utm_done?'utm-y':'utm-n')+'">UTM '+(v.utm_done?'&#10003;':'&mdash;')+'</span></div></div>';
+    }).join('')+'</div>';
   }else{
-    handTxt=(de?'Noch keine Lifecycle-Serie verknüpft':'No lifecycle series linked yet')
-      +(f.product?' <span class="bk-tag">'+(de?'Produkt: ':'product: ')+esc(f.product)+'</span>':'');
+    p1body='<div class="jb-hint">'+(de?'Noch keine Türen erfasst — Türen sind die LP-Varianten am ersten lp-Step.':'No doors yet — doors are the LP variants on the first lp step.')+'</div>';
   }
-  end.innerHTML='<div class="fc-book end" tabindex="0" role="button" onclick="switchView(\'lifecycle\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchView(\'lifecycle\')}" title="'+(de?'Phase 3 · Lifecycle öffnen':'Open Phase 3 · Lifecycle')+'">'
-    +'<span class="bk-eye">'+(de?'Phase 3 · Lifecycle':'Phase 3 · Lifecycle')+'<span class="bk-seam">'+seam+'</span></span>'
-    +'<span class="bk-body">'+lead+'<br><span class="bk-hand">'+handTxt+'</span></span>'
-    +'<span class="bk-go">'+(de?'Serie öffnen':'Open series')+' &rarr;</span></div>';
+  // P3 · Lifecycle: verknüpfte Serien (Match über die Produkt-Gruppe)
+  var p3body;
+  if(hand.length){
+    p3body='<div class="flow">'+hand.map(function(x){
+      var xs=x.steps||[];
+      var trig=xs.map(function(s){return s.ac_tag;}).filter(Boolean)[0]||'';
+      var n=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===x.name;}).length;
+      var chain=xs.map(function(s){return '<span class="lc-mail">'+esc(s.title||s.type||'Step')+'</span>';}).join('<span class="lc-arr">&rarr;</span>');
+      return '<div class="scard" onclick="switchView(\'lifecycle\')" title="'+(de?'In Phase 3 öffnen':'Open in Phase 3')+'">'
+        +'<div class="sc-h">'+esc(x.name||x.slug||'—')+(trig?'<span class="lc-trig">'+esc(trig)+'</span>':'')+'</div>'
+        +(chain?'<div class="lc-chain">'+chain+'</div>':'')
+        +'<div class="sc-meta">'+xs.length+' '+(de?'Mails':'emails')+' &middot; '+n+' UTMs</div></div>';
+    }).join('')+'</div>';
+  }else{
+    p3body='<div class="jb-hint">'+(de?'Noch keine Lifecycle-Serie verknüpft':'No lifecycle series linked yet')
+      +(f.product?' &mdash; '+(de?'Verknüpfung läuft über die Produkt-Gruppe':'linking runs via the product group')+' <b style="color:#d9e08c">'+esc(f.product)+'</b>':'')+'.</div>';
+  }
+  var trackSum=cv?('GA4 '+st(cv.ga4_status)+' &middot; Ads '+st(cv.ads_status)+' &middot; Meta '+st(cv.meta_status)+' &middot; '+convPct(cv)+'%'):(de?'kein Goal gesetzt':'no goal set');
+  var seam1t=de?'Mess-Naht: externer/bezahlter Klick landet auf der Site — die UTM trägt die Herkunft, die GA4-Session startet. Praba überspannt diese Naht. Klick: 3-Phasen-Modell.':'Measure seam: an external/paid click lands on the site — the UTM carries origin, the GA4 session starts. Praba spans this seam. Click: 3-phase model.';
+  var seam2t=de?'Besitz-Naht: an der Conversion gibt der Mensch seine E-Mail — Praba endet, ActiveCampaign übernimmt. Klick: 3-Phasen-Modell.':'Ownership seam: at the conversion the person hands over their email — Praba ends, ActiveCampaign takes over. Click: 3-phase model.';
+  host.innerHTML=
+    '<div class="jband jp1'+(jbandOpen('p1')?'':' closed')+'">'
+      +jbH('p1',de?'Phase 1 · Ankunft':'Phase 1 · Arrival',doors.length+' '+(de?'Türen':'doors')+' &middot; '+utmN+' UTMs')
+      +'<div class="jb-body">'+p1body+'</div></div>'
+    +'<div class="jseam" onclick="switchView(\'verstehen\')" title="'+seam1t+'"><span class="js-lbl">'+(de?'Mess-Naht · P1→P2':'Measure seam · P1→P2')+'</span></div>'
+    +'<div class="jband jp2'+(jbandOpen('p2')?'':' closed')+'">'
+      +jbH('p2','Phase 2 · On-Site',steps.length+' Steps'+(goalKey?' &middot; Goal '+esc(goalKey):''))
+      +'<div class="jb-body"><div id="fnSteps" class="flow"></div></div></div>'
+    +'<div class="jseam" onclick="switchView(\'verstehen\')" title="'+seam2t+'"><span class="js-lbl">'+(de?'Besitz-Naht · P2→P3':'Ownership seam · P2→P3')+(goalKey?' · '+esc(goalKey):'')+'</span></div>'
+    +'<div class="jband jp3'+(jbandOpen('p3')?'':' closed')+'">'
+      +jbH('p3','Phase 3 · Lifecycle',hand.length+' '+(de?'Serien':'series'))
+      +'<div class="jb-body">'+p3body+'</div></div>'
+    +'<div class="jband jtrack'+(jbandOpen('track')?'':' closed')+'" style="margin-top:10px">'
+      +jbH('track','Tracking · Praba',trackSum)
+      +'<div class="jb-body"><div id="fnPraba"></div></div></div>';
 }
 function convPct(c){if(!c)return 0;const parts=[c.ga4_status==='done',c.ads_status==='done',c.meta_status==='done'];return Math.round(parts.filter(Boolean).length/parts.length*100)}
 function renderStepEditor(f){
