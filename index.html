@@ -2609,8 +2609,10 @@ function selectFunnel(id,keepRet,scrollTo){
   const tgt=(scrollTo==='ctx'&&$('fnEditCtx'))?$('fnEditCtx'):$('fnDetail');
   tgt.scrollIntoView({behavior:'smooth',block:scrollTo==='ctx'?'center':'nearest'});
 }
-// Funnel-first-Einstieg vom Dashboard: erst in die Reise-Ansicht, dann leeren Funnel öffnen.
-function dashNewFunnel(){switchView('fc');newFunnel();}
+// Funnel-first-Einstieg vom Dashboard: in die Reise-Ansicht, leeren Funnel öffnen und
+// direkt zur Phase-2-Bühne (Haus bauen) scrollen — nicht oben bei Phase 1 landen.
+function dashNewFunnel(){switchView('fc');newFunnel(false);
+  var el=document.querySelector('#fnJourney .jband.jp2');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 function newFunnel(scroll){
   const grp=(state.fcTab!=='all'&&state.fcTab!=='conv')?state.fcTab:'';
   state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:grp,traffic:'',steps:[{type:'page',title:'',url:'',conversion_key:'',ac_tag:'',note:'',interaction:''}]};
@@ -2807,7 +2809,9 @@ function renderFcJourney(f){
   var st=function(x){return x==='done'?'&#10003;':'&middot;';};
   // P1 · Ankunft: das Anliefern VOR der Tür — UTM-Links (Ads, E-Mail, Social) mit
   // funnel_ref auf diesen Funnel. Die Türen selbst sind On-Site = Phase 2 / Step 1.
-  var arrivals=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;});
+  // Nur bei benanntem Funnel Ankünfte matchen — sonst würde ein leerer Name auf ALLE
+  // funnellosen Waisen-UTMs matchen und das Waisen-Lager in Phase 1 kippen (Bug 2026-07-17).
+  var arrivals=f.name?(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;}):[];
   // Kanäle der Ankunft benennen (Meta · Google · …), dedupliziert — statt bloßem Zähler.
   var p1chans=[];arrivals.forEach(function(r){var c=srcChannel(r.utm_source);if(p1chans.indexOf(c)<0)p1chans.push(c);});
   var p1sum=arrivals.length?p1chans.join(' &middot; '):(de?'keine Ankunft':'no arrival');
