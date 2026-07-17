@@ -283,6 +283,19 @@
   .uce-idlbl{font-size:10px;color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace}
   .uce-prev code{font-size:11px;color:#7df3e6;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:6px;padding:8px 10px;word-break:break-all;font-family:"SF Mono",Menlo,Consolas,monospace}
   .uce-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .uce-out{display:flex;flex-direction:column;gap:3px}
+  .uce-lbl{font-size:10px;color:#8e94c0;letter-spacing:.03em}
+  .uce-prev code{cursor:pointer;transition:border-color .12s var(--tn-ease)}
+  .uce-prev code:hover{border-color:var(--tn-teal)}
+  .uce-sec{margin-top:14px;border-top:1px dashed var(--tn-border);padding-top:12px}
+  .uce-sec-h{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9d17e;margin-bottom:8px}
+  .ug{margin-bottom:8px}
+  .ug-h{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:#cfd4f0;font-family:inherit;font-size:12px;cursor:pointer;padding:6px 2px;text-align:left}
+  .ug-h b{color:#fff;font-weight:600}
+  .ug-h .ug-n{color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:10.5px}
+  .ug-h .zcar{color:#8f8cff}
+  .ug.closed .ug-h .zcar{transform:rotate(-90deg)}
+  .ug.closed .ug-body{display:none}
   @media(max-width:640px){.uce-grid{grid-template-columns:1fr}.uce-grid label:first-child{grid-column:1}}
   /* Einheitliche Editier-Kontext-Zeile über den Feldern */
   .ectx{display:flex;flex-direction:column;gap:6px;margin:2px 0 14px}
@@ -2661,8 +2674,39 @@ function gotoLife(){var Z=state.jband||(state.jband={p1:true,p2:true,p3:true,tra
 // UTMs dort bauen/bearbeiten, wo sie leben — inline, mit automatischer utm_id + full_url,
 // funnel_ref automatisch. Der flache UTM-Builder bleibt separat als Gesamtübersicht.
 function fcUtmFull(d,id){return buildUrl({target_url:d.target_url,utm_source:d.utm_source,utm_medium:d.utm_medium,utm_campaign:d.utm_campaign,utm_content:d.utm_content},id||'(auto)');}
+// Nur die UTM-Parameter (ohne führendes „?") — für Meta-Ads, wo man nur die Parameter einfügt, nicht die ganze URL.
+function fcUtmParams(d,id){return buildParams({utm_source:d.utm_source,utm_medium:d.utm_medium,utm_campaign:d.utm_campaign,utm_content:d.utm_content},id||'(auto)').slice(1);}
+function fcUtmCopy(el){if(el)copyText(el.textContent||'');}
 function fcUtmRead(){return {target_url:($('uceUrl').value||'').trim(),utm_source:($('uceSrc').value||'').trim(),utm_medium:($('uceMed').value||'').trim(),utm_campaign:($('uceCampaign').value||'').trim(),utm_content:($('uceContent').value||'').trim()};}
-function fcUtmPreview(){var p=$('ucePreview');if(!p||!state.utmEdit)return;p.textContent=fcUtmFull(fcUtmRead(),state.utmEdit.id);}
+function fcUtmPreview(){if(!state.utmEdit)return;var d=fcUtmRead(),p=$('ucePreview'),pp=$('ucePreviewP');if(p)p.textContent=fcUtmFull(d,state.utmEdit.id);if(pp)pp.textContent=fcUtmParams(d,state.utmEdit.id);}
+// Gruppen (nach Kampagne) auf-/zuklappen — Key url-encodiert, damit keine Quotes im onclick landen.
+function fcUtmGroupToggle(enc){var gid=decodeURIComponent(enc);if(!state.utmGroupClosed)state.utmGroupClosed={};state.utmGroupClosed[gid]=!state.utmGroupClosed[gid];renderFunnelDetail();}
+// Wiederverwendbare UTM-Liste für einen funnel_ref: nach Kampagne gebündelt (einklappbar), Klick=inline bearbeiten, „+ UTM", Editor.
+function fcUtmListHtml(ref){
+  var de=LANG==='de';
+  var rows=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===ref;});
+  var out='';
+  if(rows.length){
+    var groups={}, order=[];
+    rows.forEach(function(r){var k=r.utm_campaign||r.campaign_name||(de?'(ohne Kampagne)':'(no campaign)');if(!groups[k]){groups[k]=[];order.push(k);}groups[k].push(r);});
+    out+=order.map(function(k){
+      var gid=ref+'|'+k, closed=state.utmGroupClosed&&state.utmGroupClosed[gid];
+      var cards=groups[k].map(function(r){
+        return '<div class="dcard" onclick="fcUtmEditRow(\''+esc(r.utm_id)+'\')" title="'+(de?'UTM inline bearbeiten':'Edit UTM inline')+'">'
+          +'<div class="dc-meta" style="margin:0 0 6px"><span class="dchip src">'+esc(r.utm_source||'—')+'</span><span class="dchip utm-n">'+esc(r.utm_medium||'—')+'</span></div>'
+          +'<div class="dc-q">'+esc(r.utm_content||r.utm_campaign||'—')+'</div>'
+          +(r.target_url?'<div class="dc-url">&rarr; '+esc(r.target_url)+'</div>':'')
+          +'</div>';
+      }).join('');
+      return '<div class="ug'+(closed?' closed':'')+'"><button type="button" class="ug-h" onclick="fcUtmGroupToggle(\''+encodeURIComponent(gid)+'\')"><span class="zcar">&#9660;</span> <b>'+esc(k)+'</b> <span class="ug-n">'+groups[k].length+' UTM</span></button><div class="ug-body"><div class="flow">'+cards+'</div></div></div>';
+    }).join('');
+  }else{
+    out+='<div class="jb-hint">'+(de?'Noch keine UTMs — leg eine an oder importiere sie.':'No UTMs yet — add one or import them.')+'</div>';
+  }
+  out+='<div class="flow" style="margin-top:8px"><div class="dcard dadd" onclick="fcUtmNew()" title="'+(de?'UTM anlegen':'Add UTM')+'">+ UTM</div></div>';
+  out+=fcUtmEditorHtml(ref);
+  return out;
+}
 function fcUtmNew(){var f=state.editF;if(!f)return;state.utmEdit={ref:f.name||'',id:null,data:{utm_source:'',utm_medium:'',utm_campaign:'',utm_content:'',target_url:''}};renderFunnelDetail();var e=$('uceUrl');if(e)e.focus();}
 function fcUtmEditRow(utmId){var r=(state.rows||[]).find(function(x){return String(x.utm_id)===String(utmId);});if(!r)return;state.utmEdit={ref:r.funnel_ref||'',id:r.utm_id,data:{utm_source:r.utm_source||'',utm_medium:r.utm_medium||'',utm_campaign:r.utm_campaign||'',utm_content:r.utm_content||'',target_url:r.target_url||''}};renderFunnelDetail();}
 function fcUtmCancel(){state.utmEdit=null;renderFunnelDetail();}
@@ -2681,7 +2725,10 @@ function fcUtmEditorHtml(ref){
     +'</div>'
     +'<datalist id="ccUceSrc"><option value="meta"></option><option value="google"></option><option value="youtube"></option><option value="webinar_campaign"></option><option value="onboarding_email"></option></datalist>'
     +'<datalist id="ccUceMed"><option value="paid_social"></option><option value="cpc"></option><option value="email"></option><option value="organic"></option></datalist>'
-    +'<div class="uce-prev"><span class="uce-idlbl">'+idlbl+'</span><code id="ucePreview">'+esc(fcUtmFull(d,e.id))+'</code></div>'
+    +'<div class="uce-prev"><span class="uce-idlbl">'+idlbl+'</span>'
+      +'<div class="uce-out"><span class="uce-lbl">'+(de?'Nur UTM-Parameter — für Meta-Ads':'UTM parameters only — for Meta ads')+'</span><code id="ucePreviewP" onclick="fcUtmCopy(this)" title="'+(de?'Klick = kopieren':'Click = copy')+'">'+esc(fcUtmParams(d,e.id))+'</code></div>'
+      +'<div class="uce-out"><span class="uce-lbl">'+(de?'Volle URL':'Full URL')+'</span><code id="ucePreview" onclick="fcUtmCopy(this)" title="'+(de?'Klick = kopieren':'Click = copy')+'">'+esc(fcUtmFull(d,e.id))+'</code></div>'
+    +'</div>'
     +'<div class="uce-actions"><button class="btn sm" onclick="fcUtmSave()">'+(de?'Speichern':'Save')+'</button>'
     +'<button class="btn sm ghost" onclick="fcUtmCancel()">'+(de?'Abbrechen':'Cancel')+'</button>'
     +(e.id?'<span style="flex:1"></span><button class="btn sm danger" onclick="fcUtmDelete()">'+(de?'Löschen':'Delete')+'</button>':'')
@@ -2719,7 +2766,7 @@ function renderFcJourney(f){
   // Lifecycle-Serien haben keine Akquise-Reise — nur die Mail-Kette. Orientierung
   // liefert die einheitliche Kontext-Zeile unten (renderEditCtx), kein zweiter Indikator.
   if(isLifecycle(f)){
-    host.innerHTML='<div class="jband jp3"><button class="jb-h" type="button" style="cursor:default"><span class="jb-eye">'+(de?'Lifecycle-Serie · ActiveCampaign':'Lifecycle series · ActiveCampaign')+'</span><span class="jb-sum">'+(f.steps||[]).length+' '+(de?'Mails':'emails')+'</span></button><div class="jb-body"><div id="fnSteps" class="flow"></div></div></div>';
+    host.innerHTML='<div class="jband jp3"><button class="jb-h" type="button" style="cursor:default"><span class="jb-eye">'+(de?'Lifecycle-Serie':'Lifecycle series')+'</span>'+sysBadge(f.system)+'<span class="jb-sum">'+(f.steps||[]).length+' '+(de?'Mails':'emails')+'</span></button><div class="jb-body"><div id="fnSteps" class="flow"></div><div class="uce-sec"><div class="uce-sec-h">'+(de?'UTM-Links dieser Serie':'This series&rsquo; UTM links')+'</div>'+fcUtmListHtml(f.name)+'</div></div></div>';
     return;
   }
   var steps=f.steps||[];
@@ -2731,23 +2778,8 @@ function renderFcJourney(f){
   // P1 · Ankunft: das Anliefern VOR der Tür — UTM-Links (Ads, E-Mail, Social) mit
   // funnel_ref auf diesen Funnel. Die Türen selbst sind On-Site = Phase 2 / Step 1.
   var arrivals=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;});
-  var p1body;
-  var addCard='<div class="dcard dadd" onclick="fcUtmNew()" title="'+(de?'Ankunft anlegen (UTM)':'Add arrival (UTM)')+'">+ '+(de?'Ankunft':'Arrival')+'</div>';
-  if(arrivals.length){
-    p1body='<div class="flow">'+arrivals.map(function(r){
-      return '<div class="dcard" onclick="fcUtmEditRow(\''+esc(r.utm_id)+'\')" title="'+(de?'UTM inline bearbeiten':'Edit UTM inline')+'">'
-        +'<div class="dc-meta" style="margin:0 0 6px"><span class="dchip src">'+esc(r.utm_source||'—')+'</span><span class="dchip utm-n">'+esc(r.utm_medium||'—')+'</span></div>'
-        +'<div class="dc-q">'+esc(r.utm_campaign||r.campaign_name||'—')+'</div>'
-        +(r.utm_content?'<div class="dc-url" style="font-family:inherit">'+esc(r.utm_content)+'</div>':'')
-        +(r.target_url?'<div class="dc-url">&rarr; '+esc(r.target_url)+'</div>':'')
-        +'</div>';
-    }).join('')+addCard+'</div>';
-  }else{
-    p1body='<div class="jb-hint">'+(de
-      ?'Noch keine Ankunfts-Kampagnen — Ads-, E-Mail- oder Social-Links mit <b style="color:#8f8cff">funnel_ref</b> auf diesen Funnel. Leg eine an oder importiere sie.'
-      :'No arrival campaigns yet — ad, email or social links with <b style="color:#8f8cff">funnel_ref</b> on this funnel. Add one or import them.')+'</div><div class="flow" style="margin-top:8px">'+addCard+'</div>';
-  }
-  p1body+=fcUtmEditorHtml(f.name);
+  // Phase 1 · Ankunft: UTM-Links nach Kampagne gebündelt, inline bearbeitbar (fcUtmListHtml).
+  var p1body=fcUtmListHtml(f.name);
   // P3 · Lifecycle: verknüpfte Serien (Match über die Produkt-Gruppe)
   var p3body;
   if(hand.length){
