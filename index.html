@@ -618,6 +618,12 @@
   .side-foot .who input{width:100%}
   .main{min-width:0;padding:30px 26px 80px}
   .main .wrap{max-width:none;margin:0}
+  .dash-start{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;padding:20px 22px;border-radius:var(--tn-r-l);border:1px solid rgba(102,102,255,.4);background:linear-gradient(135deg,rgba(102,102,255,.10),rgba(150,57,243,.06))}
+  .dash-start-txt{flex:1;min-width:240px}
+  .dash-start-eye{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#b7bbff;font-weight:700;margin-bottom:5px}
+  .dash-start h3{margin:0 0 5px;font-size:18px;color:#fff;font-weight:700}
+  .dash-start p{margin:0;font-size:13.5px;color:#c3c8ee;max-width:70ch;line-height:1.5}
+  .dash-start .btn{white-space:nowrap;flex:none}
   .dashgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .dashcard{background:var(--tn-surf-1);border:1px solid var(--tn-border);border-radius:var(--tn-r-l);padding:20px}
   .dashcard h3{margin:0 0 6px;font-size:15px;color:#fff}
@@ -964,6 +970,14 @@
       <p class="sub" data-i18n="dash.lead">Springe direkt in das Modul, das gerade gebraucht wird.</p>
     </div>
     <div class="dashstats" id="dashStats"></div>
+    <div class="dash-start">
+      <div class="dash-start-txt">
+        <div class="dash-start-eye" data-i18n="dash.start.eye">Hier starten</div>
+        <h3 data-i18n="dash.start.h">Neuen Funnel bauen — das Haus zuerst</h3>
+        <p data-i18n="dash.start.p">Immer Phase 2 first: Schritte (Landingpage → Formular → Danke) + Goal setzen. Danach dockst Du im Funnel die Ankünfte (Ads, E-Mails) an — nie andersherum.</p>
+      </div>
+      <button class="btn" onclick="dashNewFunnel()" data-i18n="fn.new">+ Neuer Funnel</button>
+    </div>
     <div class="dashgrid">
       <div class="dashcard"><h3 data-i18n="nav.naming">Naming Studio</h3><p data-i18n="dash.c.naming">Asset → AdSet → Campaign. SOP-konforme Namen.</p><button class="btn sm" onclick="switchView('naming')" data-i18n="dash.open">Öffnen</button></div>
       <div class="dashcard"><h3 data-i18n="nav.utm">UTM-Builder</h3><p data-i18n="dash.c.utm">Tracking-URLs bauen, suchen, kopieren.</p><button class="btn sm" onclick="switchView('utm')" data-i18n="dash.open">Öffnen</button></div>
@@ -1546,6 +1560,7 @@ const T={
   'dash.c.naming':'Asset → AdSet → Campaign. SOP-konforme Namen.','dash.c.structure':'Campaign → AdSet/Automation → Ads, als Baum und Graph.',
   'dash.c.utm':'Tracking-URLs bauen, suchen, kopieren.','dash.c.fc':'Funnel-Wege + Conversion-Messpunkte (GA4 / Ads / Meta).',
   'dash.c.campaigns':'Wie Naming, UTM, Funnel & Conversions zusammenhängen.','dash.c.settings':'Regelquellen: Plattform-Labels, Source/Medium, Rezepte.',
+  'dash.start.eye':'Hier starten','dash.start.h':'Neuen Funnel bauen — das Haus zuerst','dash.start.p':'Immer Phase 2 first: Schritte (Landingpage → Formular → Danke) + Goal setzen. Danach dockst Du im Funnel die Ankünfte (Ads, E-Mails) an — nie andersherum.',
   'reg.open':'offen','reg.tk.done':'Tracking komplett','reg.tk.open':'Tracking offen','reg.tk.na':'keine Conversion verknüpft',
   'set.rec':'Source/Medium-Defaults und bestätigte Naming-Rezepte.',
   'set.title':'SOP / Settings','set.lead':'Regelquellen. Die SOP bleibt maßgeblich — das Tool bildet sie nur ab.',
@@ -1674,6 +1689,7 @@ const T={
   'dash.c.naming':'Asset → AdSet → Campaign. SOP-compliant names.','dash.c.structure':'Campaign → AdSet/Automation → Ads, as tree and graph.',
   'dash.c.utm':'Build, search and copy tracking URLs.','dash.c.fc':'Funnel paths + conversion measurement points (GA4 / Ads / Meta).',
   'dash.c.campaigns':'How naming, UTM, funnels & conversions connect.','dash.c.settings':'Rule sources: platform labels, source/medium, recipes.',
+  'dash.start.eye':'Start here','dash.start.h':'Build a new funnel — the house first','dash.start.p':'Always Phase 2 first: set the steps (landing page → form → thank-you) + the goal. Then dock the arrivals (ads, emails) onto the funnel — never the other way round.',
   'reg.open':'open','reg.tk.done':'Tracking complete','reg.tk.open':'Tracking open','reg.tk.na':'no conversion linked',
   'set.rec':'Source/medium defaults and confirmed naming recipes.',
   'set.title':'SOP / Settings','set.lead':'The rule sources live here. The SOP stays authoritative — the tool only reflects it.',
@@ -2593,6 +2609,8 @@ function selectFunnel(id,keepRet,scrollTo){
   const tgt=(scrollTo==='ctx'&&$('fnEditCtx'))?$('fnEditCtx'):$('fnDetail');
   tgt.scrollIntoView({behavior:'smooth',block:scrollTo==='ctx'?'center':'nearest'});
 }
+// Funnel-first-Einstieg vom Dashboard: erst in die Reise-Ansicht, dann leeren Funnel öffnen.
+function dashNewFunnel(){switchView('fc');newFunnel();}
 function newFunnel(scroll){
   const grp=(state.fcTab!=='all'&&state.fcTab!=='conv')?state.fcTab:'';
   state.editF={id:null,slug:'',name:'',purpose:'',description:'',status:'draft',product:grp,traffic:'',steps:[{type:'page',title:'',url:'',conversion_key:'',ac_tag:'',note:'',interaction:''}]};
