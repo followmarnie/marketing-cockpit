@@ -270,6 +270,20 @@
   .dchip.utm-y{color:#7df3e6;background:rgba(23,248,224,.08);border:1px solid rgba(23,248,224,.3)}
   .dchip.utm-n{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
   .dchip.src{color:#a9a7ff;background:rgba(143,140,255,.1);border:1px solid rgba(143,140,255,.3)}
+  .dcard.dadd{display:flex;align-items:center;justify-content:center;min-width:118px;max-width:118px;border-style:dashed;color:#8f8cff;font-weight:600;cursor:pointer}
+  .dcard.dadd:hover{border-color:#8f8cff;background:var(--tn-surf-2)}
+  /* In-Context-UTM-Editor */
+  .uce{margin-top:12px;border:1px solid rgba(143,140,255,.32);border-radius:var(--tn-r-m);background:var(--tn-surf-1);padding:14px 15px}
+  .uce-h{font-size:12px;font-weight:700;color:#c3c1ff;margin-bottom:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .uce-ref{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:10px;color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:5px;padding:2px 7px;text-transform:none;letter-spacing:0}
+  .uce-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .uce-grid label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#9aa0d0}
+  .uce-grid label:first-child{grid-column:1/3}
+  .uce-prev{margin-top:11px;display:flex;flex-direction:column;gap:5px}
+  .uce-idlbl{font-size:10px;color:#8e94c0;font-family:"SF Mono",Menlo,Consolas,monospace}
+  .uce-prev code{font-size:11px;color:#7df3e6;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:6px;padding:8px 10px;word-break:break-all;font-family:"SF Mono",Menlo,Consolas,monospace}
+  .uce-actions{display:flex;gap:8px;margin-top:12px;align-items:center}
+  @media(max-width:640px){.uce-grid{grid-template-columns:1fr}.uce-grid label:first-child{grid-column:1}}
   /* Einheitliche Editier-Kontext-Zeile über den Feldern */
   .ectx{display:flex;flex-direction:column;gap:6px;margin:2px 0 14px}
   .ectx-back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-family:inherit;color:#c9cdf5;border:1px solid var(--tn-border);border-radius:999px;padding:5px 12px;cursor:pointer;background:var(--tn-surf-1);transition:border-color .15s var(--tn-ease),color .15s var(--tn-ease)}
@@ -2643,6 +2657,60 @@ function jbandOpen(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track
 function toggleBand(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};if(state.editF)syncFunnelInputs();state.jband[k]=!state.jband[k];renderFunnelDetail();}
 // Vom Goal-Ende der Step-Kette in den Lifecycle: P3-Band öffnen + hinscrollen.
 function gotoLife(){var Z=state.jband||(state.jband={p1:true,p2:true,p3:true,track:false});if(!Z.p3){Z.p3=true;if(state.editF)syncFunnelInputs();renderFunnelDetail();}var el=document.querySelector('#fnJourney .jband.jp3');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}
+// ── In-Context-UTM-Editor (Phase 1 · Ankunft) ──────────────────
+// UTMs dort bauen/bearbeiten, wo sie leben — inline, mit automatischer utm_id + full_url,
+// funnel_ref automatisch. Der flache UTM-Builder bleibt separat als Gesamtübersicht.
+function fcUtmFull(d,id){return buildUrl({target_url:d.target_url,utm_source:d.utm_source,utm_medium:d.utm_medium,utm_campaign:d.utm_campaign,utm_content:d.utm_content},id||'(auto)');}
+function fcUtmRead(){return {target_url:($('uceUrl').value||'').trim(),utm_source:($('uceSrc').value||'').trim(),utm_medium:($('uceMed').value||'').trim(),utm_campaign:($('uceCampaign').value||'').trim(),utm_content:($('uceContent').value||'').trim()};}
+function fcUtmPreview(){var p=$('ucePreview');if(!p||!state.utmEdit)return;p.textContent=fcUtmFull(fcUtmRead(),state.utmEdit.id);}
+function fcUtmNew(){var f=state.editF;if(!f)return;state.utmEdit={ref:f.name||'',id:null,data:{utm_source:'',utm_medium:'',utm_campaign:'',utm_content:'',target_url:''}};renderFunnelDetail();var e=$('uceUrl');if(e)e.focus();}
+function fcUtmEditRow(utmId){var r=(state.rows||[]).find(function(x){return String(x.utm_id)===String(utmId);});if(!r)return;state.utmEdit={ref:r.funnel_ref||'',id:r.utm_id,data:{utm_source:r.utm_source||'',utm_medium:r.utm_medium||'',utm_campaign:r.utm_campaign||'',utm_content:r.utm_content||'',target_url:r.target_url||''}};renderFunnelDetail();}
+function fcUtmCancel(){state.utmEdit=null;renderFunnelDetail();}
+function fcUtmEditorHtml(ref){
+  var e=state.utmEdit; if(!e||e.ref!==ref)return '';
+  var de=LANG==='de', d=e.data||{};
+  var idlbl=e.id?('utm_id: '+esc(e.id)):(de?'utm_id: wird automatisch vergeben':'utm_id: assigned automatically');
+  return '<div class="uce">'
+    +'<div class="uce-h">'+(e.id?(de?'Ankunft bearbeiten':'Edit arrival'):(de?'Neue Ankunft':'New arrival'))+' <span class="uce-ref">funnel_ref: '+esc(ref)+'</span></div>'
+    +'<div class="uce-grid">'
+    +'<label>Ziel-URL<input id="uceUrl" value="'+esc(d.target_url||'')+'" oninput="fcUtmPreview()" placeholder="https://…"></label>'
+    +'<label>utm_source<input id="uceSrc" list="ccUceSrc" value="'+esc(d.utm_source||'')+'" oninput="fcUtmPreview()" placeholder="meta"></label>'
+    +'<label>utm_medium<input id="uceMed" list="ccUceMed" value="'+esc(d.utm_medium||'')+'" oninput="fcUtmPreview()" placeholder="paid_social"></label>'
+    +'<label>utm_campaign<input id="uceCampaign" value="'+esc(d.utm_campaign||'')+'" oninput="fcUtmPreview()"></label>'
+    +'<label>utm_content<input id="uceContent" value="'+esc(d.utm_content||'')+'" oninput="fcUtmPreview()"></label>'
+    +'</div>'
+    +'<datalist id="ccUceSrc"><option value="meta"></option><option value="google"></option><option value="youtube"></option><option value="webinar_campaign"></option><option value="onboarding_email"></option></datalist>'
+    +'<datalist id="ccUceMed"><option value="paid_social"></option><option value="cpc"></option><option value="email"></option><option value="organic"></option></datalist>'
+    +'<div class="uce-prev"><span class="uce-idlbl">'+idlbl+'</span><code id="ucePreview">'+esc(fcUtmFull(d,e.id))+'</code></div>'
+    +'<div class="uce-actions"><button class="btn sm" onclick="fcUtmSave()">'+(de?'Speichern':'Save')+'</button>'
+    +'<button class="btn sm ghost" onclick="fcUtmCancel()">'+(de?'Abbrechen':'Cancel')+'</button>'
+    +(e.id?'<span style="flex:1"></span><button class="btn sm danger" onclick="fcUtmDelete()">'+(de?'Löschen':'Delete')+'</button>':'')
+    +'</div></div>';
+}
+async function fcUtmSave(){
+  if(!state.utmEdit)return; var e=state.utmEdit, de=LANG==='de', d=fcUtmRead();
+  if(!d.utm_source){toast(de?'utm_source fehlt':'utm_source missing',true);return;}
+  if(!d.utm_campaign){toast(de?'utm_campaign fehlt':'utm_campaign missing',true);return;}
+  try{
+    if(e.id==null){
+      var payload={utm_source:d.utm_source,utm_medium:d.utm_medium||null,utm_campaign:d.utm_campaign,utm_content:d.utm_content||null,target_url:d.target_url||null,funnel_ref:e.ref||null,created_by:whoami()||null};
+      var ins=await sb('utm_registry',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
+      var id=ins[0].utm_id, full=fcUtmFull(d,id);
+      await sb('utm_registry?utm_id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({full_url:full})});
+    }else{
+      var full2=fcUtmFull(d,e.id);
+      await sb('utm_registry?utm_id=eq.'+encodeURIComponent(e.id),{method:'PATCH',body:JSON.stringify({utm_source:d.utm_source,utm_medium:d.utm_medium||null,utm_campaign:d.utm_campaign,utm_content:d.utm_content||null,target_url:d.target_url||null,full_url:full2})});
+    }
+    state.utmEdit=null; await loadAll(); renderFunnelDetail();
+    toast(de?'UTM gespeichert':'UTM saved');
+  }catch(err){var dup=/duplicate|409|unique/i.test(err.message);toast(dup?(de?'Duplikat':'Duplicate'):((de?'Fehler':'Error')+': '+err.message),true);}
+}
+async function fcUtmDelete(){
+  if(!state.utmEdit||state.utmEdit.id==null)return; var de=LANG==='de';
+  if(!confirm(de?'Diese UTM löschen?':'Delete this UTM?'))return;
+  try{await sb('utm_registry?utm_id=eq.'+encodeURIComponent(state.utmEdit.id),{method:'DELETE',headers:{Prefer:'return=minimal'}});state.utmEdit=null;await loadAll();renderFunnelDetail();toast(de?'gelöscht':'deleted');}
+  catch(err){toast((de?'Fehler':'Error')+': '+err.message,true);}
+}
 function jbH(k,eye,sum){return '<button class="jb-h" type="button" onclick="toggleBand(\''+k+'\')"><span class="jb-car">&#9660;</span><span class="jb-eye">'+eye+'</span><span class="jb-sum">'+sum+'</span></button>';}
 function renderFcJourney(f){
   var host=$('fnJourney');if(!host)return;
@@ -2664,20 +2732,22 @@ function renderFcJourney(f){
   // funnel_ref auf diesen Funnel. Die Türen selbst sind On-Site = Phase 2 / Step 1.
   var arrivals=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;});
   var p1body;
+  var addCard='<div class="dcard dadd" onclick="fcUtmNew()" title="'+(de?'Ankunft anlegen (UTM)':'Add arrival (UTM)')+'">+ '+(de?'Ankunft':'Arrival')+'</div>';
   if(arrivals.length){
     p1body='<div class="flow">'+arrivals.map(function(r){
-      return '<div class="dcard" onclick="switchView(\'utm\')" title="'+(de?'Im UTM-Bereich öffnen':'Open in the UTM section')+'">'
+      return '<div class="dcard" onclick="fcUtmEditRow(\''+esc(r.utm_id)+'\')" title="'+(de?'UTM inline bearbeiten':'Edit UTM inline')+'">'
         +'<div class="dc-meta" style="margin:0 0 6px"><span class="dchip src">'+esc(r.utm_source||'—')+'</span><span class="dchip utm-n">'+esc(r.utm_medium||'—')+'</span></div>'
         +'<div class="dc-q">'+esc(r.utm_campaign||r.campaign_name||'—')+'</div>'
         +(r.utm_content?'<div class="dc-url" style="font-family:inherit">'+esc(r.utm_content)+'</div>':'')
         +(r.target_url?'<div class="dc-url">&rarr; '+esc(r.target_url)+'</div>':'')
         +'</div>';
-    }).join('')+'</div>';
+    }).join('')+addCard+'</div>';
   }else{
     p1body='<div class="jb-hint">'+(de
-      ?'Noch keine Ankunfts-Kampagnen — dieser Funnel wird bisher organisch/on-site befüllt. Ads-, E-Mail- oder Social-Links mit <b style="color:#8f8cff">funnel_ref</b> auf diesen Funnel erscheinen hier automatisch.'
-      :'No arrival campaigns yet — this funnel is currently fed organically/on-site. Ad, email or social links with <b style="color:#8f8cff">funnel_ref</b> pointing at this funnel appear here automatically.')+'</div>';
+      ?'Noch keine Ankunfts-Kampagnen — Ads-, E-Mail- oder Social-Links mit <b style="color:#8f8cff">funnel_ref</b> auf diesen Funnel. Leg eine an oder importiere sie.'
+      :'No arrival campaigns yet — ad, email or social links with <b style="color:#8f8cff">funnel_ref</b> on this funnel. Add one or import them.')+'</div><div class="flow" style="margin-top:8px">'+addCard+'</div>';
   }
+  p1body+=fcUtmEditorHtml(f.name);
   // P3 · Lifecycle: verknüpfte Serien (Match über die Produkt-Gruppe)
   var p3body;
   if(hand.length){
