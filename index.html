@@ -263,9 +263,14 @@
   .dchip.utm-y{color:#7df3e6;background:rgba(23,248,224,.08);border:1px solid rgba(23,248,224,.3)}
   .dchip.utm-n{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
   .dchip.src{color:#a9a7ff;background:rgba(143,140,255,.1);border:1px solid rgba(143,140,255,.3)}
-  .jback{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#c9cdf5;border:1px solid var(--tn-border);border-radius:999px;padding:6px 14px;margin-bottom:10px;cursor:pointer;background:var(--tn-surf-1);transition:border-color .15s var(--tn-ease)}
-  .jback:hover{border-color:#d9e08c;color:#fff}
-  .jback b{color:#fff;font-weight:600}
+  /* Einheitliche Editier-Kontext-Zeile über den Feldern */
+  .ectx{display:flex;flex-direction:column;gap:6px;margin:2px 0 14px}
+  .ectx-back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-family:inherit;color:#c9cdf5;border:1px solid var(--tn-border);border-radius:999px;padding:5px 12px;cursor:pointer;background:var(--tn-surf-1);transition:border-color .15s var(--tn-ease),color .15s var(--tn-ease)}
+  .ectx-back:hover{border-color:#d9e08c;color:#fff}
+  .ectx-now{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13.5px;color:#e9edff}
+  .ectx-now b{color:#fff;font-weight:600}
+  .ectx-lbl{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8e94c0}
+  .ectx-kind{font-size:10px;font-weight:700;letter-spacing:.05em;color:#a9a7ff;background:rgba(143,140,255,.1);border:1px solid rgba(143,140,255,.3);border-radius:6px;padding:2px 7px}
   /* Serien-Karten (Phase 3 · Lifecycle) */
   .scard{min-width:250px;max-width:310px;background:linear-gradient(180deg,rgba(237,251,140,.05),var(--tn-surf-1));border:1px solid rgba(237,251,140,.26);border-radius:var(--tn-r-s);padding:11px 12px;cursor:pointer;transition:border-color .15s var(--tn-ease)}
   .scard:hover{border-color:rgba(237,251,140,.6)}
@@ -1195,6 +1200,7 @@
         </div>
 
         <div class="editor-sec">
+          <div id="fnEditCtx"></div>
           <div class="sec-h"><span class="sec-n">1</span><span data-i18n="fc.sec.funnel">Funnel & ausgewählten Step bearbeiten</span></div>
           <div class="row3">
             <div><label data-i18n="fn.name">Name</label><input id="fnName"></div>
@@ -2440,14 +2446,15 @@ async function setFunnelStatus(id,status){
     await loadAll();toast(status==='archived'?t('fn.archived'):t('fn.reactivated'))}
   catch(e){toast(t('ct.updfail')+': '+e.message,true)}
 }
-function selectFunnel(id,keepRet){
+function selectFunnel(id,keepRet,scrollTo){
   const f=state.funnels.find(x=>x.id===id);if(!f)return;
   if(!keepRet)state.jret=null; // Rückweg-Krümel nur beim Sprung aus Phase 3 behalten
-
   state.editF=JSON.parse(JSON.stringify(f));
   if(!Array.isArray(state.editF.steps))state.editF.steps=[];
   state.stepSel=0;
-  renderFunnelDetail();renderFunnelList();$('fnDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+  renderFunnelDetail();renderFunnelList();
+  const tgt=(scrollTo==='ctx'&&$('fnEditCtx'))?$('fnEditCtx'):$('fnDetail');
+  tgt.scrollIntoView({behavior:'smooth',block:scrollTo==='ctx'?'center':'nearest'});
 }
 function newFunnel(scroll){
   const grp=(state.fcTab!=='all'&&state.fcTab!=='conv')?state.fcTab:'';
@@ -2491,6 +2498,19 @@ function renderFunnelDetail(){
   }).join('')+`<div class="fcard add" onclick="addStep()">${t('fn.addstep')}</div>`;
   renderStepEditor(f);
   renderFunnelPraba(f);
+  renderEditCtx(f);
+}
+// Einheitliche Kontext-Zeile über den Editier-Feldern: sagt IMMER, was gerade
+// bearbeitet wird — beim Funnel wie bei der aus Phase 3 geöffneten Serie gleich.
+function renderEditCtx(f){
+  var box=$('fnEditCtx');if(!box)return;
+  if(!f){box.innerHTML='';return;}
+  var de=LANG==='de';
+  var idlbl=f.id==null?(de?'neu':'new'):('#'+f.id);
+  var kind=isLifecycle(f)?(de?'Lifecycle-Serie':'Lifecycle series'):'Funnel';
+  var back=state.jret?'<button type="button" class="ectx-back" onclick="jretBack()">&larr; #'+state.jret.id+' '+esc(state.jret.name||'')+'</button>':'';
+  box.innerHTML='<div class="ectx">'+back
+    +'<div class="ectx-now"><span class="ectx-lbl">'+(de?'Bearbeiten':'Editing')+'</span> <b>'+idlbl+' &middot; '+esc(f.name||(de?'Neuer Funnel':'New funnel'))+'</b> <span class="ectx-kind">'+kind+'</span></div></div>';
 }
 // ── Reise-Bänder ──────────────────────────────────────────────
 // Die ganze Reise eines Akquise-Funnels, gestapelt: P1 Ankunft → Mess-Naht →
@@ -2505,7 +2525,7 @@ function fcLifecycleHandoff(f){
   });
 }
 // P3-Karte → Serie im selben Editor öffnen; jret merkt sich den Rückweg zum Akquise-Funnel.
-function openSeries(id){state.jret=(state.editF&&state.editF.id!=null)?{id:state.editF.id,name:state.editF.name}:null;selectFunnel(id,true);}
+function openSeries(id){state.jret=(state.editF&&state.editF.id!=null)?{id:state.editF.id,name:state.editF.name}:null;selectFunnel(id,true,'ctx');}
 function jretBack(){var r=state.jret;state.jret=null;if(r)selectFunnel(r.id);}
 function jbandOpen(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};return !!state.jband[k];}
 function toggleBand(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};if(state.editF)syncFunnelInputs();state.jband[k]=!state.jband[k];renderFunnelDetail();}
@@ -2514,10 +2534,10 @@ function renderFcJourney(f){
   var host=$('fnJourney');if(!host)return;
   if(!f){host.innerHTML='';return;}
   var de=LANG==='de';
-  // Lifecycle-Serien haben keine Akquise-Reise — Mail-Kette zeigen, plus Rückweg-Krümel.
+  // Lifecycle-Serien haben keine Akquise-Reise — nur die Mail-Kette. Orientierung
+  // liefert die einheitliche Kontext-Zeile unten (renderEditCtx), kein zweiter Indikator.
   if(isLifecycle(f)){
-    var back=state.jret?'<div class="jback" onclick="jretBack()">&larr; '+(de?'Zurück zu':'Back to')+' <b>#'+state.jret.id+' '+esc(state.jret.name||'')+'</b></div>':'';
-    host.innerHTML=back+'<div class="jband jp3"><button class="jb-h" type="button" style="cursor:default"><span class="jb-eye">'+(de?'Lifecycle-Serie · ActiveCampaign':'Lifecycle series · ActiveCampaign')+'</span><span class="jb-sum">'+(f.steps||[]).length+' '+(de?'Mails':'emails')+'</span></button><div class="jb-body"><div id="fnSteps" class="flow"></div></div></div>';
+    host.innerHTML='<div class="jband jp3"><button class="jb-h" type="button" style="cursor:default"><span class="jb-eye">'+(de?'Lifecycle-Serie · ActiveCampaign':'Lifecycle series · ActiveCampaign')+'</span><span class="jb-sum">'+(f.steps||[]).length+' '+(de?'Mails':'emails')+'</span></button><div class="jb-body"><div id="fnSteps" class="flow"></div></div></div>';
     return;
   }
   var steps=f.steps||[];
