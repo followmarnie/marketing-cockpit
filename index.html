@@ -262,6 +262,10 @@
   .dchip.lv-off{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
   .dchip.utm-y{color:#7df3e6;background:rgba(23,248,224,.08);border:1px solid rgba(23,248,224,.3)}
   .dchip.utm-n{color:#8e94c0;background:var(--tn-surf-2);border:1px solid var(--tn-border)}
+  .dchip.src{color:#a9a7ff;background:rgba(143,140,255,.1);border:1px solid rgba(143,140,255,.3)}
+  .jback{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#c9cdf5;border:1px solid var(--tn-border);border-radius:999px;padding:6px 14px;margin-bottom:10px;cursor:pointer;background:var(--tn-surf-1);transition:border-color .15s var(--tn-ease)}
+  .jback:hover{border-color:#d9e08c;color:#fff}
+  .jback b{color:#fff;font-weight:600}
   /* Serien-Karten (Phase 3 · Lifecycle) */
   .scard{min-width:250px;max-width:310px;background:linear-gradient(180deg,rgba(237,251,140,.05),var(--tn-surf-1));border:1px solid rgba(237,251,140,.26);border-radius:var(--tn-r-s);padding:11px 12px;cursor:pointer;transition:border-color .15s var(--tn-ease)}
   .scard:hover{border-color:rgba(237,251,140,.6)}
@@ -2436,8 +2440,10 @@ async function setFunnelStatus(id,status){
     await loadAll();toast(status==='archived'?t('fn.archived'):t('fn.reactivated'))}
   catch(e){toast(t('ct.updfail')+': '+e.message,true)}
 }
-function selectFunnel(id){
+function selectFunnel(id,keepRet){
   const f=state.funnels.find(x=>x.id===id);if(!f)return;
+  if(!keepRet)state.jret=null; // Rückweg-Krümel nur beim Sprung aus Phase 3 behalten
+
   state.editF=JSON.parse(JSON.stringify(f));
   if(!Array.isArray(state.editF.steps))state.editF.steps=[];
   state.stepSel=0;
@@ -2498,6 +2504,9 @@ function fcLifecycleHandoff(f){
     return x.status!=='archived'&&isLifecycle(x)&&fcSeg(x.product)===fp;
   });
 }
+// P3-Karte → Serie im selben Editor öffnen; jret merkt sich den Rückweg zum Akquise-Funnel.
+function openSeries(id){state.jret=(state.editF&&state.editF.id!=null)?{id:state.editF.id,name:state.editF.name}:null;selectFunnel(id,true);}
+function jretBack(){var r=state.jret;state.jret=null;if(r)selectFunnel(r.id);}
 function jbandOpen(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};return !!state.jband[k];}
 function toggleBand(k){if(!state.jband)state.jband={p1:true,p2:true,p3:true,track:false};if(state.editF)syncFunnelInputs();state.jband[k]=!state.jband[k];renderFunnelDetail();}
 function jbH(k,eye,sum){return '<button class="jb-h" type="button" onclick="toggleBand(\''+k+'\')"><span class="jb-car">&#9660;</span><span class="jb-eye">'+eye+'</span><span class="jb-sum">'+sum+'</span></button>';}
@@ -2505,30 +2514,35 @@ function renderFcJourney(f){
   var host=$('fnJourney');if(!host)return;
   if(!f){host.innerHTML='';return;}
   var de=LANG==='de';
-  // Lifecycle-Serien haben keine Akquise-Reise — nur die nackte Step-Kette zeigen.
-  if(isLifecycle(f)){host.innerHTML='<div id="fnSteps" class="flow"></div>';return;}
+  // Lifecycle-Serien haben keine Akquise-Reise — Mail-Kette zeigen, plus Rückweg-Krümel.
+  if(isLifecycle(f)){
+    var back=state.jret?'<div class="jback" onclick="jretBack()">&larr; '+(de?'Zurück zu':'Back to')+' <b>#'+state.jret.id+' '+esc(state.jret.name||'')+'</b></div>':'';
+    host.innerHTML=back+'<div class="jband jp3"><button class="jb-h" type="button" style="cursor:default"><span class="jb-eye">'+(de?'Lifecycle-Serie · ActiveCampaign':'Lifecycle series · ActiveCampaign')+'</span><span class="jb-sum">'+(f.steps||[]).length+' '+(de?'Mails':'emails')+'</span></button><div class="jb-body"><div id="fnSteps" class="flow"></div></div></div>';
+    return;
+  }
   var steps=f.steps||[];
-  var lpIdx=-1;for(var i=0;i<steps.length;i++){if((steps[i].type||'')==='lp'){lpIdx=i;break;}}
-  var doors=lpIdx>=0?(steps[lpIdx].variants||[]):[];
-  var utmN=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;}).length;
   var gk=steps.map(function(s,i){return s.conversion_key?i:-1;}).filter(function(i){return i>=0;});
   var goalKey=gk.length?steps[gk[gk.length-1]].conversion_key:'';
   var cv=goalKey?state.convs.find(function(c){return c.key===goalKey;}):null;
   var hand=fcLifecycleHandoff(f);
   var st=function(x){return x==='done'?'&#10003;':'&middot;';};
-  // P1 · Ankunft: die Türen (LP-Varianten des ersten lp-Steps)
+  // P1 · Ankunft: das Anliefern VOR der Tür — UTM-Links (Ads, E-Mail, Social) mit
+  // funnel_ref auf diesen Funnel. Die Türen selbst sind On-Site = Phase 2 / Step 1.
+  var arrivals=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;});
   var p1body;
-  if(doors.length){
-    p1body='<div class="flow">'+doors.map(function(v,vi){
-      var lv=v.live||'live';
-      return '<div class="dcard" onclick="selectStep('+lpIdx+')" title="'+(de?'Tür im Step-Editor öffnen':'Open door in step editor')+'">'
-        +'<div class="dc-q">'+esc(v.quelle||((de?'Tür ':'Door ')+(vi+1)))+'</div>'
-        +(v.url?'<div class="dc-url">'+esc(v.url)+'</div>':'')
-        +'<div class="dc-meta"><span class="dchip lv-'+esc(lv)+'">'+(lv==='planned'?(de?'geplant':'planned'):esc(lv))+'</span>'
-        +'<span class="dchip '+(v.utm_done?'utm-y':'utm-n')+'">UTM '+(v.utm_done?'&#10003;':'&mdash;')+'</span></div></div>';
+  if(arrivals.length){
+    p1body='<div class="flow">'+arrivals.map(function(r){
+      return '<div class="dcard" onclick="switchView(\'utm\')" title="'+(de?'Im UTM-Bereich öffnen':'Open in the UTM section')+'">'
+        +'<div class="dc-meta" style="margin:0 0 6px"><span class="dchip src">'+esc(r.utm_source||'—')+'</span><span class="dchip utm-n">'+esc(r.utm_medium||'—')+'</span></div>'
+        +'<div class="dc-q">'+esc(r.utm_campaign||r.campaign_name||'—')+'</div>'
+        +(r.utm_content?'<div class="dc-url" style="font-family:inherit">'+esc(r.utm_content)+'</div>':'')
+        +(r.target_url?'<div class="dc-url">&rarr; '+esc(r.target_url)+'</div>':'')
+        +'</div>';
     }).join('')+'</div>';
   }else{
-    p1body='<div class="jb-hint">'+(de?'Noch keine Türen erfasst — Türen sind die LP-Varianten am ersten lp-Step.':'No doors yet — doors are the LP variants on the first lp step.')+'</div>';
+    p1body='<div class="jb-hint">'+(de
+      ?'Noch keine Ankunfts-Kampagnen — dieser Funnel wird bisher organisch/on-site befüllt. Ads-, E-Mail- oder Social-Links mit <b style="color:#8f8cff">funnel_ref</b> auf diesen Funnel erscheinen hier automatisch.'
+      :'No arrival campaigns yet — this funnel is currently fed organically/on-site. Ad, email or social links with <b style="color:#8f8cff">funnel_ref</b> pointing at this funnel appear here automatically.')+'</div>';
   }
   // P3 · Lifecycle: verknüpfte Serien (Match über die Produkt-Gruppe)
   var p3body;
@@ -2538,7 +2552,7 @@ function renderFcJourney(f){
       var trig=xs.map(function(s){return s.ac_tag;}).filter(Boolean)[0]||'';
       var n=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===x.name;}).length;
       var chain=xs.map(function(s){return '<span class="lc-mail">'+esc(s.title||s.type||'Step')+'</span>';}).join('<span class="lc-arr">&rarr;</span>');
-      return '<div class="scard" onclick="switchView(\'lifecycle\')" title="'+(de?'In Phase 3 öffnen':'Open in Phase 3')+'">'
+      return '<div class="scard" onclick="openSeries('+x.id+')" title="'+(de?'Serie unten im Editor öffnen':'Open series in the editor below')+'">'
         +'<div class="sc-h">'+esc(x.name||x.slug||'—')+(trig?'<span class="lc-trig">'+esc(trig)+'</span>':'')+'</div>'
         +(chain?'<div class="lc-chain">'+chain+'</div>':'')
         +'<div class="sc-meta">'+xs.length+' '+(de?'Mails':'emails')+' &middot; '+n+' UTMs</div></div>';
@@ -2552,7 +2566,7 @@ function renderFcJourney(f){
   var seam2t=de?'Besitz-Naht: an der Conversion gibt der Mensch seine E-Mail — Praba endet, ActiveCampaign übernimmt. Klick: 3-Phasen-Modell.':'Ownership seam: at the conversion the person hands over their email — Praba ends, ActiveCampaign takes over. Click: 3-phase model.';
   host.innerHTML=
     '<div class="jband jp1'+(jbandOpen('p1')?'':' closed')+'">'
-      +jbH('p1',de?'Phase 1 · Ankunft':'Phase 1 · Arrival',doors.length+' '+(de?'Türen':'doors')+' &middot; '+utmN+' UTMs')
+      +jbH('p1',de?'Phase 1 · Ankunft':'Phase 1 · Arrival',arrivals.length+' '+(de?'Ankunfts-Links':'arrival links'))
       +'<div class="jb-body">'+p1body+'</div></div>'
     +'<div class="jseam" onclick="switchView(\'verstehen\')" title="'+seam1t+'"><span class="js-lbl">'+(de?'Mess-Naht · P1→P2':'Measure seam · P1→P2')+'</span></div>'
     +'<div class="jband jp2'+(jbandOpen('p2')?'':' closed')+'">'
