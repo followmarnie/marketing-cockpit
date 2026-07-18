@@ -2728,6 +2728,13 @@ function fcUtmGroupToggle(enc){var gid=decodeURIComponent(enc);if(!state.utmGrou
 // Wiederverwendbare UTM-Liste für einen funnel_ref: nach Kampagne gebündelt (einklappbar), Klick=inline bearbeiten, „+ UTM", Editor.
 function fcUtmListHtml(ref){
   var de=LANG==='de';
+  // Neuer/namenloser Funnel: KEINE Waisen zeigen (funnel_ref==='' matcht sonst alle funnel-losen UTMs)
+  // und kein Andocken vor dem Speichern — erst benennen, dann Ankuenfte docken.
+  if(!ref){
+    return '<div class="jb-hint">'+(de
+      ?'Diesen Funnel zuerst in <b>Phase 2</b> benennen und speichern &mdash; danach dockst Du hier Ankuenfte (Ads, E-Mails) an. Bestehende, noch nicht zugeordnete UTMs findest Du unter <b>Kampagnen</b>.'
+      :'Name and save this funnel in <b>Phase 2</b> first &mdash; then dock arrivals (ads, emails) here. Unassigned UTMs live under <b>Campaigns</b>.')+'</div>';
+  }
   var rows=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===ref;});
   var out='';
   if(rows.length){
