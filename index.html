@@ -2052,7 +2052,7 @@ function deriveNaming(){
 }
 function orow(k,v,copyable,meta){
   const val=`<span class="v ${v?'':'empty'}">${esc(v)||'—'}</span>`;
-  const btn=copyable&&v?`<button class="minicopy" onclick="copyText(${JSON.stringify(String(v))})">${t('copy')}</button>`:'';
+  const btn=copyable&&v?`<button class="minicopy" onclick="copyText(${esc(JSON.stringify(String(v)))})">${t('copy')}</button>`:'';
   const km=meta?`<span class="kmeta">${meta}</span>`:'';
   return `<div class="outrow"><div class="kv"><span class="k">${k}${km}</span>${val}</div>${btn}</div>`;
 }
@@ -2388,8 +2388,8 @@ function renderRegistry(){
     <td class="mono url" data-col="full_url" title="${esc(r.full_url)}">${esc(r.full_url)||'—'}</td>
     <td>
       <span class="act edit" title="Edit" onclick="startEdit('${esc(r.utm_id)}')">✎</span>
-      <span class="minicopy" title="${t('o.copyUrl')}" onclick="copyText(${JSON.stringify(String(r.full_url||''))})">⧉URL</span>
-      <span class="minicopy" title="${t('o.copyParams')}" onclick="copyText(${JSON.stringify(paramsOnly(r.full_url))})">⧉?=</span>
+      <span class="minicopy" title="${t('o.copyUrl')}" onclick="copyText(${esc(JSON.stringify(String(r.full_url||'')))})">⧉URL</span>
+      <span class="minicopy" title="${t('o.copyParams')}" onclick="copyText(${esc(JSON.stringify(paramsOnly(r.full_url)))})">⧉?=</span>
       <span class="act del" title="Delete" onclick="delRow('${esc(r.utm_id)}')">✕</span>
     </td></tr>`).join('')||`<tr><td colspan="10" style="color:#5b6090;padding:20px">${t('tbl.empty')}</td></tr>`;
   $('rowCount').textContent=state.rows.length+' '+(state.rows.length===1?(LANG==='de'?'Zeile':'row'):(LANG==='de'?'Zeilen':'rows'));
