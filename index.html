@@ -573,6 +573,42 @@
   .lc-chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
   .lc-mail{font-size:12px;color:#c9cdf5;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:7px;padding:5px 10px}
   .lc-arr{color:#6b70a0}
+  /* ── Serien-Board (Lifecycle-Tab, Umbau 2026-07-21) ───────────────────── */
+  .lc-series{cursor:pointer;transition:border-color .16s var(--tn-ease),background .16s var(--tn-ease)}
+  .lc-series:hover{border-color:rgba(102,102,255,.42);background:var(--tn-surf-2)}
+  .lc-st{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+    border-radius:999px;padding:3px 9px;white-space:nowrap;border:1px solid}
+  .lc-st:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .lc-st.built{color:var(--tn-success);border-color:rgba(74,222,128,.34);background:rgba(74,222,128,.09)}
+  .lc-st.draft{color:#ffcf70;border-color:rgba(255,207,112,.32);background:rgba(255,207,112,.08)}
+  .lc-lang{font-size:10.5px;font-weight:700;color:#b9bef0;background:var(--tn-surf-2);
+    border:1px solid var(--tn-border);border-radius:5px;padding:2px 7px}
+  .lc-guard{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#ffb0bb;
+    background:rgba(255,114,127,.08);border:1px solid rgba(255,114,127,.26);border-radius:5px;padding:2px 7px}
+  .lc-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px}
+  .lc-meta .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#7e84b4}
+  /* Zeitleiste: Mails auf einer Achse, Abstand = Wartezeit */
+  .lc-tl{margin-top:14px;overflow-x:auto;padding-bottom:2px}
+  .lc-tl-inner{display:flex;align-items:flex-start;gap:0;min-width:min-content}
+  .lc-tl-node{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:78px;flex:0 0 auto}
+  .lc-tl-day{font-size:10px;font-weight:700;color:#8a90c0;font-variant-numeric:tabular-nums}
+  .lc-tl-dot{width:11px;height:11px;border-radius:50%;background:var(--tn-primary);
+    box-shadow:0 0 0 3px rgba(102,102,255,.16);flex:0 0 auto}
+  .lc-tl-node.guarded .lc-tl-dot{background:#ff727f;box-shadow:0 0 0 3px rgba(255,114,127,.18)}
+  .lc-tl-ttl{font-size:11px;color:#c9cdf5;text-align:center;line-height:1.3;max-width:96px}
+  .lc-tl-gap{flex:1 1 auto;min-width:26px;display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:14px}
+  .lc-tl-line{height:1px;width:100%;background:linear-gradient(90deg,rgba(102,102,255,.5),rgba(150,57,243,.5))}
+  .lc-tl-wait{font-size:9.5px;color:#7e84b4;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .lc-tl-wait.miss{color:#ffcf70}
+  .lc-next{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid var(--tn-border)}
+  .lc-next .lbl{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7e84b4;white-space:nowrap}
+  .lc-next .txt{font-size:11.5px;color:#c9cdf5}
+  .lc-next .txt b{color:#ffcf70}
+  .lc-next.ok .txt b{color:var(--tn-success)}
+  .lc-sum{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+  .lc-sum .m{border:1px solid var(--tn-border);border-radius:12px;padding:9px 13px;background:var(--tn-surf-1);min-width:96px}
+  .lc-sum .m strong{display:block;font-size:17px;color:#fff;line-height:1.15}
+  .lc-sum .m span{font-size:10.5px;color:#8a90c0}
   .temp-chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--tn-border);white-space:nowrap}
   .temp-chip.cold{color:#7cc4ff;border-color:rgba(124,196,255,.4);background:rgba(124,196,255,.08)}
   .temp-chip.warm{color:#ffce7a;border-color:rgba(255,206,122,.4);background:rgba(255,206,122,.08)}
@@ -1487,16 +1523,15 @@
   <div class="view" id="view-lifecycle">
     <div style="margin-bottom:16px">
       <h2 style="font-size:24px;margin:0 0 6px;color:#fff;font-weight:700" data-i18n="lc.title">Phase 3 · Lifecycle</h2>
-      <p class="sub" data-i18n="lc.sub">Nach der Conversion. Der Mensch hat uns seine Daten gegeben — jetzt betreuen wir ihn über ActiveCampaign.</p>
+      <p class="sub" data-i18n="lc.sub">Deine E-Mail-Serien: was in ActiveCampaign schon gebaut ist, in welchem Rhythmus sie laufen — und was als Nächstes dran ist.</p>
     </div>
-    <div class="lc-card">
-      <h2 data-i18n="lc.card.h">Die Naht ist überschritten 🧵</h2>
-      <p style="color:#aab0d6;font-size:13.5px;line-height:1.6;margin:0 0 6px" data-i18n="lc.card.p">Phase 1 + 2 (Akquise) enden an der Conversion. Ab hier läuft die Betreuung — E-Mail-Strecken, Handouts, Angebote — <b style="color:#fff">über ActiveCampaign</b>, gesteuert durch das Signup-Tag. Praba trackt hier nicht mehr.</p>
+    <div class="lc-sum" id="lcSum"></div>
+    <div id="lcSteps" class="lc-steps"></div>
+    <details class="lc-card" style="margin-top:16px">
+      <summary style="cursor:pointer;color:#fff;font-weight:600;font-size:14px" data-i18n="lc.card.h">Die Naht ist überschritten</summary>
+      <p style="color:#aab0d6;font-size:13.5px;line-height:1.6;margin:10px 0 6px" data-i18n="lc.card.p">Phase 1 + 2 (Akquise) enden an der Conversion. Ab hier läuft die Betreuung — E-Mail-Strecken, Handouts, Angebote — <b style="color:#fff">über ActiveCampaign</b>, gesteuert durch das Signup-Tag. Praba trackt hier nicht mehr.</p>
       <div class="lc-zone" data-i18n="lc.merk"><b>Merksatz:</b> Haben wir schon seine E-Mail? <b>Nein</b> → Retargeting (Akquise). <b>Ja</b> → Lifecycle (hier).</div>
-      <h3 style="color:#fff;font-size:14px;margin:18px 0 4px" data-i18n="lc.stepshead">Lifecycle-Steps aus Deinen Funnels</h3>
-      <p class="hint" style="margin:0 0 8px" data-i18n="lc.stepshint">Schritte, die <b>nach</b> dem Goal liegen (mit AC-Tag) — automatisch aus den Funnels gelesen.</p>
-      <div id="lcSteps" class="lc-steps"></div>
-    </div>
+    </details>
     <div class="lc-card" style="margin-top:14px">
       <h2 data-i18n="tc.h">Tag-Katalog 🛡️</h2>
       <p style="color:#aab0d6;font-size:13.5px;line-height:1.6;margin:0 0 4px" data-i18n="tc.p">Die bekannten AC-Tags (Soll-Konvention). Der <b style="color:#fff">Wächter</b> im Assistenten prüft jeden getippten Tag hiergegen: <span class="wiz-ok">grün = existiert</span> · <span class="wiz-new">gelb = neuer Wert</span> · <span style="color:#f0a0a0">rot = passt nicht</span>.</p>
@@ -1547,9 +1582,12 @@ const T={
   'navg.create':'Erstellen','navg.journey':'Die Reise','navg.adworld':'Kampagnen · Ad-Welt','navg.reference':'Referenz',
   'vs.title':'Verstehen · Die Reise in 3 Phasen','vs.sub':'Ankunft · On-Site · Lifecycle — mit Retargeting-Loop. Die ⓘ-Punkte antippen für Erklärungen.',
   'lk.title':'Die Lieferkette · Naming, UTM & Funnel','lk.sub':'Eine Lieferung, mehrere LKWs, viele Pakete — drei Sticker auf drei Ebenen. Wie Campaign-Name, utm_campaign/term/content und Funnel zusammenhängen.',
-  'lc.title':'Phase 3 · Lifecycle','lc.sub':'Nach der Conversion. Der Mensch hat uns seine Daten gegeben — jetzt betreuen wir ihn über ActiveCampaign.',
-  'lc.card.h':'Die Naht ist überschritten 🧵','lc.card.p':'Phase 1 + 2 (Akquise) enden an der Conversion. Ab hier läuft die Betreuung — E-Mail-Strecken, Handouts, Angebote — <b style="color:#fff">über ActiveCampaign</b>, gesteuert durch das Signup-Tag. Praba trackt hier nicht mehr.',
+  'lc.title':'Phase 3 · Lifecycle','lc.sub':'Deine E-Mail-Serien: was in ActiveCampaign schon gebaut ist, in welchem Rhythmus sie laufen — und was als Nächstes dran ist.',
+  'lc.card.h':'Die Naht ist überschritten','lc.card.p':'Phase 1 + 2 (Akquise) enden an der Conversion. Ab hier läuft die Betreuung — E-Mail-Strecken, Handouts, Angebote — <b style="color:#fff">über ActiveCampaign</b>, gesteuert durch das Signup-Tag. Praba trackt hier nicht mehr.',
   'lc.merk':'<b>Merksatz:</b> Haben wir schon seine E-Mail? <b>Nein</b> → Retargeting (Akquise). <b>Ja</b> → Lifecycle (hier).',
+  'lc.m.total':'Serien','lc.m.built':'in AC gebaut','lc.m.open':'offen',
+  'lc.st.built':'in AC gebaut','lc.st.draft':'Entwurf',
+  'lc.trigger':'Trigger','lc.guard':'Guard','lc.next':'Nächster Schritt',
   'lc.stepshead':'Deine Lifecycle-Serien','lc.stepshint':'ActiveCampaign-Strecken, gruppiert nach Produkt — getriggert vom Signup-Tag der jeweiligen Serie. Jeder Akquise-Funnel zeigt am Ende (Besitz-Naht) hierher.','lc.empty':'Noch keine Lifecycle-Serien — sie erscheinen, sobald ein Funnel als Lifecycle-Serie importiert ist (kind: lifecycle).',
   'nm.temp':'Temperatur','nm.temphint':'(Kalt / Warm / Heiß)','nm.templabel':'Temperatur:',
   'temp.open':'— offen —','temp.cold':'🧊 Kalt','temp.warm':'🌤 Warm','temp.hot':'🔥 Heiß','temp.all':'Alle',
@@ -1677,9 +1715,12 @@ const T={
   'navg.create':'Create','navg.journey':'The journey','navg.adworld':'Campaigns · Ad world','navg.reference':'Reference',
   'vs.title':'Understand · The journey in 3 phases','vs.sub':'Arrival · On-Site · Lifecycle — with a retargeting loop. Tap the ⓘ points for explanations.',
   'lk.title':'The supply chain · naming, UTM & funnel','lk.sub':'One shipment, several trucks, many packages — three stickers on three levels. How campaign name, utm_campaign/term/content and the funnel connect.',
-  'lc.title':'Phase 3 · Lifecycle','lc.sub':'After the conversion. The person has given us their data — now we nurture them through ActiveCampaign.',
+  'lc.title':'Phase 3 · Lifecycle','lc.sub':'Your email series: what is already built in ActiveCampaign, at what rhythm they run — and what is next.',
   'lc.card.h':'The seam is crossed 🧵','lc.card.p':'Phase 1 + 2 (acquisition) end at the conversion. From here on, nurturing runs — email sequences, handouts, offers — <b style="color:#fff">via ActiveCampaign</b>, steered by the signup tag. Praba no longer tracks here.',
   'lc.merk':'<b>Rule of thumb:</b> Do we already have their email? <b>No</b> → retargeting (acquisition). <b>Yes</b> → lifecycle (here).',
+  'lc.m.total':'series','lc.m.built':'built in AC','lc.m.open':'open',
+  'lc.st.built':'built in AC','lc.st.draft':'draft',
+  'lc.trigger':'Trigger','lc.guard':'Guard','lc.next':'Next step',
   'lc.stepshead':'Your lifecycle series','lc.stepshint':'ActiveCampaign flows, grouped by product — triggered by the signup tag of each series. Every acquisition funnel points here at its end (ownership seam).','lc.empty':'No lifecycle series yet — they appear as soon as a funnel is imported as a lifecycle series (kind: lifecycle).',
   'nm.temp':'Temperature','nm.temphint':'(Cold / Warm / Hot)','nm.templabel':'Temperature:',
   'temp.open':'— open —','temp.cold':'🧊 Cold','temp.warm':'🌤 Warm','temp.hot':'🔥 Hot','temp.all':'All',
@@ -3907,11 +3948,69 @@ function loadPhasenmodell(){var f=document.getElementById('pmFrame');if(f&&f.dat
 function fitLk(){var f=document.getElementById('lkFrame');try{var d=f&&f.contentDocument;if(d&&d.body)f.style.height=(d.body.scrollHeight+26)+'px';}catch(e){}}
 function loadLieferkette(){var f=document.getElementById('lkFrame');if(!f||f.dataset.loaded)return;f.dataset.loaded='1';f.addEventListener('load',fitLk);f.srcdoc=LIEFERKETTE_HTML;}
 window.addEventListener('resize',fitLk);
+/* ── Serien-Board (Lifecycle-Tab) ──────────────────────────────────────────
+   Marnie 2026-07-21: "Was ist gebaut, was fehlt, was ist als Nächstes dran."
+   Liest nur vorhandene Felder. Zwei OPTIONALE Step-Felder machen die
+   Zeitleiste vollstaendig — beide leben in `steps` (jsonb), also KEIN
+   Datenbank-Umbau noetig:
+     wait_days : Zahl — Wartetage VOR diesem Step
+     guard     : Text — Bedingung, die vor diesem Step geprüft wird
+   Fehlen sie, faellt das Board sauber auf die reine Kette zurueck.      */
+function lcLang(f){
+  var m=String(f.name||'').match(/\((DE|EN)\)\s*$/i);
+  return m?m[1].toUpperCase():'';
+}
+function lcTimeline(steps,de){
+  if(!steps.length)return '';
+  var anyWait=steps.some(function(s){return Number(s.wait_days)>0;});
+  var day=0,parts=[];
+  steps.forEach(function(s,i){
+    var w=Number(s.wait_days)||0;
+    day+=w;
+    if(i>0){
+      var lbl=anyWait?(w?w+' '+(de?(w===1?'Tag':'Tage'):(w===1?'day':'days')):'—')
+                     :'<span class="miss">'+(de?'?':'?')+'</span>';
+      parts.push('<span class="lc-tl-gap"><i class="lc-tl-line"></i><span class="lc-tl-wait'
+        +(anyWait?'':' miss')+'">'+lbl+'</span></span>');
+    }
+    var g=String(s.guard||'').trim();
+    parts.push('<span class="lc-tl-node'+(g?' guarded':'')+'"'
+      +(g?' title="'+esc((de?'Guard: ':'Guard: ')+g)+'"':'')+'>'
+      +'<span class="lc-tl-day">'+(anyWait?(de?'Tag ':'Day ')+day:'#'+(i+1))+'</span>'
+      +'<span class="lc-tl-dot"></span>'
+      +'<span class="lc-tl-ttl">'+esc(s.title||s.type||'Step')+'</span></span>');
+  });
+  return '<div class="lc-tl"><div class="lc-tl-inner">'+parts.join('')+'</div></div>';
+}
+function lcNext(f,steps,utmN,de){
+  if(f.status!=='active'&&f.status!=='live')
+    return {cls:'',txt:'<b>'+(de?'Noch nicht in AC gebaut':'Not built in AC yet')+'</b>'};
+  if(!steps.length)
+    return {cls:'',txt:'<b>'+(de?'Keine Mails hinterlegt':'No emails yet')+'</b>'};
+  if(!steps.some(function(s){return Number(s.wait_days)>0;}))
+    return {cls:'',txt:'<b>'+(de?'Wartezeiten nachtragen':'Add the wait times')+'</b> — '
+      +(de?'ohne sie zeigt die Zeitleiste nur die Reihenfolge, nicht den Rhythmus.'
+          :'without them the timeline shows order, not rhythm.')};
+  if(!utmN)
+    return {cls:'',txt:'<b>'+(de?'Keine UTMs verknüpft':'No UTMs linked')+'</b>'};
+  return {cls:' ok',txt:'<b>'+(de?'Vollständig':'Complete')+'</b> — '
+    +(de?'gebaut, getaktet, getrackt.':'built, timed, tracked.')};
+}
 function renderLifecycle(){
   var host=document.getElementById('lcSteps');if(!host)return;
   var de=LANG==='de';
   var lc=(state.funnels||[]).filter(function(f){return f.status!=='archived'&&isLifecycle(f);});
-  if(!lc.length){host.innerHTML='<div class="lc-empty">'+t('lc.empty')+'</div>';renderTagCatalog();return;}
+  var sum=document.getElementById('lcSum');
+  if(!lc.length){
+    if(sum)sum.innerHTML='';
+    host.innerHTML='<div class="lc-empty">'+t('lc.empty')+'</div>';renderTagCatalog();return;
+  }
+  var built=lc.filter(function(f){return f.status==='active'||f.status==='live';}).length;
+  var open=lc.length-built;
+  if(sum)sum.innerHTML=
+     '<div class="m"><strong>'+lc.length+'</strong><span>'+t('lc.m.total')+'</span></div>'
+    +'<div class="m"><strong>'+built+'</strong><span>'+t('lc.m.built')+'</span></div>'
+    +'<div class="m"><strong>'+open+'</strong><span>'+t('lc.m.open')+'</span></div>';
   var glabel=function(k){var m=FUNNEL_GROUPS.find(function(x){return x[0]===k;});return m?m[1].split(' · ')[0]:(k||'—');};
   var groups={},order=[];
   lc.forEach(function(f){var g=f.product||'—';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(f);});
@@ -3922,14 +4021,27 @@ function renderLifecycle(){
       var steps=f.steps||[];
       var utmN=(state.rows||[]).filter(function(r){return (r.funnel_ref||'')===f.name;}).length;
       var trig=steps.map(function(s){return s.ac_tag;}).filter(Boolean)[0]||'';
-      var chain=steps.map(function(s){return '<span class="lc-mail">'+esc(s.title||s.type||'Step')+'</span>';}).join('<span class="lc-arr">&rarr;</span>');
-      out.push('<div class="lc-series">'
-        +'<div class="lc-series-h"><b>'+esc(f.name||f.slug||'—')+'</b>'
-        +sysBadge(f.system)
-        +(trig?'<span class="lc-trig">'+esc(trig)+'</span>':'')
-        +'<span class="lc-count">'+steps.length+' '+(de?'Mails':'emails')+' &middot; '+utmN+' UTMs</span></div>'
-        +(chain?'<div class="lc-chain">'+chain+'</div>':'')
-        +'</div>');
+      var guard=steps.map(function(s){return s.guard;}).filter(Boolean)[0]||'';
+      var isBuilt=f.status==='active'||f.status==='live';
+      var lang=lcLang(f);
+      var nx=lcNext(f,steps,utmN,de);
+      out.push('<div class="lc-series" onclick="openFunnelFromOv('+f.id+')" title="'
+          +esc(de?'Serie öffnen':'Open series')+'">'
+        +'<div class="lc-series-h">'
+          +'<span class="lc-st '+(isBuilt?'built':'draft')+'">'+t(isBuilt?'lc.st.built':'lc.st.draft')+'</span>'
+          +'<b>'+esc(f.name||f.slug||'—')+'</b>'
+          +(lang?'<span class="lc-lang">'+lang+'</span>':'')
+          +sysBadge(f.system)
+          +'<span class="lc-count">'+steps.length+' '+(de?'Mails':'emails')+' &middot; '+utmN+' UTMs</span>'
+        +'</div>'
+        +'<div class="lc-meta">'
+          +'<span class="lbl">'+t('lc.trigger')+'</span>'
+          +(trig?'<span class="lc-trig">'+esc(trig)+'</span>':'<span class="lc-trig">—</span>')
+          +(guard?'<span class="lbl">'+t('lc.guard')+'</span><span class="lc-guard">'+esc(guard)+'</span>':'')
+        +'</div>'
+        +lcTimeline(steps,de)
+        +'<div class="lc-next'+nx.cls+'"><span class="lbl">'+t('lc.next')+'</span><span class="txt">'+nx.txt+'</span></div>'
+      +'</div>');
     });
     out.push('</div>');
   });
