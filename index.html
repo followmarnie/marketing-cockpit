@@ -112,6 +112,10 @@
   #tbl thead th:first-child{background:#0e0e21;z-index:3;box-shadow:6px 0 8px -6px rgba(0,0,0,.55)}
   #tbl tbody tr:hover>td.counter{background:#15153a}
   #tbl tbody tr.rowsel>td.counter{background:#291a4b;box-shadow:inset 3px 0 0 var(--tn-accent),6px 0 8px -6px rgba(0,0,0,.55)}
+  /* Volltextsuche (Marnie 2026-07-21): Treffer werden markiert, sonst muesste
+     man in einer ~1080px breiten Zeile selbst suchen, WARUM sie passt. */
+  #tbl mark{background:rgba(23,248,224,.22);color:#bff9f1;border-radius:2px;padding:0 1px}
+  #fAll{min-width:230px}
   #namingTbl{min-width:900px}
   #namingTbl td{white-space:nowrap}
   #namingTbl td.ident{min-width:360px}
@@ -1208,11 +1212,13 @@
     <div class="card full">
       <h2><span data-i18n="ub.regtitle">Registry</span> <span class="pill" id="rowCount">…</span></h2>
       <div class="toolbar">
+        <input id="fAll" data-i18n-ph="r.fAll" title="">
         <input id="fYear" data-i18n-ph="r.fYear">
         <input id="fCampaign" data-i18n-ph="r.fCampaign">
         <select id="fChannel"></select>
         <select id="fSource"></select>
         <select id="fFunnel"></select>
+        <button class="btn sm ghost" onclick="clearRegFilters()" data-i18n="r.clear">✕ Filter leeren</button>
         <span style="flex:1"></span>
         <label style="margin:0 6px 0 0;color:#b9bee6" data-i18n="r.override">utm_id-Override</label>
         <input id="ctrOverride" type="number" style="width:120px" placeholder="60">
@@ -1627,6 +1633,7 @@ const T={
   'o.params':'Nur URL-Parameter','o.url':'Volle UTM-URL','o.copyParams':'Parameter kopieren','o.copyUrl':'Volle URL kopieren',
   'o.idhint':'Die <code>utm_id</code> wird beim Speichern von der Datenbank vergeben (atomar). Override oben in der Registry-Leiste.',
   'r.fYear':'Jahr filtern','r.fCampaign':'Kampagne filtern','r.chAll':'Channel: alle','r.srcAll':'Source: alle','r.funAll':'Funnel: alle',
+  'r.fAll':'Suchen: alle Spalten …','r.clear':'✕ Filter leeren','r.of':'von',
   'r.override':'utm_id-Override','r.reload':'↻ Neu laden','r.type':'Typ','r.fullurl':'Volle URL','r.idpending':'wird beim Speichern vergeben',
   'tbl.empty':'Noch keine Zeilen — oben bauen und „In Registry speichern".',
   'warn.internal':'<b>Interner Link?</b> Interne Verlinkungen (Menü, Footer, Cross-Sell) <b>nie</b> mit UTM taggen — sonst überschreibt der interne Klick die echte Kampagnen-Quelle in GA4.',
@@ -1754,6 +1761,7 @@ const T={
   'o.params':'URL parameters only','o.url':'Full UTM URL','o.copyParams':'Copy parameters','o.copyUrl':'Copy full URL',
   'o.idhint':'The <code>utm_id</code> is assigned by the database on save (atomic). Override in the registry toolbar above.',
   'r.fYear':'Filter year','r.fCampaign':'Filter campaign','r.chAll':'Channel: all','r.srcAll':'Source: all','r.funAll':'Funnel: all',
+  'r.fAll':'Search: every column …','r.clear':'✕ Clear filters','r.of':'of',
   'r.override':'utm_id override','r.reload':'↻ Reload','r.type':'Type','r.fullurl':'Full URL','r.idpending':'assigned on save',
   'tbl.empty':'No rows yet — build above and “Save to registry”.',
   'warn.internal':'<b>Internal link?</b> Never tag internal links (menu, footer, cross-sell) with UTM — the internal click would overwrite the real campaign source in GA4.',
@@ -2401,27 +2409,61 @@ function toggleUtmRow(tr){
   applyUtmRowSel();
 }
 
+/* Volltextsuche ueber die Registry (Marnie 2026-07-21).
+   Warum ueber ALLE Felder statt nur utm_campaign: gesucht wird real nach
+   "wo ist der Shop-Link", "welche Zeile hat e3_shop", "was haengt an
+   account.tradeneon.com" — der Suchbegriff steht mal im Identifier, mal im
+   utm_content, mal nur in der URL. Mehrere Woerter = UND (Reihenfolge egal),
+   damit "shop fi" die eine richtige Zeile findet statt aller Shop-Zeilen. */
+const rxEsc=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function rowHay(r){
+  return Object.values(r).map(v=>(v==null||typeof v==='object')?'':String(v)).join('  ').toLowerCase();
+}
+/* escapen UND markieren: es wird segmentweise escaped, nie in fertigem HTML
+   gesucht — sonst koennte ein Suchwort in einer Entity (&amp;) treffen. */
+function hiEsc(s,terms){
+  s=String(s==null?'':s);
+  if(!terms.length||!s)return esc(s);
+  const rx=new RegExp('('+terms.map(rxEsc).join('|')+')','gi');
+  let out='',last=0,m;
+  while((m=rx.exec(s))!==null){
+    if(m[0]===''){rx.lastIndex++;continue}
+    out+=esc(s.slice(last,m.index))+'<mark>'+esc(m[0])+'</mark>';
+    last=m.index+m[0].length;
+  }
+  return out+esc(s.slice(last));
+}
+function clearRegFilters(){
+  ['fAll','fYear','fCampaign'].forEach(id=>$(id).value='');
+  ['fChannel','fSource','fFunnel'].forEach(id=>$(id).value='');
+  renderRegistry();$('fAll').focus();
+}
 function renderRegistry(){
   const fy=$('fYear').value.trim(), fc=$('fCampaign').value.trim().toLowerCase(), fs=$('fSource').value, ff=$('fFunnel').value, fch=$('fChannel').value;
+  const terms=$('fAll').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const flt=state.rows.filter(r=>(!fy||(r.period||'').includes(fy)||(r.utm_campaign||'').includes(fy))&&(!fc||(r.utm_campaign||'').toLowerCase().includes(fc))
-    &&(!fs||r.utm_source===fs)&&(!ff||(r.funnel_ref||r.funnel_type)===ff)&&(!fch||r.channel===fch));
+    &&(!fs||r.utm_source===fs)&&(!ff||(r.funnel_ref||r.funnel_type)===ff)&&(!fch||r.channel===fch)
+    &&(!terms.length||(h=>terms.every(w=>h.includes(w)))(rowHay(r))));
   $('tbl').querySelector('tbody').innerHTML=sortList(flt,'utm').map(r=>`<tr data-id="${esc(r.utm_id)}">
-    <td class="mono counter">${esc(r.utm_id)}</td>
+    <td class="mono counter">${hiEsc(r.utm_id,terms)}</td>
     <td><span class="tag ${esc(r.platform_type)}">${esc(r.platform_type)}</span></td>
-    <td class="mono" data-col="utm_campaign">${langChip(r)}${esc(r.utm_campaign)||'—'}</td>
-    <td class="mono ident" data-col="asset_identifier">${esc(r.asset_identifier)||'—'}</td>
-    <td class="mono" data-col="utm_source">${esc(r.utm_source)||'—'}</td>
-    <td class="mono" data-col="utm_medium">${esc(r.utm_medium)||'—'}</td>
-    <td class="mono" data-col="utm_content">${esc(r.utm_content)||'—'}</td>
-    <td class="mono" data-col="utm_term">${esc(r.utm_term)||'—'}</td>
-    <td class="mono url" data-col="full_url" title="${esc(r.full_url)}">${esc(r.full_url)||'—'}</td>
+    <td class="mono" data-col="utm_campaign">${langChip(r)}${hiEsc(r.utm_campaign,terms)||'—'}</td>
+    <td class="mono ident" data-col="asset_identifier">${hiEsc(r.asset_identifier,terms)||'—'}</td>
+    <td class="mono" data-col="utm_source">${hiEsc(r.utm_source,terms)||'—'}</td>
+    <td class="mono" data-col="utm_medium">${hiEsc(r.utm_medium,terms)||'—'}</td>
+    <td class="mono" data-col="utm_content">${hiEsc(r.utm_content,terms)||'—'}</td>
+    <td class="mono" data-col="utm_term">${hiEsc(r.utm_term,terms)||'—'}</td>
+    <td class="mono url" data-col="full_url" title="${esc(r.full_url)}">${hiEsc(r.full_url,terms)||'—'}</td>
     <td>
       <span class="act edit" title="Edit" onclick="startEdit('${esc(r.utm_id)}')">✎</span>
       <span class="minicopy" title="${t('o.copyUrl')}" onclick="copyText(${esc(JSON.stringify(String(r.full_url||'')))})">⧉URL</span>
       <span class="minicopy" title="${t('o.copyParams')}" onclick="copyText(${esc(JSON.stringify(paramsOnly(r.full_url)))})">⧉?=</span>
       <span class="act del" title="Delete" onclick="delRow('${esc(r.utm_id)}')">✕</span>
     </td></tr>`).join('')||`<tr><td colspan="10" style="color:#5b6090;padding:20px">${t('tbl.empty')}</td></tr>`;
-  $('rowCount').textContent=state.rows.length+' '+(state.rows.length===1?(LANG==='de'?'Zeile':'row'):(LANG==='de'?'Zeilen':'rows'));
+  const unit=(n)=>n===1?(LANG==='de'?'Zeile':'row'):(LANG==='de'?'Zeilen':'rows');
+  $('rowCount').textContent=(flt.length===state.rows.length)
+    ? state.rows.length+' '+unit(state.rows.length)
+    : flt.length+' '+t('r.of')+' '+state.rows.length+' '+unit(state.rows.length);
   updateSortArrows('tbl','utm');
   applyUtmRowSel();  // Auswahl ueberlebt Filter/Sortierung
 }
@@ -3938,7 +3980,8 @@ $('tbl').querySelector('tbody').addEventListener('click',e=>{
   if(e.target.closest('.act,.minicopy'))return;
   toggleUtmRow(e.target.closest('tr'));
 });
-['fYear','fCampaign','fSource','fFunnel','fChannel'].forEach(id=>$(id).addEventListener('input',renderRegistry));
+['fAll','fYear','fCampaign','fSource','fFunnel','fChannel'].forEach(id=>$(id).addEventListener('input',renderRegistry));
+$('fAll').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';renderRegistry()}});
 $('showArch').addEventListener('change',()=>{renderFcTabs();renderFunnelList();renderFunnelRegistry();});
 $('uOnlyOpen').addEventListener('change',refreshDynamic);
 $('cmFilter').addEventListener('input',renderCampaigns);
