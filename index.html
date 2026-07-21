@@ -2235,10 +2235,14 @@ async function delNaming(id){
   catch(e){toast(t('ct.delfail')+': '+e.message,true)}
 }
 /* ─── Generische Tabellen-Sortierung (Naming · UTM · Conversions) ─── */
-const sortState={naming:{k:'id',d:1},utm:{k:'utm_id',d:1},conv:{k:'key',d:1},reg:{k:'product',d:1}};
+/* Registry startet NEUESTE zuerst (Marnie 2026-07-21): gebraucht wird fast
+   immer die zuletzt gebaute Zeile, nicht tradeneon00001. */
+const sortState={naming:{k:'id',d:1},utm:{k:'utm_id',d:-1},conv:{k:'key',d:1},reg:{k:'product',d:1}};
 function tempLbl(k){return k?t('temp.'+k):'';}
 const TEMP_ORD={cold:0,warm:1,hot:2};
-const SORT_ACC={naming:{id:n=>Number(n.id)||0,linked:n=>namingLinked(n.id)?1:0,temperature:n=>(n.temperature in TEMP_ORD)?TEMP_ORD[n.temperature]:9},utm:{},conv:{},
+const SORT_ACC={naming:{id:n=>Number(n.id)||0,linked:n=>namingLinked(n.id)?1:0,temperature:n=>(n.temperature in TEMP_ORD)?TEMP_ORD[n.temperature]:9},
+  // utm_id echt numerisch sortieren (tradeneon00099 -> 99), nicht als Text
+  utm:{utm_id:r=>Number(String(r.utm_id==null?'':r.utm_id).replace(/\D/g,''))||0},conv:{},
   reg:{id:f=>Number(f.id)||0,
        product:f=>{const i=FUNNEL_GROUPS.map(x=>x[0]).indexOf(f.product);return i<0?999:i;},
        funnel:f=>f.name||'',
@@ -2254,7 +2258,8 @@ function sortList(arr,tbl){
 }
 function setSort(tbl,k){
   const s=sortState[tbl];
-  if(s.k===k)s.d=-s.d; else {s.k=k;s.d=1;}
+  // Wechsel auf utm_id startet ebenfalls absteigend (neueste zuerst)
+  if(s.k===k)s.d=-s.d; else {s.k=k;s.d=(tbl==='utm'&&k==='utm_id')?-1:1;}
   if(tbl==='naming')renderNamingList(); else if(tbl==='utm')renderRegistry(); else if(tbl==='reg')renderFunnelRegistry(); else renderConversions();
 }
 function updateSortArrows(tblId,tbl){
