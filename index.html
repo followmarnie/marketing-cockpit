@@ -3496,6 +3496,20 @@ function wizTagSuggestions(){
   return out;
 }
 function wizAcTagWarn(v){v=(v||'').trim();if(!v)return '';
+  // Mehrere Tags per Komma (2026-07-21): jeden Tag EINZELN pruefen und die Meldungen
+  // sammeln. Vorher lief die ganze Zeile durch die Einzel-Pruefung — bei zwei Tags
+  // zaehlte sie zwei Doppelpunkte und warnte faelschlich "nur ein Doppelpunkt",
+  // obwohl der Assistent selbst Komma-Listen erzeugt (siehe acTags.join(', ')).
+  if(v.indexOf(',')>=0){
+    const parts=v.split(',').map(s=>s.trim()).filter(Boolean);
+    if(!parts.length)return '';
+    const msgs=parts.map(x=>({tag:x,msg:wizAcTagWarnOne(x)})).filter(x=>x.msg);
+    if(!msgs.length)return '';
+    return msgs.map(x=>'<div><b>'+esc(x.tag)+'</b> — '+x.msg+'</div>').join('');
+  }
+  return wizAcTagWarnOne(v);}
+
+function wizAcTagWarnOne(v){v=(v||'').trim();if(!v)return '';
   const ci=v.indexOf(':');
   const cat=(ci>=0?v.slice(0,ci):v).trim();
   const colons=(v.match(/:/g)||[]).length;
