@@ -2607,15 +2607,19 @@ async function ccImportRun(){
   if(!ccImportPlan)return;
   const by=whoami()||null, de=LANG==='de', btn=$('impRunBtn'); btn.disabled=true;
   let n=0, dup=0, err=null;
+  // Fehler pro Objekt sammeln, statt beim ersten abzubrechen (Marnie 2026-07-21):
+  // vorher riss ein einziges gescheitertes Objekt ALLE folgenden mit — der Rest
+  // wurde nie versucht, und die Meldung sagte nicht, welches Objekt schuld war.
+  const fails=[];
   const is409=e=>/\b409\b|duplicate/i.test(String(e&&e.message||''));
   try{
     for(const o of ccImportPlan.funnels){const b=ccStrip(o); b.created_by=by; b.status=b.status||'draft';
       if(!b.slug)b.slug=kebab(b.name||'')||('funnel-'+(state.funnels.length+1+n));
       try{await sb('funnels',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(b)}); n++;}
-      catch(e){if(is409(e))dup++;else throw e;}}
+      catch(e){if(is409(e))dup++;else fails.push({what:o.name||b.slug||'?',msg:String(e&&e.message||e)});}}
     for(const o of ccImportPlan.conversions){const b=ccStrip(o); b.created_by=by; if(b.key)b.key=snake(b.key);
       try{await sb('conversions',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(b)}); n++;}
-      catch(e){if(is409(e))dup++;else throw e;}}
+      catch(e){if(is409(e))dup++;else fails.push({what:o.key||'?',msg:String(e&&e.message||e)});}}
     if(ccImportPlan.utm.length){let batch=ccImportPlan.utm.map(o=>{const b=ccStrip(o); b.created_by=b.created_by||by; return b;});
       // PostgREST-Bulk-Insert verlangt bei JEDEM Objekt dieselben Keys → auf Vereinigungsmenge normalisieren (fehlende = null), sonst 400.
       const allKeys=[...new Set(batch.reduce((a,o)=>a.concat(Object.keys(o)),[]))];
@@ -2631,7 +2635,18 @@ async function ccImportRun(){
       n+=batch.length;}
   }catch(e){err=e;}
   await loadAll(); // IMMER auffrischen — auch bei Teil-Fehler, damit die nächste Vorschau nicht auf altem Stand 409t
-  if(err){toast((de?'Import-Fehler':'Import error')+': '+err.message,true); btn.disabled=false; return;}
+  if(err)fails.push({what:de?'UTM-Block':'UTM batch',msg:String(err.message||err)});
+  if(fails.length){
+    // Fehler im Vorschau-Kasten stehen lassen — ein Toast verschwindet, bevor man
+    // die Meldung lesen kann, und genau die braucht man zum Weiterkommen.
+    const box=$('impPreview');
+    if(box)box.innerHTML=
+      `<div class="imp-sum">${n} ${de?'importiert':'imported'}${dup?' · '+dup+(de?' Duplikat(e) übersprungen':' duplicates skipped'):''} · <b>${fails.length} ${de?'fehlgeschlagen':'failed'}</b></div>`
+      + fails.map(f=>`<div class="imp-err"><b>${esc(f.what)}</b><br>${esc(f.msg)}</div>`).join('');
+    if($('impBox'))$('impBox').open=true;
+    toast(n+' '+(de?'importiert':'imported')+' · '+fails.length+' '+(de?'fehlgeschlagen — Details im Vorschau-Kasten':'failed — details in the preview box'),true);
+    btn.disabled=false; return;
+  }
   ccImportClear(); if($('impBox'))$('impBox').open=false;
   toast(n+' '+(de?'importiert':'imported')+(dup?' · '+dup+(de?' Duplikat(e) übersprungen':' duplicate(s) skipped'):''));
 }
