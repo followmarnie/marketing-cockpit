@@ -627,6 +627,20 @@
   .ln-edge.set{stroke:rgba(150,57,243,.6);stroke-dasharray:5 4}
   .ln-lg{display:flex;gap:16px;flex-wrap:wrap;padding:10px 8px 2px;font-size:11px;color:#9aa0d0}
   .ln-lg i{display:inline-block;width:20px;height:2px;vertical-align:middle;margin-right:6px;border-radius:2px}
+  /* ── AC-Tag-Abgleich (Settings) ── */
+  .tcx-bar{display:flex;align-items:center;gap:12px;margin:10px 0 12px}
+  .tcx-err{border:1px solid rgba(255,114,127,.3);background:rgba(255,114,127,.06);color:#ffc2c8;
+    border-radius:10px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+  .tcx-grp{border:1px solid var(--tn-border);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:rgba(255,255,255,.02)}
+  .tcx-grp>b{display:block;font-size:12.5px;color:#fff;margin-bottom:8px}
+  .tcx-grp.ok>b{color:var(--tn-success)}.tcx-grp.drift>b{color:#ffcf70}.tcx-grp.miss>b{color:#8fb7ff}
+  .tcx-chips{display:flex;gap:6px;flex-wrap:wrap}
+  .tcx-chip{display:inline-flex;align-items:center;gap:7px;font:11px ui-monospace,Menlo,Consolas,monospace;
+    color:#c9cdf5;background:var(--tn-surf-2);border:1px solid var(--tn-border);border-radius:6px;padding:4px 8px}
+  .tcx-chip small{color:#7e84b4;font-size:9.5px}
+  .tcx-chip button{border:1px solid rgba(102,102,255,.4);background:rgba(102,102,255,.12);color:#c3c6ff;
+    border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer}
+  .tcx-chip button:hover{background:rgba(102,102,255,.25)}
   .temp-chip{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--tn-border);white-space:nowrap}
   .temp-chip.cold{color:#7cc4ff;border-color:rgba(124,196,255,.4);background:rgba(124,196,255,.08)}
   .temp-chip.warm{color:#ffce7a;border-color:rgba(255,206,122,.4);background:rgba(255,206,122,.08)}
@@ -1563,6 +1577,11 @@
     <div class="lc-card" style="margin-bottom:14px;max-width:none">
       <h2 data-i18n="tc.h">Tag-Katalog</h2>
       <p style="color:#aab0d6;font-size:13.5px;line-height:1.6;margin:0 0 4px" data-i18n="tc.p">Die bekannten AC-Tags (Soll-Konvention). Der <b style="color:#fff">Wächter</b> im Assistenten prüft jeden getippten Tag hiergegen: <span class="wiz-ok">grün = existiert</span> · <span class="wiz-new">gelb = neuer Wert</span> · <span style="color:#f0a0a0">rot = passt nicht</span>.</p>
+      <div class="tcx-bar">
+        <button class="btn sm" onclick="acSyncTags()" data-i18n="tcx.sync">Mit AC abgleichen</button>
+        <span id="tcxState" class="hint"></span>
+      </div>
+      <div id="tcxDiff"></div>
       <div id="tagCatalog" class="tc-wrap"></div>
     </div>
     <div class="card">
@@ -1610,6 +1629,7 @@ const T={
   'lc.st.built':'in AC gebaut','lc.st.draft':'Entwurf','lc.st.ended':'beendet',
   'lc.v.net':'Netz','lc.v.list':'Liste','lc.showended':'Beendete Kampagnen-Strecken zeigen',
   'lc.lg.trig':'Tag startet Serie','lc.lg.set':'Mail setzt Tag (Link-Aktion)','lc.lg.click':'Serie anklicken öffnet sie in Funnel & Tracking.',
+  'tcx.sync':'Mit AC abgleichen','tcx.known':'Tags deckungsgleich mit der Konvention','tcx.missing':'in der Konvention, fehlen in AC','tcx.drift':'in AC, passen nicht zur Konvention — prüfen','tcx.open':'Werte in offenen Kategorien (frei erlaubt)','tcx.create':'In AC anlegen','tcx.created':'Tag in AC angelegt.','tcx.deployhint':'Edge Function „ac-tags" nicht erreichbar? Deploy-Anleitung: edge/README.md im Repo — 5 Minuten, einmalig.',
   'lc.trigger':'Trigger','lc.guard':'Guard','lc.next':'Nächster Schritt',
   'lc.stepshead':'Deine Lifecycle-Serien','lc.stepshint':'ActiveCampaign-Strecken, gruppiert nach Produkt — getriggert vom Signup-Tag der jeweiligen Serie. Jeder Akquise-Funnel zeigt am Ende (Besitz-Naht) hierher.','lc.empty':'Noch keine Lifecycle-Serien — sie erscheinen, sobald ein Funnel als Lifecycle-Serie importiert ist (kind: lifecycle).',
   'nm.temp':'Temperatur','nm.temphint':'(Kalt / Warm / Heiß)','nm.templabel':'Temperatur:',
@@ -1745,6 +1765,7 @@ const T={
   'lc.st.built':'built in AC','lc.st.draft':'draft','lc.st.ended':'ended',
   'lc.v.net':'Network','lc.v.list':'List','lc.showended':'Show ended campaign sequences',
   'lc.lg.trig':'tag starts series','lc.lg.set':'email sets tag (link action)','lc.lg.click':'Click a series to open it in Funnel & Tracking.',
+  'tcx.sync':'Sync with AC','tcx.known':'tags match the convention','tcx.missing':'in the convention, missing in AC','tcx.drift':'in AC, off-convention — review','tcx.open':'values in open categories (allowed)','tcx.create':'Create in AC','tcx.created':'Tag created in AC.','tcx.deployhint':'Edge function “ac-tags” unreachable? Deploy guide: edge/README.md in the repo — one-time, 5 minutes.',
   'lc.trigger':'Trigger','lc.guard':'Guard','lc.next':'Next step',
   'lc.stepshead':'Your lifecycle series','lc.stepshint':'ActiveCampaign flows, grouped by product — triggered by the signup tag of each series. Every acquisition funnel points here at its end (ownership seam).','lc.empty':'No lifecycle series yet — they appear as soon as a funnel is imported as a lifecycle series (kind: lifecycle).',
   'nm.temp':'Temperature','nm.temphint':'(Cold / Warm / Hot)','nm.templabel':'Temperature:',
@@ -2034,7 +2055,12 @@ async function sb(path,opts={},_retried){
     headers:{apikey:SB_KEY,Authorization:`Bearer ${tok}`,'Content-Type':'application/json',...(opts.headers||{})}});
   if(r.status===401&&!_retried){ if(await refreshToken())return sb(path,opts,true); showLogin(); throw new Error(t('ct.sessexp')) }
   if(!r.ok){let m;try{const j=await r.json();m=j.message||j.hint||JSON.stringify(j)}catch(e){m=await r.text()}throw new Error(`${r.status} · ${m}`)}
-  return r.status===204?null:r.json();
+  // 201 + Prefer:return=minimal liefert einen LEEREN Body — r.json() darauf wirft
+  // "Unexpected end of JSON input", obwohl der Insert laengst gespeichert ist.
+  // Das war die Wurzel ALLER "ein Objekt pro Versuch"-Importe (2026-07-21).
+  if(r.status===204)return null;
+  const _txt=await r.text();
+  return _txt?JSON.parse(_txt):null;
 }
 async function loadAll(){
   try{
@@ -4169,6 +4195,72 @@ function renderTagCatalog(){
   var mkt=TAG_CATALOG.filter(function(c){return c.who!=='portal';});
   var por=TAG_CATALOG.filter(function(c){return c.who==='portal';});
   host.innerHTML=tcGroupHtml(mkt,t('tc.gmkt'))+tcGroupHtml(por,t('tc.gportal'));
+}
+/* ── AC-Tag-Abgleich: liest den Ist-Stand aus AC ueber die Edge Function
+   "ac-tags" (Key-Proxy — der AC-Key liegt als Supabase-Secret, nie hier).
+   Deploy-Anleitung: marketing/tools/campaign-control/edge/README.md      */
+var AC_TAGS=null;
+async function acFn(method,body){
+  await ensureToken();
+  var tok=(session&&session.access_token)||SB_KEY;
+  var r=await fetch(SB_URL+'/functions/v1/ac-tags',{method:method,
+    headers:{apikey:SB_KEY,Authorization:'Bearer '+tok,'Content-Type':'application/json'},
+    body:body?JSON.stringify(body):undefined});
+  var txt=await r.text();var j=null;try{j=txt?JSON.parse(txt):null}catch(e){}
+  if(!r.ok)throw new Error((j&&(j.error||j.message))||('HTTP '+r.status));
+  return j;
+}
+function tcExpected(){
+  var out=[];TAG_CATALOG.forEach(function(c){(c.values||[]).forEach(function(v){out.push(v?(c.cat+': '+v):c.cat);});});
+  return out;
+}
+async function acSyncTags(){
+  var st=$('tcxState');var de=LANG==='de';
+  if(st)st.textContent=de?'lade …':'loading …';
+  try{
+    var res=await acFn('GET');AC_TAGS=(res&&res.tags)||[];
+    renderTagDiff();
+    if(st)st.textContent=(de?'Ist-Stand aus AC: ':'Live from AC: ')+AC_TAGS.length+' Tags · '+new Date().toLocaleTimeString();
+  }catch(e){
+    if(st)st.textContent='';
+    var d=$('tcxDiff');
+    if(d)d.innerHTML='<div class="tcx-err"><b>'+esc(String(e&&e.message||e))+'</b><br>'+t('tcx.deployhint')+'</div>';
+  }
+}
+function renderTagDiff(){
+  var host=$('tcxDiff');if(!host||!AC_TAGS)return;
+  var acMap={};AC_TAGS.forEach(function(x){acMap[x.tag]=x;});
+  var exp=tcExpected(),expSet={};exp.forEach(function(x){expSet[x]=1;});
+  var missing=exp.filter(function(x){return !acMap[x];});
+  var openPfx=TAG_CATALOG.filter(function(c){return c.open;}).map(function(c){return c.cat+': ';});
+  var catPfx=TAG_CATALOG.map(function(c){return c.cat+': ';});
+  var known=0,openVals=[],drift=[];
+  AC_TAGS.forEach(function(x){
+    if(expSet[x.tag]){known++;return;}
+    if(openPfx.some(function(p){return x.tag.indexOf(p)===0;})){openVals.push(x);return;}
+    drift.push(x); // unbekannter Wert in bekannter Kategorie ODER ganz fremd
+  });
+  var chip=function(x,btn){
+    return '<span class="tcx-chip">'+esc(x.tag||x)
+      +(x.subscribers?'<small>'+x.subscribers+'</small>':'')
+      +(btn?'<button data-tag="'+esc(x)+'">'+t('tcx.create')+'</button>':'')+'</span>';
+  };
+  host.innerHTML=
+     '<div class="tcx-grp ok"><b>'+known+' '+t('tcx.known')+'</b></div>'
+    +(missing.length?'<div class="tcx-grp miss"><b>'+missing.length+' '+t('tcx.missing')+'</b><div class="tcx-chips">'
+        +missing.map(function(x){return chip(x,true);}).join('')+'</div></div>':'')
+    +(drift.length?'<div class="tcx-grp drift"><b>'+drift.length+' '+t('tcx.drift')+'</b><div class="tcx-chips">'
+        +drift.map(function(x){return chip(x,false);}).join('')+'</div></div>':'')
+    +(openVals.length?'<div class="tcx-grp"><b>'+openVals.length+' '+t('tcx.open')+'</b><div class="tcx-chips">'
+        +openVals.map(function(x){return chip(x,false);}).join('')+'</div></div>':'');
+  host.onclick=function(ev){
+    var b=ev.target.closest?ev.target.closest('button[data-tag]'):null;
+    if(!b)return;
+    b.disabled=true;
+    acFn('POST',{tag:b.dataset.tag})
+      .then(function(){toast(t('tcx.created'));acSyncTags();})
+      .catch(function(e){toast(String(e&&e.message||e),true);b.disabled=false;});
+  };
 }
 // „Kampagnen" = eine Ansicht, drei Darstellungen. Karten = view-campaigns (Übersicht),
 // Baum/Graph = view-structure (Structure Map, tree/map). Der Umschalter flippt zwischen
